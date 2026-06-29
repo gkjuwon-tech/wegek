@@ -10,6 +10,7 @@ import re
 
 from ..clients.llm import LLMClient
 from ..config import Settings
+from ..factory import refrag
 from ..presets.cameras import CAMERA_PRESETS
 from ..presets.lighting import LIGHTING_PRESETS
 from ..presets.mapping import animation_for, map_category, primitive_for
@@ -134,6 +135,31 @@ CATEGORY_KEYWORDS = {
 }
 
 
+_REF_SELECT_SYSTEM = (
+    "You select reference compositions for a 3D website. Given a brief and a catalog of "
+    "composition patterns, reply with ONLY 2-4 short comma-separated search phrases naming the "
+    "kinds of 3D scene STRUCTURE that would best suit the brief. No prose."
+)
+
+
+async def _retrieve_refs(llm: LLMClient, prompt: str) -> str:
+    """Agentic RAG: let the model pick which reference structures to study, then retrieve them."""
+    queries = [prompt]
+    try:
+        raw = await llm.complete_text(
+            _REF_SELECT_SYSTEM, f"Brief: {prompt}\n\nCatalog:\n{refrag.titles()}", max_tokens=200
+        )
+        queries += [q.strip() for q in raw.replace("\n", ",").split(",") if q.strip()][:4]
+    except Exception:  # noqa: BLE001 - retrieval is best-effort
+        pass
+    picked: dict[str, dict] = {}
+    for q in queries:
+        for p in refrag.retrieve(q, k=2):
+            picked[p["id"]] = p
+    patterns = list(picked.values())[:4] or refrag.retrieve(prompt, k=3)
+    return refrag.format_block(patterns)
+
+
 def detect_category(text: str) -> str:
     low = text.lower()
     best, best_score = "tech", 0
@@ -156,9 +182,13 @@ async def run(prompt: str, settings: Settings, *, brand_mood: str | None, max_ob
     llm = LLMClient(settings)
     if llm.available:
         try:
+            # RAG: ground the world design in real award-winning composition patterns.
+            ref_block = await _retrieve_refs(llm, prompt)
             # A populated world (8-14 meshes with placements + keyframes) is a large
             # JSON doc, and the model reasons before emitting it — give it room.
-            data = await llm.complete_json(PLANNER_SYSTEM, f"Brief: {prompt}", max_tokens=24000)
+            data = await llm.complete_json(
+                PLANNER_SYSTEM, f"Brief: {prompt}\n\n{ref_block}", max_tokens=24000
+            )
             plan = _coerce_plan(data, prompt, brand_mood, max_objects)
             return plan, llm.label
         except Exception:  # noqa: BLE001 - any LLM/parse failure falls back gracefully
