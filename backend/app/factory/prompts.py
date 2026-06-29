@@ -46,6 +46,14 @@ could build from. Decide everything deliberately and specifically:
 - A restrained, deliberate colour palette (deep, moody — avoid garish primary grids).
 Be concrete and opinionated. This is the plan the build must follow exactly."""
 
+ASSET_PLAN_SYSTEM = """You are the 3D art lead. Given the CONCEPT, list the distinct real-world meshes
+the scene needs (these will be sourced as real downloadable GLB models). Output ONLY strict JSON:
+{ "assets": [ { "id": "snake_case_id", "query": "concise noun phrase for a 3D model library",
+               "role": "what it is / how it's used in the scene" } ] }
+Rules: 3-12 assets. `query` must be a searchable physical object noun phrase (e.g.
+"high top sneaker shoe", "jagged rock boulder", "street lamp post", "human skull") — NOT abstract
+concepts (no "energy", "vibe"). Prefer one clear hero object plus supporting set-dressing meshes."""
+
 CODEGEN_SYSTEM = f"""You are a world-class creative WebGL engineer (Active Theory / Lusion calibre).
 Output a COMPLETE, single, self-contained `index.html` that implements the given CONCEPT exactly.
 
@@ -56,8 +64,10 @@ HARD REQUIREMENTS (breaking any = failure):
    Available addons: {AVAILABLE_ADDONS}. gsap, ScrollTrigger and Lenis are UMD globals
    (window.gsap / window.ScrollTrigger / window.Lenis).
 3. A single full-bleed fixed <canvas> behind the DOM. The 3D IS the site.
-4. The hero product is a real GLB at "models/sneaker.glb" — load it via GLTFLoader, normalise,
-   and make it the centrepiece. Build the rest of the scene (particles, environment) around it.
+4. The scene's meshes are REAL GLB files provided in the user message as an asset list
+   (id -> path + what it is). Load each via GLTFLoader, normalise scale, and place/instance them
+   per your concept. Treat the first/hero asset as the centrepiece. Build particles and
+   environment around them. Always wrap loads with a primitive fallback so the scene still renders.
 5. Smooth scroll (Lenis) + ScrollTrigger-driven choreography across the sections.
 6. Set `window.__WEGEK_READY__ = true` and `data-wegek-ready="true"` ONLY AFTER the GLB has
    finished loading (or its load promise has rejected and a fallback is in place) AND the first
@@ -95,8 +105,11 @@ Return ONLY strict JSON:
   "is_blank_or_broken": true/false,
   "strengths": ["..."],
   "issues": [{"severity":"critical|major|minor","observation":"...","fix":"specific code-level instruction"}],
+  "asset_feedback": [{"id":"asset_id","ok":true/false,"reason":"is the visible mesh the right object for its role?"}],
   "next_actions": ["concrete, prioritized build instructions for the next iteration"]
 }
+The asset list (id + intended role) is given with the brief; in asset_feedback flag any mesh that
+is clearly the wrong object for its role so it can be re-sourced.
 Be harsh. A lone object on a flat/grid background, overflowing headlines, empty/black frames,
 or generic composition score below 0.5. Reserve >0.85 for genuinely striking, art-directed,
 particle-rich, well-composed work. PASS only at >= 0.85."""
