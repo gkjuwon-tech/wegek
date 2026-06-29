@@ -43,6 +43,45 @@ FONTS = {
 }
 
 
+# Rotated through when the planner leaves a section's anchor unspecified, so even
+# a weak plan never stacks every headline in the same corner.
+_ANCHOR_CYCLE = ["bottom-left", "mid-right", "top-left", "center", "bottom-right", "mid-left"]
+_VALID_ANCHORS = {
+    "top-left", "mid-left", "bottom-left", "top-center", "center", "bottom-center",
+    "top-right", "mid-right", "bottom-right",
+}
+_VALID_ALIGN = {"left", "center", "right"}
+_VALID_WIDTH = {"narrow", "wide", "full"}
+
+
+def _inner_classes(sec, i: int) -> tuple[str, str, str]:
+    """Return (section_anchor_class, inner_classes, inline_style) from layout."""
+    layout = sec.layout or {}
+    anchor = str(layout.get("text_anchor") or "").strip().lower()
+    if anchor not in _VALID_ANCHORS:
+        anchor = _ANCHOR_CYCLE[i % len(_ANCHOR_CYCLE)]
+    section_cls = "a-" + anchor
+
+    inner = ["section-inner"]
+    align = str(layout.get("text_align") or "").strip().lower()
+    if align in _VALID_ALIGN:
+        inner.append("ta-" + align)
+    width = str(layout.get("width") or "").strip().lower()
+    if width in _VALID_WIDTH:
+        inner.append("w-" + width)
+    if layout.get("panel") or layout.get("invert"):
+        inner.append("panel")
+
+    style = ""
+    try:
+        hl = float(layout.get("headline_scale"))
+        if 0.4 <= hl <= 2.2:
+            style = f' style="--hl:{hl:.2f}"'
+    except (TypeError, ValueError):
+        pass
+    return section_cls, " ".join(inner), style
+
+
 def _section_html(plan: SitePlan) -> str:
     blocks: list[str] = []
     for i, sec in enumerate(plan.sections):
@@ -58,9 +97,10 @@ def _section_html(plan: SitePlan) -> str:
         if sec.type == "dom_section":
             parts.append('<a class="cta reveal" href="#">Get started →</a>')
         inner = "\n        ".join(parts)
+        section_cls, inner_cls, style = _inner_classes(sec, i)
         blocks.append(
-            f'<section data-wegek-section="{html.escape(sec.id)}">\n'
-            f'      <div class="section-inner">\n        {inner}\n      </div>\n'
+            f'<section class="{section_cls}" data-wegek-section="{html.escape(sec.id)}">\n'
+            f'      <div class="{inner_cls}"{style}>\n        {inner}\n      </div>\n'
             f'    </section>'
         )
     return "\n    ".join(blocks)

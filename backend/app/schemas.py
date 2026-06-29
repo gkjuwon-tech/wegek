@@ -85,6 +85,14 @@ class Section(BaseModel):
     lighting_preset: str = "studio_dramatic"
     scroll_behavior: str = "zoom_in_with_rotation"
     dom_overlay: bool = True
+    # --- AI art-direction (all optional; engine falls back to presets/center) ---
+    # Free composition controls authored by the planner so every section can look
+    # different instead of collapsing into one templated layout.
+    layout: dict[str, Any] = Field(default_factory=dict)
+    # object_id -> {"position":[x,y,z], "scale":float, "rotation":[x,y,z]}
+    object_layout: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    # inline camera: {"position":[x,y,z],"lookAt":[x,y,z],"fov":n} OR {"keyframes":[...]}
+    camera: dict[str, Any] | None = None
 
 
 class GlobalStyle(BaseModel):

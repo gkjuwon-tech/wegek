@@ -202,13 +202,22 @@ function buildSections() {
     group.visible = false;
     const objects = [];
     const ids = sec.objects || [];
+    const layouts = sec.object_layout || {};
     ids.forEach((oid, i) => {
       const spec = PLAN.objects.find((o) => o.id === oid);
       if (!spec) return;
       const node = buildObjectNode(spec);
-      const offset = (i - (ids.length - 1) / 2) * 2.6;
-      node.position.x = offset;
-      node.userData.baseX = offset;
+      // Base transform: AI-authored per-section placement wins; otherwise fall back
+      // to an auto-spread so multi-object sections don't pile up at the origin.
+      const L = layouts[oid] || {};
+      const autoX = (i - (ids.length - 1) / 2) * 2.6;
+      const base = {
+        pos: L.position || [autoX, 0, 0],
+        rot: L.rotation || [0, 0, 0],
+        scale: L.scale ?? 1,
+      };
+      node.position.set(base.pos[0], base.pos[1], base.pos[2]);
+      node.userData.base = base;
       node.userData.spec = spec;
       group.add(node);
       objects.push({ spec, node });
@@ -241,23 +250,38 @@ function sampleTrack(keyframes, t) {
 }
 
 function applyObject(node, spec, localT) {
+  const base = node.userData.base || { pos: [0, 0, 0], rot: [0, 0, 0], scale: 1 };
   const s = sampleTrack(spec.keyframes, localT);
-  if (!s) return;
-  node.rotation.set(s.rotation[0], s.rotation[1], s.rotation[2]);
-  node.position.set(node.userData.baseX + s.position[0] * (1 + (s.explode || 0)), s.position[1], s.position[2]);
-  node.scale.setScalar(s.scale);
+  if (!s) {
+    node.position.set(base.pos[0], base.pos[1], base.pos[2]);
+    node.rotation.set(base.rot[0], base.rot[1], base.rot[2]);
+    node.scale.setScalar(base.scale);
+    return;
+  }
+  // Keyframes are deltas layered on top of the section's base placement, so the
+  // AI's composition (where/how big) and motion (how it moves) compose cleanly.
+  const ex = 1 + (s.explode || 0);
+  node.position.set(
+    base.pos[0] + s.position[0] * ex,
+    base.pos[1] + s.position[1],
+    base.pos[2] + s.position[2] * ex,
+  );
+  node.rotation.set(base.rot[0] + s.rotation[0], base.rot[1] + s.rotation[1], base.rot[2] + s.rotation[2]);
+  node.scale.setScalar(base.scale * s.scale);
 }
 
 function sampleCamera(preset, localT) {
-  if (preset.type === "orbit") {
+  if (!preset) return { pos: new THREE.Vector3(0, 1, 6), look: new THREE.Vector3(0, 0, 0), fov: 45 };
+  const kfs = preset.keyframes || [];
+  // Inline AI cameras and presets may omit `type`; prefer keyframes when present.
+  if (kfs.length === 0 && preset.type === "orbit") {
     const d = preset.distance || 5;
     const a = performance.now() * 0.0002 * (preset.autoRotateSpeed || 0.5);
     return { pos: new THREE.Vector3(Math.sin(a) * d, 1.2, Math.cos(a) * d), look: new THREE.Vector3(0, 0, 0), fov: preset.fov || 45 };
   }
-  if (preset.type === "static") {
-    return { pos: new THREE.Vector3(...(preset.position || [0, 1, 6])), look: new THREE.Vector3(...(preset.lookAt || [0, 0, 0])), fov: preset.fov || 45 };
+  if (kfs.length === 0 && preset.position) {
+    return { pos: new THREE.Vector3(...preset.position), look: new THREE.Vector3(...(preset.lookAt || [0, 0, 0])), fov: preset.fov || 45 };
   }
-  const kfs = preset.keyframes || [];
   if (kfs.length === 0) return { pos: new THREE.Vector3(0, 1, 6), look: new THREE.Vector3(0, 0, 0), fov: 45 };
   let a = kfs[0], b = kfs[kfs.length - 1];
   for (let i = 0; i < kfs.length - 1; i++) {
@@ -356,8 +380,8 @@ function frame() {
     }
   }
 
-  // camera
-  const camPreset = CAMERAS[sec.camera_preset] || Object.values(CAMERAS)[0];
+  // camera — inline AI-authored move wins, else the named preset
+  const camPreset = sec.camera || CAMERAS[sec.camera_preset] || Object.values(CAMERAS)[0];
   const target = sampleCamera(camPreset, localT);
   desired.pos.copy(target.pos); desired.look.copy(target.look); desired.fov = target.fov;
   camera.position.lerp(desired.pos, 0.08);

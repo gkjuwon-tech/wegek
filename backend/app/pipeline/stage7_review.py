@@ -31,8 +31,13 @@ def structural_score(plan: SitePlan) -> tuple[float, list[str]]:
         score += 0.2
     else:
         notes.append("no 3D objects")
-    # scroll-driven camera (path/cinematic present)
-    if any(s.camera_preset in ("scroll_dolly", "cinematic_reveal", "top_down_to_perspective") for s in plan.sections):
+    # scroll-driven camera — an inline AI camera with keyframes counts too
+    def _scroll_cam(sec) -> bool:
+        if isinstance(sec.camera, dict) and sec.camera.get("keyframes"):
+            return True
+        return sec.camera_preset in ("scroll_dolly", "cinematic_reveal", "top_down_to_perspective")
+
+    if any(_scroll_cam(s) for s in plan.sections):
         score += 0.15
     else:
         notes.append("no scroll-driven camera")

@@ -59,7 +59,14 @@ def _keyframes(animation: str) -> list[dict]:
 
 
 async def run(plan: SitePlan, settings: Settings, log: Logger) -> tuple[str, dict]:
+    authored = 0
     for obj in plan.objects:
+        # Respect motion the planner authored directly; only synthesize from the
+        # named preset when the object has no keyframes of its own.
+        if obj.keyframes:
+            authored += 1
+            continue
         obj.keyframes = _keyframes(obj.animation)
-    await log(f"Authored keyframe tracks for {len(plan.objects)} object(s).")
-    return "threejs_keyframes", {"tracks": len(plan.objects)}
+    detail = f"{authored} AI-authored, {len(plan.objects) - authored} preset track(s)."
+    await log(detail)
+    return "threejs_keyframes", {"tracks": len(plan.objects), "authored": authored}
