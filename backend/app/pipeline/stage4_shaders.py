@@ -10,6 +10,7 @@ from collections.abc import Awaitable, Callable
 
 from ..clients.llm import LLMClient
 from ..config import Settings
+from ..factory import glsl_rag
 from ..presets.shaders import NOISE_CHUNK, get_shader
 from ..schemas import SitePlan
 
@@ -72,12 +73,15 @@ async def run(plan: SitePlan, settings: Settings, log: Logger) -> tuple[str, dic
         llm = LLMClient(settings)
         if llm.available:
             try:
+                techs = glsl_rag.retrieve(f"{plan.brand_mood} {preset.replace('_', ' ')}", k=3)
+                await log(f"GLSL RAG: {', '.join(t['id'] for t in techs)}")
                 desc = (
                     f"Mood: {plan.brand_mood}. Palette: {plan.global_style.color_palette}. "
                     f"Style hint: {preset.replace('_', ' ')}. "
                     "Make it deep, atmospheric and cinematic: volumetric haze / nebula / flow, "
                     "soft depth and vignette, mostly dark so a 3D product reads in front. "
-                    "STRICTLY NO hard grids, no straight ruled lines, no wireframe lattice, no scanlines."
+                    "STRICTLY NO hard grids, no straight ruled lines, no wireframe lattice, no scanlines.\n\n"
+                    + glsl_rag.format_block(techs)
                 )
                 raw = await llm.complete_text(SHADER_SYSTEM, desc, max_tokens=4000)
                 code = _extract_glsl(raw)

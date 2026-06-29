@@ -179,6 +179,27 @@ CHOREO: list[dict] = [
         ),
     },
     {
+        "id": "scroll_rotate_reveal",
+        "tags": "rotate spin reveal on scroll turntable 3d image card flip orientation inspect product detail",
+        "title": "Scroll-driven rotation reveal (object turns to reveal faces)",
+        "structure": (
+            "As the user scrolls, the hero rotates on Y (and a little X) so successive faces/angles come into "
+            "view — front → profile → back → detail — each angle paired with a different copy block fading in. "
+            "Map global scroll directly to the object's Y rotation keyframes (0 → 2π over the beat). Inspired by "
+            "Codrops '3D image rotations on scroll'. Great for a single-product inspection chapter."
+        ),
+    },
+    {
+        "id": "horizontal_pinned_gallery",
+        "tags": "horizontal scroll pinned gallery lineup sideways pan lateral lineup collection multiple",
+        "title": "Pinned horizontal lateral pan",
+        "structure": (
+            "Pin a section and translate the camera (or the world) LATERALLY on +x as the user scrolls vertically, "
+            "panning across a row of staged objects/scenes like a tracking shot. Each object owns an x-slice; the "
+            "camera trucks left→right. Good for showing a collection or a timeline within one beat."
+        ),
+    },
+    {
         "id": "parallax_depth_drift",
         "title": "Multi-layer parallax drift",
         "tags": "parallax layers depth foreground background drift float subtle continuous ambient motion calm",
