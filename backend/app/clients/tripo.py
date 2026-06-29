@@ -51,20 +51,27 @@ class TripoClient:
             raise RuntimeError("no Tripo API key configured")
         async with httpx.AsyncClient(timeout=self.s.request_timeout) as client:
             files = [await self._file_descriptor(client, ref) for ref in image_refs[:4]]
+            quality = {
+                "model_version": self.s.tripo_model_version,
+                "texture": True,
+                "pbr": self.s.tripo_pbr,
+                "texture_quality": self.s.tripo_texture_quality,
+                "auto_size": True,
+            }
+            if self.s.tripo_face_limit > 0:
+                quality["face_limit"] = self.s.tripo_face_limit
             if len(files) >= 2:
                 payload = {
                     "type": "multiview_to_model",
-                    "model_version": self.s.tripo_model_version,
                     "files": files,
-                    "texture_quality": "detailed",
                     "generate_parts": generate_parts,
+                    **quality,
                 }
             else:
                 payload = {
                     "type": "image_to_model",
-                    "model_version": self.s.tripo_model_version,
                     "file": files[0],
-                    "texture_quality": "detailed",
+                    **quality,
                 }
             task_id = await self._create_task(client, payload)
             result = await self._poll(client, task_id)

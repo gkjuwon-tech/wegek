@@ -12,7 +12,7 @@ from ..clients.llm import LLMClient
 from ..config import Settings
 from ..presets.cameras import CAMERA_PRESETS
 from ..presets.lighting import LIGHTING_PRESETS
-from ..presets.mapping import map_category, primitive_for
+from ..presets.mapping import animation_for, map_category, primitive_for
 from ..presets.shaders import SHADERS
 from ..schemas import GlobalStyle, Object3D, Section, SitePlan
 
@@ -115,7 +115,8 @@ def heuristic_plan(prompt: str, brand_mood: str | None, max_objects: int) -> Sit
         f"{category} product detail / component close-up, exposed mechanism",
         f"{category} product in lifestyle context, cinematic",
     ]
-    anims = ["slow_rotation_y", "explode_reassemble", "float_bob"]
+    # Hero motion is templated per category; detail shots add variety.
+    anims = [animation_for(category), "explode_reassemble", "float_bob"]
     objects = [
         Object3D(
             id=f"obj_{i+1}",

@@ -60,7 +60,12 @@ class Settings(BaseSettings):
     # --- Stage 2/3: 3D model generation + rigging (Tripo) ---
     tripo_api_key: str | None = None
     tripo_base_url: str = "https://api.tripo3d.ai/v2/openapi"
-    tripo_model_version: str = "v2.5-20250123"
+    # Flagship high-fidelity model. Quality knobs below request PBR materials and
+    # high-res textures so generated products look manufactured, not melted.
+    tripo_model_version: str = "v3.0-20250812"
+    tripo_texture_quality: str = "detailed"  # standard | detailed
+    tripo_pbr: bool = True
+    tripo_face_limit: int = 0  # 0 = let Tripo choose; >0 caps triangles
 
     # --- Stage 4: Shader generation (reuses planner LLM) ---
     shader_use_llm: bool = True

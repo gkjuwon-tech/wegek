@@ -45,9 +45,13 @@ LIGHTING_PRESETS: dict[str, dict] = {
         ],
     },
     "dark_moody": {
-        "ambient": {"intensity": 0.02, "color": "#000000"},
+        # Low-key but never black: a warm key, a cool rim to carve the silhouette,
+        # and a soft fill so a metallic product stays readable instead of vanishing.
+        "ambient": {"intensity": 0.12, "color": "#1a1d24"},
         "lights": [
-            {"type": "spot", "intensity": 3.0, "angle": 0.3, "position": [2, 6, 1], "color": "#ffeedd"},
+            {"type": "spot", "intensity": 3.2, "angle": 0.45, "position": [3, 5, 3], "color": "#fff1de"},
+            {"type": "spot", "intensity": 1.8, "angle": 0.5, "position": [-4, 2, -3], "color": "#9fc6ff"},
+            {"type": "area", "intensity": 0.6, "width": 6, "height": 6, "position": [-2, 3, 4], "color": "#dfe7ff"},
         ],
     },
     "outdoor_natural": {

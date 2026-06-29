@@ -24,12 +24,14 @@ CAMERA_PRESETS: dict[str, dict] = {
             {"scroll": 1.0, "position": [0, 0.5, 2.5], "lookAt": [0, 0, 0]},
         ],
     },
+    # Slow cinematic push-in. Starts comfortably framed (no fish-eye 90° fov, no
+    # 1-unit nose-to-glass distance that ballooned the subject) and eases closer.
     "cinematic_reveal": {
         "type": "path",
         "keyframes": [
-            {"scroll": 0.0, "position": [0, 0, 1.2], "lookAt": [0, 0, 0], "fov": 90},
-            {"scroll": 0.5, "position": [0, 1, 3.5], "lookAt": [0, 0, 0], "fov": 60},
-            {"scroll": 1.0, "position": [0, 1.5, 5.5], "lookAt": [0, 0, 0], "fov": 45},
+            {"scroll": 0.0, "position": [0, 0.6, 6.4], "lookAt": [0, 0, 0], "fov": 50},
+            {"scroll": 0.5, "position": [1.6, 0.8, 5.2], "lookAt": [0, 0, 0], "fov": 46},
+            {"scroll": 1.0, "position": [0, 1.0, 4.2], "lookAt": [0, 0, 0], "fov": 42},
         ],
     },
     "top_down_to_perspective": {

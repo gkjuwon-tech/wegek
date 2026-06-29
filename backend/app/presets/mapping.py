@@ -93,9 +93,31 @@ CATEGORY_PRIMITIVE: dict[str, str] = {
 }
 
 
+# Locked-in hero animation per category. The planner LLM is unreliable at
+# choosing motion that flatters a given product, so we template it: the safe,
+# attractive default for each category lives here and is used as the hero motion.
+CATEGORY_ANIMATION: dict[str, str] = {
+    "tech": "float_bob",
+    "watch": "slow_rotation_y",
+    "auto": "slow_rotation_y",
+    "sneakers": "float_bob",
+    "beauty": "slow_rotation_y",
+    "furniture": "slow_rotation_y",
+    "sports": "spin_fast",
+    "food": "slow_rotation_y",
+    "fashion": "float_bob",
+    "gaming": "spin_fast",
+    "luxury": "slow_rotation_y",
+}
+
+
 def map_category(category: str) -> dict:
     return CATEGORY_MAP.get(category, CATEGORY_MAP[DEFAULT_CATEGORY])
 
 
 def primitive_for(category: str) -> str:
     return CATEGORY_PRIMITIVE.get(category, "rounded_box")
+
+
+def animation_for(category: str) -> str:
+    return CATEGORY_ANIMATION.get(category, "slow_rotation_y")

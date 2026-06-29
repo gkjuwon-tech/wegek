@@ -37,11 +37,13 @@ def _keyframes(animation: str) -> list[dict]:
             {"t": 1.0, "rotation": [0, math.pi, 0], "position": [0, -0.3, 0], "scale": 1.0},
         ]
     if animation == "mechanical_tick":
+        # Stepped rotation about the vertical axis (a bezel ticking round) with a
+        # gentle face-up tilt — never the old Z-flip that laid the product on its side.
         return [
-            {"t": 0.0, "rotation": [0, 0, 0], "position": [0, 0, 0], "scale": 1.0},
-            {"t": 0.25, "rotation": [0, 0, math.pi / 6], "position": [0, 0, 0], "scale": 1.0},
-            {"t": 0.5, "rotation": [0, 0, math.pi / 3], "position": [0, 0, 0], "scale": 1.0},
-            {"t": 1.0, "rotation": [0, 0, math.pi], "position": [0, 0, 0], "scale": 1.0},
+            {"t": 0.0, "rotation": [0.18, 0, 0], "position": [0, 0.1, 0], "scale": 1.0},
+            {"t": 0.33, "rotation": [0.18, math.pi / 3, 0], "position": [0, 0.1, 0], "scale": 1.0},
+            {"t": 0.66, "rotation": [0.18, TAU / 3, 0], "position": [0, 0.1, 0], "scale": 1.0},
+            {"t": 1.0, "rotation": [0.18, TAU, 0], "position": [0, 0.1, 0], "scale": 1.0},
         ]
     if animation == "explode_reassemble":
         return [

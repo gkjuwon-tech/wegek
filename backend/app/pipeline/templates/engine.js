@@ -3,11 +3,14 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
+RectAreaLightUniformsLib.init();
 
 const BUNDLE = window.__WEGEK__;
 const PLAN = BUNDLE.plan;
@@ -60,6 +63,15 @@ bgScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), bgMaterial));
 // Main scene + camera
 // --------------------------------------------------------------------------
 const scene = new THREE.Scene();
+
+// Image-based lighting: without an environment, metallic/PBR surfaces reflect
+// pure black and read as dead, unlit blobs. A PMREM-filtered RoomEnvironment
+// gives every material real reflections so the analytic lights can sculpt on top.
+const pmrem = new THREE.PMREMGenerator(renderer);
+pmrem.compileEquirectangularShader();
+const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environment = envTexture;
+
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.position.set(0, 1, 6);
 const camTarget = new THREE.Vector3(0, 0, 0);
@@ -79,23 +91,33 @@ function buildLights(presetName) {
     const color = l.color || "#ffffff";
     switch (l.type) {
       case "spot":
-        light = new THREE.SpotLight(color, l.intensity, 0, l.angle || 0.5, 0.4);
+        light = new THREE.SpotLight(color, l.intensity * 6, 0, l.angle || 0.5, 0.4, 1.2);
+        if (l.position) light.position.set(...l.position);
+        light.target.position.set(0, 0, 0);
+        lightGroup.add(light.target);
         break;
       case "point":
-        light = new THREE.PointLight(color, l.intensity * 2, 0);
+        light = new THREE.PointLight(color, l.intensity * 4, 0, 1.2);
+        if (l.position) light.position.set(...l.position);
         break;
       case "directional":
         light = new THREE.DirectionalLight(color, l.intensity);
+        if (l.position) light.position.set(...l.position);
         break;
       case "hemisphere":
         light = new THREE.HemisphereLight(l.skyColor || "#ffffff", l.groundColor || "#444444", l.intensity);
+        if (l.position) light.position.set(...l.position);
         break;
       case "area":
-      default:
-        light = new THREE.DirectionalLight(color, l.intensity);
+      default: {
+        // A real RectAreaLight (soft studio panel) instead of a fake directional —
+        // it must face the subject, so orient it toward the origin after placement.
+        light = new THREE.RectAreaLight(color, l.intensity * 4, l.width || 5, l.height || 5);
+        if (l.position) light.position.set(...l.position);
+        light.lookAt(0, 0, 0);
         break;
+      }
     }
-    if (l.position) light.position.set(...l.position);
     lightGroup.add(light);
   }
 }
@@ -106,12 +128,14 @@ function buildLights(presetName) {
 const loader = new GLTFLoader();
 
 function makeMaterial(color) {
+  // Opaque by default — transparency is only toggled on during cross-fades.
+  // A persistently-transparent metallic surface reads as a ghost: you see the
+  // background and the object's own back faces straight through it.
   return new THREE.MeshStandardMaterial({
     color: color || "#cfcfd6",
-    metalness: 0.65,
-    roughness: 0.28,
-    transparent: true,
-    opacity: 1,
+    metalness: 0.85,
+    roughness: 0.25,
+    envMapIntensity: 1.0,
   });
 }
 
@@ -143,15 +167,24 @@ function buildObjectNode(objSpec) {
       objSpec.model_url,
       (gltf) => {
         const model = gltf.scene;
-        // normalize size
+        // normalize size into a consistent ~2-unit footprint and recentre on origin
         const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3());
-        const scale = 2.4 / Math.max(size.x, size.y, size.z || 1);
+        const scale = 2.0 / (Math.max(size.x, size.y, size.z) || 1);
         model.scale.setScalar(scale);
         const center = box.getCenter(new THREE.Vector3());
         model.position.sub(center.multiplyScalar(scale));
         model.traverse((c) => {
-          if (c.isMesh) { c.material.transparent = true; }
+          // Keep imported materials opaque (the fade pass manages transparency)
+          // and let them pick up the scene environment for believable reflections.
+          if (c.isMesh && c.material) {
+            const mats = Array.isArray(c.material) ? c.material : [c.material];
+            for (const m of mats) {
+              m.transparent = false;
+              m.depthWrite = true;
+              if ("envMapIntensity" in m) m.envMapIntensity = 1.0;
+            }
+          }
         });
         placeholder.add(model);
       },
@@ -307,7 +340,17 @@ function frame() {
     entry.group.visible = target > 0 || entry.group.userData.op > 0.01;
     entry.group.userData.op = lerp(entry.group.userData.op ?? (sid === sec.id ? 1 : 0), target, 0.12);
     const op = entry.group.userData.op;
-    entry.group.traverse((c) => { if (c.isMesh && c.material) { c.material.opacity = op; } });
+    const fading = op < 0.995;
+    entry.group.traverse((c) => {
+      if (c.isMesh && c.material) {
+        const mats = Array.isArray(c.material) ? c.material : [c.material];
+        for (const m of mats) {
+          m.transparent = fading;     // only translucent mid cross-fade
+          m.depthWrite = !fading;     // opaque objects keep writing depth (no ghosting)
+          m.opacity = op;
+        }
+      }
+    });
     if (sid === sec.id) {
       for (const { node, spec } of entry.objects) applyObject(node, spec, localT);
     }
