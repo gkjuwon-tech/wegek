@@ -8,6 +8,7 @@ import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUnifo
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
 // gsap, ScrollTrigger and Lenis are loaded as UMD globals (vendored locally).
@@ -23,6 +24,14 @@ const PLAN = BUNDLE.plan;
 const LIGHTING = BUNDLE.lighting;
 const CAMERAS = BUNDLE.cameras;
 const SHADER = BUNDLE.shader;
+// AI-authored effect parameters (the engine only executes; the art direction —
+// particle look, bloom, fog, colour grade, exposure — comes from the spec).
+const EFF = PLAN.effects || {};
+const P_EFF = EFF.particles || {};
+const B_EFF = EFF.bloom || {};
+const F_EFF = EFF.fog || {};
+const G_EFF = EFF.grade || {};
+const num = (v, d) => (typeof v === "number" ? v : d);
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
@@ -40,7 +49,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = num(EFF.exposure, 1.0);
 
 const palette = PLAN.global_style.color_palette;
 const ACCENT = new THREE.Color(palette[1] || "#e94560");
@@ -74,7 +83,7 @@ bgScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), bgMaterial));
 // --------------------------------------------------------------------------
 const scene = new THREE.Scene();
 // Atmospheric depth — distant particles/geometry dissolve into the bg tone.
-scene.fog = new THREE.FogExp2(new THREE.Color(palette[0] || "#06080d"), 0.052);
+scene.fog = new THREE.FogExp2(new THREE.Color(F_EFF.color || palette[0] || "#06080d"), num(F_EFF.density, 0.05));
 const pmrem = new THREE.PMREMGenerator(renderer);
 pmrem.compileEquirectangularShader();
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -137,7 +146,9 @@ function buildLights(presetName) {
 // Particle field — drifting motes, additive so bloom makes them glow.
 // --------------------------------------------------------------------------
 function buildParticles() {
-  const N = 28000;
+  const N = Math.max(0, Math.floor(num(P_EFF.count, 20000)));
+  if (N === 0) return new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial());
+  const SPREAD = num(P_EFF.spread, 4.2);
   const pos = new Float32Array(N * 3);
   const col = new Float32Array(N * 3);
   const seed = new Float32Array(N);
@@ -147,7 +158,7 @@ function buildParticles() {
     // reads as a shimmering volume around the product rather than even noise.
     const central = Math.random() < 0.6;
     if (central) {
-      const r = Math.pow(Math.random(), 0.6) * 4.2;
+      const r = Math.pow(Math.random(), 0.6) * SPREAD;
       const th = Math.random() * Math.PI * 2;
       const ph = Math.acos(2 * Math.random() - 1);
       pos[i * 3] = Math.sin(ph) * Math.cos(th) * r;
@@ -169,8 +180,9 @@ function buildParticles() {
   g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
   g.setAttribute("color", new THREE.BufferAttribute(col, 3));
   const m = new THREE.PointsMaterial({
-    size: 0.022, vertexColors: true, transparent: true, opacity: 0.85,
-    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+    size: num(P_EFF.size, 0.022), vertexColors: true, transparent: true,
+    opacity: num(P_EFF.opacity, 0.8), depthWrite: false,
+    blending: THREE.AdditiveBlending, sizeAttenuation: true,
   });
   const points = new THREE.Points(g, m);
   points.userData = { basePos: pos.slice(0), seed };
@@ -347,8 +359,40 @@ composer.addPass(bgPass);
 const mainPass = new RenderPass(scene, camera);
 mainPass.clear = false; // draw product over the background
 composer.addPass(mainPass);
-const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.75, 0.5, 0.7);
+const bloom = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  num(B_EFF.strength, 0.6), num(B_EFF.radius, 0.5), num(B_EFF.threshold, 0.8),
+);
 composer.addPass(bloom);
+
+// Cinematic grade: chromatic aberration + film grain + vignette (AI-tunable).
+const gradePass = new ShaderPass({
+  uniforms: {
+    tDiffuse: { value: null },
+    uTime: { value: 0 },
+    uAberration: { value: num(G_EFF.aberration, 0.0016) },
+    uGrain: { value: num(G_EFF.grain, 0.05) },
+    uVignette: { value: num(G_EFF.vignette, 0.32) },
+  },
+  vertexShader: "varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }",
+  fragmentShader: `
+    varying vec2 vUv; uniform sampler2D tDiffuse;
+    uniform float uTime, uAberration, uGrain, uVignette;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+    void main(){
+      vec2 d = vUv - 0.5;
+      float r2 = dot(d,d);
+      vec2 off = d * uAberration * (1.0 + r2*2.0);
+      vec3 col;
+      col.r = texture2D(tDiffuse, vUv + off).r;
+      col.g = texture2D(tDiffuse, vUv).g;
+      col.b = texture2D(tDiffuse, vUv - off).b;
+      col *= 1.0 - uVignette * smoothstep(0.2, 0.85, length(d));
+      col += (hash(vUv*vec2(1920.0,1080.0)+uTime) - 0.5) * uGrain;
+      gl_FragColor = vec4(col, 1.0);
+    }`,
+});
+composer.addPass(gradePass);
 composer.addPass(new OutputPass());
 
 const mouse = new THREE.Vector2(0, 0);
@@ -421,6 +465,7 @@ function frame() {
     camera.updateProjectionMatrix();
   }
 
+  gradePass.uniforms.uTime.value = bgUniforms.u_time.value;
   composer.render();
   requestAnimationFrame(frame);
 }

@@ -38,10 +38,21 @@ You have FULL control via this JSON schema. Coordinates are Three.js world units
     "background_shader": one of {sorted(SHADERS.keys())},
     "accent": "#hex"
   }},
+  // ENGINE EFFECT PARAMS you art-direct (the engine renders these; tune for mood).
+  // CRITICAL: keep bloom restrained so the scene is NEVER blown out to white — the
+  // product and type must stay legible and detailed, not a glowing blob.
+  "effects": {{
+    "exposure": 0.85-1.05,
+    "particles": {{ "count": 0-60000, "size": 0.01-0.04, "opacity": 0.3-0.85, "spread": 2.0-8.0 }},
+    "bloom": {{ "strength": 0.15-0.55, "radius": 0.2-0.6, "threshold": 0.8-0.95 }},
+    "fog": {{ "color": "#hex", "density": 0.0-0.12 }},
+    "grade": {{ "aberration": 0.0-0.003, "grain": 0.0-0.1, "vignette": 0.15-0.5 }}
+  }},
   "objects": [
     {{
       "id": "snake_id",
       "description": "vivid visual description for image/3D generation",
+      "mesh_query": "clean concrete noun phrase to search a 3D-model library, e.g. 'high top sneaker shoe', 'human skull', 'street lamp post' — a real physical object, not an abstract concept",
       "category": "tech|watch|auto|sneakers|beauty|furniture|sports|food|fashion|gaming|luxury",
       "needs_parts_separation": false,
       // OPTIONAL: author the scroll-linked motion yourself (t in 0..1). Beats the canned presets.
@@ -224,6 +235,13 @@ def heuristic_plan(prompt: str, brand_mood: str | None, max_objects: int) -> Sit
             accent=cfg["palette"][1],
             typography="serif_luxury" if mood in ("luxury",) else "modern_sans",
         ),
+        effects={
+            "exposure": 1.0,
+            "particles": {"count": 20000, "size": 0.022, "opacity": 0.8, "spread": 4.2},
+            "bloom": {"strength": 0.4, "radius": 0.5, "threshold": 0.86},
+            "fog": {"color": cfg["palette"][0], "density": 0.05},
+            "grade": {"aberration": 0.0016, "grain": 0.05, "vignette": 0.32},
+        },
     )
 
 
@@ -252,6 +270,7 @@ def _coerce_plan(data: dict, prompt: str, brand_mood: str | None, max_objects: i
             "tagline": data.get("tagline", ""),
             "brand_mood": brand_mood or data.get("brand_mood", "premium"),
             "global_style": data.get("global_style", {}),
+            "effects": data.get("effects", {}),
             "objects": data.get("objects", [])[:max_objects],
             "sections": data.get("sections", []),
         }

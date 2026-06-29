@@ -63,6 +63,9 @@ class Object3D(BaseModel):
     id: str
     description: str
     category: str = "tech"
+    # clean searchable noun phrase for an external 3D-model library (e.g.
+    # "high top sneaker shoe"); used to source a real GLB when 3D-gen is offline.
+    mesh_query: str = ""
     animation: str = "slow_rotation_y"
     needs_parts_separation: bool = False
     # enriched downstream
@@ -113,6 +116,9 @@ class SitePlan(BaseModel):
     sections: list[Section] = Field(default_factory=list)
     objects: list[Object3D] = Field(default_factory=list)
     global_style: GlobalStyle = Field(default_factory=GlobalStyle)
+    # AI-authored effect parameters consumed by the engine (particles, bloom, fog,
+    # colour grade, exposure). The engine executes; the art direction lives here.
+    effects: dict[str, Any] = Field(default_factory=dict)
     # enriched at Stage 4
     background_shader_glsl: str | None = None
 
