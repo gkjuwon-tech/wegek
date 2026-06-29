@@ -43,7 +43,18 @@ def render(site_dir: str | Path, out_prefix: str, shots: int = 4) -> dict:
                       "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"],
             )
             pg = b.new_page(viewport={"width": 1440, "height": 900})
-            pg.on("console", lambda m: errors.append(f"[{m.type}] {m.text[:240]}") if m.type == "error" else None)
+
+            def _benign(t: str) -> bool:
+                # offline font CDNs / favicon are harmless in the headless sandbox.
+                return any(s in t for s in ("fonts.googleapis", "fonts.gstatic", "favicon"))
+
+            # Console "Failed to load resource" lines carry no URL, so we can't tell a
+            # benign font 404 from a real one — track real resource failures via
+            # requestfailed (which has the URL) and ignore generic resource console noise.
+            pg.on("console", lambda m: (errors.append(f"[{m.type}] {m.text[:240]}")
+                                        if m.type == "error" and "Failed to load resource" not in m.text else None))
+            pg.on("requestfailed", lambda req: (errors.append(f"[requestfailed] {req.url[:160]}")
+                                                if not _benign(req.url) else None))
             pg.on("pageerror", lambda e: errors.append(f"[pageerror] {str(e)[:240]}"))
             pg.goto(f"http://127.0.0.1:{port}/index.html", wait_until="load", timeout=45000)
             try:
