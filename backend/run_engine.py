@@ -15,7 +15,14 @@ load_dotenv(Path(__file__).resolve().parent / ".env")
 
 from app.config import get_settings  # noqa: E402
 from app.factory import render as frender  # noqa: E402
-from app.pipeline import stage0_planner, stage2_assets, stage4_shaders, stage5_scene, stage6_codegen  # noqa: E402
+from app.pipeline import (  # noqa: E402
+    stage0_planner,
+    stage1_images,
+    stage2_models,
+    stage4_shaders,
+    stage5_scene,
+    stage6_codegen,
+)
 
 PROMPT = ("CYPHER SHADOW X — a limited-edition hypebeast sneaker drop. Futuristic chrome high-top. "
           "Build an immersive Active-Theory-style 3D WORLD the camera flies through: the sneaker "
@@ -34,8 +41,11 @@ async def build(job: str):
     plan, prov = await stage0_planner.run(PROMPT, s, brand_mood=None, max_objects=14)
     print(f"PLAN provider={prov} project={plan.project_name} objs={[o.id for o in plan.objects]}", flush=True)
     print(f"  effects={plan.effects}", flush=True)
-    _, meta = await stage2_assets.run(plan, site_dir, log)
-    print(f"  meshes sourced: {meta['meshes']}", flush=True)
+    # Tripo-based meshes: gemini reference images -> Tripo image->3D (GLBs localized at codegen)
+    _, mi = await stage1_images.run(plan, s, log)
+    print(f"  images: {mi}", flush=True)
+    _, mm = await stage2_models.run(plan, s, log)
+    print(f"  tripo models: {mm}", flush=True)
     await stage4_shaders.run(plan, s, log)
     await stage5_scene.run(plan, s, log)
     _, m6 = await stage6_codegen.run(plan, s, job, log)
