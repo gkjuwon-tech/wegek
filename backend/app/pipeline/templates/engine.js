@@ -5,9 +5,15 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+// gsap, ScrollTrigger and Lenis are loaded as UMD globals (vendored locally).
+const gsap = window.gsap;
+const ScrollTrigger = window.ScrollTrigger;
+const Lenis = window.Lenis;
 
 gsap.registerPlugin(ScrollTrigger);
 RectAreaLightUniformsLib.init();
@@ -20,28 +26,31 @@ const SHADER = BUNDLE.shader;
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
+const damp = (cur, target, lambda, dt) => lerp(cur, target, 1 - Math.exp(-lambda * dt));
 const hexToRGB = (hex) => {
   const c = new THREE.Color(hex);
   return [c.r, c.g, c.b];
 };
 
 // --------------------------------------------------------------------------
-// Renderer + canvas
+// Renderer
 // --------------------------------------------------------------------------
 const canvas = document.getElementById("wegek-canvas");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.autoClear = false;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
+renderer.toneMappingExposure = 1.05;
+
+const palette = PLAN.global_style.color_palette;
+const ACCENT = new THREE.Color(palette[1] || "#e94560");
+const SECONDARY = new THREE.Color(palette[2] || "#3a86ff");
 
 // --------------------------------------------------------------------------
-// Background shader (full-screen pass)
+// Background shader (rendered as its own full-screen pass inside the composer)
 // --------------------------------------------------------------------------
 const bgScene = new THREE.Scene();
 const bgCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-const palette = PLAN.global_style.color_palette;
 const bgUniforms = {
   u_time: { value: 0 },
   u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
@@ -49,6 +58,7 @@ const bgUniforms = {
   u_color0: { value: new THREE.Vector3(...hexToRGB(palette[0] || "#0a0a0f")) },
   u_color1: { value: new THREE.Vector3(...hexToRGB(palette[1] || "#e94560")) },
   u_color2: { value: new THREE.Vector3(...hexToRGB(palette[2] || "#0f3460")) },
+  u_dim: { value: 0.55 }, // tame loud background presets so the product leads
 };
 const bgMaterial = new THREE.ShaderMaterial({
   uniforms: bgUniforms,
@@ -60,25 +70,28 @@ const bgMaterial = new THREE.ShaderMaterial({
 bgScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), bgMaterial));
 
 // --------------------------------------------------------------------------
-// Main scene + camera
+// Main scene + camera + image-based lighting
 // --------------------------------------------------------------------------
 const scene = new THREE.Scene();
-
-// Image-based lighting: without an environment, metallic/PBR surfaces reflect
-// pure black and read as dead, unlit blobs. A PMREM-filtered RoomEnvironment
-// gives every material real reflections so the analytic lights can sculpt on top.
+// Atmospheric depth — distant particles/geometry dissolve into the bg tone.
+scene.fog = new THREE.FogExp2(new THREE.Color(palette[0] || "#06080d"), 0.052);
 const pmrem = new THREE.PMREMGenerator(renderer);
 pmrem.compileEquirectangularShader();
-const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-scene.environment = envTexture;
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 1, 6);
+camera.position.set(0, 0.6, 7);
 const camTarget = new THREE.Vector3(0, 0, 0);
-const desired = { pos: new THREE.Vector3(0, 1, 6), look: new THREE.Vector3(0, 0, 0), fov: 45 };
 
 const lightGroup = new THREE.Group();
 scene.add(lightGroup);
+
+// Always-on coloured rim rig so metallic products read as chrome regardless of preset.
+const rimA = new THREE.PointLight(ACCENT, 18, 0, 1.4);
+rimA.position.set(-4, 1.5, -3);
+const rimB = new THREE.PointLight(SECONDARY, 16, 0, 1.4);
+rimB.position.set(4, -1, -2);
+scene.add(rimA, rimB);
 
 function buildLights(presetName) {
   lightGroup.clear();
@@ -110,8 +123,6 @@ function buildLights(presetName) {
         break;
       case "area":
       default: {
-        // A real RectAreaLight (soft studio panel) instead of a fake directional —
-        // it must face the subject, so orient it toward the origin after placement.
         light = new THREE.RectAreaLight(color, l.intensity * 4, l.width || 5, l.height || 5);
         if (l.position) light.position.set(...l.position);
         light.lookAt(0, 0, 0);
@@ -123,19 +134,62 @@ function buildLights(presetName) {
 }
 
 // --------------------------------------------------------------------------
-// Object factory (procedural primitives + GLB)
+// Particle field — drifting motes, additive so bloom makes them glow.
+// --------------------------------------------------------------------------
+function buildParticles() {
+  const N = 28000;
+  const pos = new Float32Array(N * 3);
+  const col = new Float32Array(N * 3);
+  const seed = new Float32Array(N);
+  const c = new THREE.Color();
+  for (let i = 0; i < N; i++) {
+    // Two populations: a dense central "cloud" and a sparse ambient field, so it
+    // reads as a shimmering volume around the product rather than even noise.
+    const central = Math.random() < 0.6;
+    if (central) {
+      const r = Math.pow(Math.random(), 0.6) * 4.2;
+      const th = Math.random() * Math.PI * 2;
+      const ph = Math.acos(2 * Math.random() - 1);
+      pos[i * 3] = Math.sin(ph) * Math.cos(th) * r;
+      pos[i * 3 + 1] = Math.cos(ph) * r * 0.8;
+      pos[i * 3 + 2] = Math.sin(ph) * Math.sin(th) * r;
+    } else {
+      pos[i * 3] = (Math.random() - 0.5) * 30;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 18;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 26 - 3;
+    }
+    // iridescent tint: lerp across accent..secondary..white with a hue jitter
+    const t = Math.random();
+    c.copy(ACCENT).lerp(SECONDARY, t);
+    c.offsetHSL((Math.random() - 0.5) * 0.12, 0.1, Math.random() * 0.35);
+    col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+    seed[i] = Math.random() * 6.28;
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  g.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  const m = new THREE.PointsMaterial({
+    size: 0.022, vertexColors: true, transparent: true, opacity: 0.85,
+    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+  });
+  const points = new THREE.Points(g, m);
+  points.userData = { basePos: pos.slice(0), seed };
+  scene.add(points);
+  return points;
+}
+const particles = buildParticles();
+
+// --------------------------------------------------------------------------
+// Object factory (procedural primitives + GLB), built once and persistent.
 // --------------------------------------------------------------------------
 const loader = new GLTFLoader();
 
 function makeMaterial(color) {
-  // Opaque by default — transparency is only toggled on during cross-fades.
-  // A persistently-transparent metallic surface reads as a ghost: you see the
-  // background and the object's own back faces straight through it.
-  return new THREE.MeshStandardMaterial({
-    color: color || "#cfcfd6",
-    metalness: 0.85,
-    roughness: 0.25,
-    envMapIntensity: 1.0,
+  // Iridescent chrome/glass — the holographic thin-film look, not matte metal.
+  return new THREE.MeshPhysicalMaterial({
+    color: color || "#cdd2dc", metalness: 0.85, roughness: 0.18, envMapIntensity: 1.25,
+    clearcoat: 1.0, clearcoatRoughness: 0.15, iridescence: 1.0, iridescenceIOR: 1.6,
+    iridescenceThicknessRange: [120, 520],
   });
 }
 
@@ -148,87 +202,67 @@ function primitiveGeometry(kind) {
     case "icosahedron": return new THREE.IcosahedronGeometry(1.2, 1);
     case "octahedron": return new THREE.OctahedronGeometry(1.3, 0);
     case "diamond": return new THREE.OctahedronGeometry(1.2, 0);
-    case "bottle": {
-      const g1 = new THREE.CylinderGeometry(0.55, 0.55, 1.6, 48);
-      return g1;
-    }
     case "box": return new THREE.BoxGeometry(1.6, 1.6, 1.6);
     case "rounded_box":
     default: return new RoundedBoxGeometry(1.7, 1.1, 0.5, 6, 0.18);
   }
 }
 
-const sectionGroups = new Map(); // sectionId -> { group, objects:[{obj, node, baseScale}] }
-
 function buildObjectNode(objSpec) {
+  const holder = new THREE.Group();
   if (objSpec.model_format === "glb" && objSpec.model_url) {
-    const placeholder = new THREE.Group();
     loader.load(
       objSpec.model_url,
       (gltf) => {
         const model = gltf.scene;
-        // normalize size into a consistent ~2-unit footprint and recentre on origin
         const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3());
-        const scale = 2.0 / (Math.max(size.x, size.y, size.z) || 1);
-        model.scale.setScalar(scale);
+        const s = 2.4 / (Math.max(size.x, size.y, size.z) || 1);
+        model.scale.setScalar(s);
         const center = box.getCenter(new THREE.Vector3());
-        model.position.sub(center.multiplyScalar(scale));
+        model.position.sub(center.multiplyScalar(s));
         model.traverse((c) => {
-          // Keep imported materials opaque (the fade pass manages transparency)
-          // and let them pick up the scene environment for believable reflections.
           if (c.isMesh && c.material) {
             const mats = Array.isArray(c.material) ? c.material : [c.material];
             for (const m of mats) {
-              m.transparent = false;
-              m.depthWrite = true;
-              if ("envMapIntensity" in m) m.envMapIntensity = 1.0;
+              m.transparent = false; m.depthWrite = true;
+              if ("envMapIntensity" in m) m.envMapIntensity = 1.1;
+              if ("metalness" in m && m.metalness < 0.2) m.metalness = 0.6;
             }
           }
         });
-        placeholder.add(model);
+        holder.add(model);
       },
       undefined,
-      () => { placeholder.add(new THREE.Mesh(primitiveGeometry(objSpec.primitive), makeMaterial(objSpec.color))); }
+      () => holder.add(new THREE.Mesh(primitiveGeometry(objSpec.primitive), makeMaterial(objSpec.color))),
     );
-    return placeholder;
+  } else {
+    holder.add(new THREE.Mesh(primitiveGeometry(objSpec.primitive), makeMaterial(objSpec.color)));
   }
-  return new THREE.Mesh(primitiveGeometry(objSpec.primitive), makeMaterial(objSpec.color));
+  return holder;
 }
 
-function buildSections() {
-  for (const sec of PLAN.sections) {
-    const group = new THREE.Group();
-    group.visible = false;
-    const objects = [];
-    const ids = sec.objects || [];
-    const layouts = sec.object_layout || {};
-    ids.forEach((oid, i) => {
-      const spec = PLAN.objects.find((o) => o.id === oid);
-      if (!spec) return;
-      const node = buildObjectNode(spec);
-      // Base transform: AI-authored per-section placement wins; otherwise fall back
-      // to an auto-spread so multi-object sections don't pile up at the origin.
-      const L = layouts[oid] || {};
-      const autoX = (i - (ids.length - 1) / 2) * 2.6;
-      const base = {
-        pos: L.position || [autoX, 0, 0],
-        rot: L.rotation || [0, 0, 0],
-        scale: L.scale ?? 1,
-      };
-      node.position.set(base.pos[0], base.pos[1], base.pos[2]);
-      node.userData.base = base;
-      node.userData.spec = spec;
-      group.add(node);
-      objects.push({ spec, node });
-    });
-    scene.add(group);
-    sectionGroups.set(sec.id, { group, objects });
+// One persistent node per unique object. Sections retarget its pose; it travels
+// smoothly between them (no cross-fade duplicates → no ghosting).
+const objectNodes = new Map();
+function buildObjects() {
+  for (const spec of PLAN.objects) {
+    const node = buildObjectNode(spec);
+    node.userData.spec = spec;
+    node.userData.cur = { px: 0, py: 0, pz: 0, rx: 0, ry: 0, rz: 0, sc: 0.001 };
+    node.scale.setScalar(0.001);
+    scene.add(node);
+    objectNodes.set(spec.id, node);
   }
+}
+
+function sectionPose(sec, oid) {
+  const L = (sec.object_layout || {})[oid] || {};
+  return { pos: L.position || [0, 0, 0], rot: L.rotation || [0, 0, 0], scale: L.scale ?? 1 };
 }
 
 // --------------------------------------------------------------------------
-// Animation sampling
+// Animation sampling (object keyframes = micro-motion deltas)
 // --------------------------------------------------------------------------
 function sampleTrack(keyframes, t) {
   if (!keyframes || keyframes.length === 0) return null;
@@ -237,62 +271,38 @@ function sampleTrack(keyframes, t) {
     const a = keyframes[i], b = keyframes[i + 1];
     if (t >= a.t && t <= b.t) {
       const f = (t - a.t) / (b.t - a.t || 1);
-      const lerp3 = (x, y) => x.map((v, j) => lerp(v, y[j], f));
+      const l3 = (x, y) => x.map((v, j) => lerp(v, y[j], f));
       return {
-        rotation: lerp3(a.rotation, b.rotation),
-        position: lerp3(a.position, b.position),
-        scale: lerp(a.scale ?? 1, b.scale ?? 1, f),
-        explode: lerp(a.explode ?? 0, b.explode ?? 0, f),
+        rotation: l3(a.rotation, b.rotation), position: l3(a.position, b.position),
+        scale: lerp(a.scale ?? 1, b.scale ?? 1, f), explode: lerp(a.explode ?? 0, b.explode ?? 0, f),
       };
     }
   }
   return keyframes[keyframes.length - 1];
 }
 
-function applyObject(node, spec, localT) {
-  const base = node.userData.base || { pos: [0, 0, 0], rot: [0, 0, 0], scale: 1 };
-  const s = sampleTrack(spec.keyframes, localT);
-  if (!s) {
-    node.position.set(base.pos[0], base.pos[1], base.pos[2]);
-    node.rotation.set(base.rot[0], base.rot[1], base.rot[2]);
-    node.scale.setScalar(base.scale);
-    return;
-  }
-  // Keyframes are deltas layered on top of the section's base placement, so the
-  // AI's composition (where/how big) and motion (how it moves) compose cleanly.
-  const ex = 1 + (s.explode || 0);
-  node.position.set(
-    base.pos[0] + s.position[0] * ex,
-    base.pos[1] + s.position[1],
-    base.pos[2] + s.position[2] * ex,
-  );
-  node.rotation.set(base.rot[0] + s.rotation[0], base.rot[1] + s.rotation[1], base.rot[2] + s.rotation[2]);
-  node.scale.setScalar(base.scale * s.scale);
-}
-
 function sampleCamera(preset, localT) {
-  if (!preset) return { pos: new THREE.Vector3(0, 1, 6), look: new THREE.Vector3(0, 0, 0), fov: 45 };
+  if (!preset) return { pos: new THREE.Vector3(0, 0.6, 7), look: new THREE.Vector3(0, 0, 0), fov: 45 };
   const kfs = preset.keyframes || [];
-  // Inline AI cameras and presets may omit `type`; prefer keyframes when present.
   if (kfs.length === 0 && preset.type === "orbit") {
-    const d = preset.distance || 5;
-    const a = performance.now() * 0.0002 * (preset.autoRotateSpeed || 0.5);
-    return { pos: new THREE.Vector3(Math.sin(a) * d, 1.2, Math.cos(a) * d), look: new THREE.Vector3(0, 0, 0), fov: preset.fov || 45 };
+    const d = preset.distance || 6;
+    const a = performance.now() * 0.0002 * (preset.autoRotateSpeed || 0.4);
+    return { pos: new THREE.Vector3(Math.sin(a) * d, 1.0, Math.cos(a) * d), look: new THREE.Vector3(0, 0, 0), fov: preset.fov || 45 };
   }
   if (kfs.length === 0 && preset.position) {
     return { pos: new THREE.Vector3(...preset.position), look: new THREE.Vector3(...(preset.lookAt || [0, 0, 0])), fov: preset.fov || 45 };
   }
-  if (kfs.length === 0) return { pos: new THREE.Vector3(0, 1, 6), look: new THREE.Vector3(0, 0, 0), fov: 45 };
+  if (kfs.length === 0) return { pos: new THREE.Vector3(0, 0.6, 7), look: new THREE.Vector3(0, 0, 0), fov: 45 };
   let a = kfs[0], b = kfs[kfs.length - 1];
   for (let i = 0; i < kfs.length - 1; i++) {
     if (localT >= kfs[i].scroll && localT <= kfs[i + 1].scroll) { a = kfs[i]; b = kfs[i + 1]; break; }
   }
-  const f = (localT - a.scroll) / ((b.scroll - a.scroll) || 1);
-  const mix = (x, y) => x.map((v, j) => lerp(v, y[j], clamp01(f)));
+  const f = clamp01((localT - a.scroll) / ((b.scroll - a.scroll) || 1));
+  const mix = (x, y) => x.map((v, j) => lerp(v, y[j], f));
   return {
     pos: new THREE.Vector3(...mix(a.position, b.position)),
     look: new THREE.Vector3(...mix(a.lookAt, b.lookAt)),
-    fov: lerp(a.fov || preset.fov || 45, b.fov || preset.fov || 45, clamp01(f)),
+    fov: lerp(a.fov || preset.fov || 45, b.fov || preset.fov || 45, f),
   };
 }
 
@@ -300,24 +310,19 @@ function sampleCamera(preset, localT) {
 // Scroll state
 // --------------------------------------------------------------------------
 let activeSectionId = PLAN.sections[0]?.id;
-const sectionEls = [...document.querySelectorAll("[data-wegek-section]")];
 const scrollState = new Map(PLAN.sections.map((s) => [s.id, 0]));
 
 PLAN.sections.forEach((sec) => {
   const el = document.querySelector(`[data-wegek-section="${sec.id}"]`);
   if (!el) return;
   ScrollTrigger.create({
-    trigger: el,
-    start: "top bottom",
-    end: "bottom top",
+    trigger: el, start: "top bottom", end: "bottom top",
     onUpdate: (self) => scrollState.set(sec.id, self.progress),
     onToggle: (self) => { if (self.isActive) setActive(sec.id); },
   });
   gsap.utils.toArray(el.querySelectorAll(".reveal")).forEach((node) => {
-    gsap.from(node, {
-      yPercent: 40, opacity: 0, duration: 1, ease: "power3.out",
-      scrollTrigger: { trigger: node, start: "top 85%" },
-    });
+    gsap.from(node, { yPercent: 30, opacity: 0, duration: 1.1, ease: "power3.out",
+      scrollTrigger: { trigger: node, start: "top 88%" } });
   });
 });
 
@@ -329,18 +334,31 @@ function setActive(id) {
 }
 
 // --------------------------------------------------------------------------
-// Lenis smooth scroll + GSAP ticker
+// Lenis + composer + interaction
 // --------------------------------------------------------------------------
-const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
 lenis.on("scroll", ScrollTrigger.update);
-gsap.ticker.add((time) => lenis.raf(time * 1000));
+gsap.ticker.add((t) => lenis.raf(t * 1000));
 gsap.ticker.lagSmoothing(0);
 
+const composer = new EffectComposer(renderer);
+const bgPass = new RenderPass(bgScene, bgCamera);
+composer.addPass(bgPass);
+const mainPass = new RenderPass(scene, camera);
+mainPass.clear = false; // draw product over the background
+composer.addPass(mainPass);
+const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.75, 0.5, 0.7);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+const mouse = new THREE.Vector2(0, 0);
 window.addEventListener("pointermove", (e) => {
+  mouse.set(e.clientX / window.innerWidth - 0.5, e.clientY / window.innerHeight - 0.5);
   bgUniforms.u_mouse.value.set(e.clientX / window.innerWidth, 1 - e.clientY / window.innerHeight);
 });
 window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   bgUniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
@@ -352,54 +370,62 @@ window.addEventListener("resize", () => {
 // --------------------------------------------------------------------------
 const clock = new THREE.Clock();
 function frame() {
-  const dt = clock.getDelta();
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const now = performance.now();
   bgUniforms.u_time.value += dt;
 
   const sec = PLAN.sections.find((s) => s.id === activeSectionId) || PLAN.sections[0];
   const localT = clamp01(scrollState.get(sec.id) ?? 0);
 
-  // fade groups
-  for (const [sid, entry] of sectionGroups) {
-    const target = sid === sec.id ? 1 : 0;
-    entry.group.visible = target > 0 || entry.group.userData.op > 0.01;
-    entry.group.userData.op = lerp(entry.group.userData.op ?? (sid === sec.id ? 1 : 0), target, 0.12);
-    const op = entry.group.userData.op;
-    const fading = op < 0.995;
-    entry.group.traverse((c) => {
-      if (c.isMesh && c.material) {
-        const mats = Array.isArray(c.material) ? c.material : [c.material];
-        for (const m of mats) {
-          m.transparent = fading;     // only translucent mid cross-fade
-          m.depthWrite = !fading;     // opaque objects keep writing depth (no ghosting)
-          m.opacity = op;
-        }
-      }
-    });
-    if (sid === sec.id) {
-      for (const { node, spec } of entry.objects) applyObject(node, spec, localT);
-    }
+  // drive each persistent object toward its pose for the active section
+  for (const [oid, node] of objectNodes) {
+    const inSec = (sec.objects || []).includes(oid);
+    const spec = node.userData.spec;
+    const base = sectionPose(sec, oid);
+    const kf = sampleTrack(spec.keyframes, localT) || { position: [0, 0, 0], rotation: [0, 0, 0], scale: 1, explode: 0 };
+    const ex = 1 + (kf.explode || 0);
+    const idle = now * 0.00008; // subtle perpetual life
+    const tgt = {
+      px: base.pos[0] + kf.position[0] * ex + mouse.x * 0.4,
+      py: base.pos[1] + kf.position[1] - mouse.y * 0.3,
+      pz: base.pos[2] + kf.position[2] * ex,
+      rx: base.rot[0] + kf.rotation[0] + mouse.y * 0.15,
+      ry: base.rot[1] + kf.rotation[1] + idle + mouse.x * 0.25,
+      rz: base.rot[2] + kf.rotation[2],
+      sc: inSec ? base.scale * kf.scale : 0.001,
+    };
+    const c = node.userData.cur;
+    const k = 5.5;
+    c.px = damp(c.px, tgt.px, k, dt); c.py = damp(c.py, tgt.py, k, dt); c.pz = damp(c.pz, tgt.pz, k, dt);
+    c.rx = damp(c.rx, tgt.rx, k, dt); c.ry = damp(c.ry, tgt.ry, k, dt); c.rz = damp(c.rz, tgt.rz, k, dt);
+    c.sc = damp(c.sc, tgt.sc, k, dt);
+    node.position.set(c.px, c.py, c.pz);
+    node.rotation.set(c.rx, c.ry, c.rz);
+    node.scale.setScalar(Math.max(c.sc, 0.0001));
+    node.visible = c.sc > 0.01;
   }
 
-  // camera — inline AI-authored move wins, else the named preset
+  // particles drift + gentle parallax
+  particles.rotation.y += dt * 0.015;
+  particles.position.x = damp(particles.position.x, mouse.x * 1.2, 2, dt);
+  particles.position.y = damp(particles.position.y, -mouse.y * 0.8, 2, dt);
+
+  // camera — inline AI move wins, else preset; smoothed
   const camPreset = sec.camera || CAMERAS[sec.camera_preset] || Object.values(CAMERAS)[0];
-  const target = sampleCamera(camPreset, localT);
-  desired.pos.copy(target.pos); desired.look.copy(target.look); desired.fov = target.fov;
-  camera.position.lerp(desired.pos, 0.08);
-  camTarget.lerp(desired.look, 0.08);
+  const tc = sampleCamera(camPreset, localT);
+  camera.position.lerp(tc.pos, 1 - Math.exp(-3.5 * dt));
+  camTarget.lerp(tc.look, 1 - Math.exp(-3.5 * dt));
   camera.lookAt(camTarget);
-  if (Math.abs(camera.fov - desired.fov) > 0.05) {
-    camera.fov = lerp(camera.fov, desired.fov, 0.08);
+  if (Math.abs(camera.fov - tc.fov) > 0.04) {
+    camera.fov = lerp(camera.fov, tc.fov, 1 - Math.exp(-3.5 * dt));
     camera.updateProjectionMatrix();
   }
 
-  renderer.clear();
-  renderer.render(bgScene, bgCamera);
-  renderer.clearDepth();
-  renderer.render(scene, camera);
+  composer.render();
   requestAnimationFrame(frame);
 }
 
-buildSections();
+buildObjects();
 buildLights(PLAN.sections[0]?.lighting_preset || "studio_dramatic");
 ScrollTrigger.refresh();
 frame();

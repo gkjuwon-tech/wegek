@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import html
 import json
+import shutil
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 
@@ -185,6 +186,11 @@ async def run(plan: SitePlan, settings: Settings, job_id: str, log: Logger) -> t
         localized = await _localize_models(plan, site_dir, settings, log)
         if localized:
             await log(f"Localized {localized} GLB model(s) into the site folder.")
+    # Vendor the JS runtime (three, addons, gsap, lenis) into the site so it is
+    # fully self-contained — no CDN dependency at runtime.
+    vendor_src = TEMPLATES / "vendor"
+    if vendor_src.is_dir():
+        shutil.copytree(vendor_src, site_dir / "vendor", dirs_exist_ok=True)
     html_str = render_site(plan)
     (site_dir / "index.html").write_text(html_str, encoding="utf-8")
     (site_dir / "plan.json").write_text(plan.model_dump_json(indent=2), encoding="utf-8")
