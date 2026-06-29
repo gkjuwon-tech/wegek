@@ -73,12 +73,14 @@ def _inner_classes(sec, i: int) -> tuple[str, str, str]:
         inner.append("panel")
 
     style = ""
-    try:
-        hl = float(layout.get("headline_scale"))
-        if 0.4 <= hl <= 2.2:
-            style = f' style="--hl:{hl:.2f}"'
-    except (TypeError, ValueError):
-        pass
+    raw_hl = layout.get("headline_scale")
+    if raw_hl is not None:
+        try:
+            hl = float(raw_hl)
+            if 0.4 <= hl <= 2.2:
+                style = f' style="--hl:{hl:.2f}"'
+        except (TypeError, ValueError):
+            pass
     return section_cls, " ".join(inner), style
 
 
