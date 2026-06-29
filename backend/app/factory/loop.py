@@ -144,7 +144,10 @@ def run(brief: str, site_dir: str | Path, *, glb: str | Path | None = None,
         for iss in (critique.get("issues") or [])[:4]:
             log(f"     - [{iss.get('severity')}] {iss.get('observation')}")
 
-        _reresolve(asset_list, critique.get("asset_feedback") or [], site_dir, log)
+        # Only re-source meshes when the page actually rendered — you can't judge
+        # an asset's fitness on a black/broken frame (that's a code bug to repair).
+        if r["ready"] and not errors:
+            _reresolve(asset_list, critique.get("asset_feedback") or [], site_dir, log)
 
         history.append({"iter": it, "score": score, "errors": len(errors), "ready": r["ready"]})
         if score > best["score"]:
