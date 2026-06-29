@@ -36,7 +36,14 @@ an Active-Theory-style environment the camera travels through, organised like a 
   midground framing around the hero, and 1-2 foreground pieces near the camera (z = +3..+6)
   for parallax. Build receding depth, not a flat row.
 - An optional overhead/canopy element above the hero (y = +3..+6) to enclose the space.
-Every mesh animates subtly. It must feel like a built place with a clear centre and structure.
+
+CHOREOGRAPH THE SCROLL — do not design one static frame. Across scroll the scene must ANIMATE
+and CHANGE (see the reference scroll choreography): give each section a distinct camera vantage,
+stage objects to fade in/out via scroll_in/scroll_out so beats own different sub-scenes (a few
+meshes persist, others swap), and use per-object keyframes for motion (assemble from afar, rise,
+orbit, drift). Aim for ~3-5 beats that feel like travelling through an evolving world, with the
+hero as the throughline. Section camera keyframes + object scroll_in/out + keyframes together are
+the scroll script.
 
 You have FULL control via this JSON schema. Coordinates are Three.js world units
 (object normalized to ~2u; camera looks at origin by default; +x right, +y up, +z toward viewer):
@@ -71,7 +78,12 @@ You have FULL control via this JSON schema. Coordinates are Three.js world units
       // ABSOLUTE world placement — this mesh's permanent spot in the set. Spread meshes
       // across x(-12..12), y(-6..6), z(-20..6) to build fore/mid/background depth.
       "placement": {{ "position":[x,y,z], "scale":0.5-4.0, "rotation":[x,y,z] }},
-      // self-animation as the user scrolls (t = GLOBAL scroll 0..1): drift, spin, rise, orbit.
+      // SCROLL LIFECYCLE (global scroll 0..1): the mesh fades/scales in at scroll_in and out at
+      // scroll_out. Give each mesh the slice of scroll where its beat lives so the SCENE CHANGES
+      // as the user scrolls (set-dressing for beat 2 might be scroll_in 0.3, scroll_out 0.7). Use
+      // 0..1 for a persistent piece (e.g. the hero that survives across beats).
+      "scroll_in": 0.0, "scroll_out": 1.0,
+      // self-animation across GLOBAL scroll (t 0..1): assemble from afar, drift, spin, rise, orbit.
       "keyframes": [
         {{"t":0.0,"position":[0,0,0],"rotation":[0,0,0],"scale":1.0}},
         {{"t":1.0,"position":[0,0.6,0],"rotation":[0,3.14,0],"scale":1.0}}
@@ -153,11 +165,15 @@ async def _retrieve_refs(llm: LLMClient, prompt: str) -> str:
     except Exception:  # noqa: BLE001 - retrieval is best-effort
         pass
     picked: dict[str, dict] = {}
+    choreo: dict[str, dict] = {}
     for q in queries:
         for p in refrag.retrieve(q, k=2):
             picked[p["id"]] = p
+        for c in refrag.retrieve_choreo(q, k=1):
+            choreo[c["id"]] = c
     patterns = list(picked.values())[:4] or refrag.retrieve(prompt, k=3)
-    return refrag.format_block(patterns)
+    choreo_list = list(choreo.values())[:3] or refrag.retrieve_choreo(prompt, k=2)
+    return refrag.format_block(patterns, choreo_list)
 
 
 def detect_category(text: str) -> str:

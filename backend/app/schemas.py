@@ -72,6 +72,11 @@ class Object3D(BaseModel):
     # mesh lives permanently in the scene (a built environment the camera travels
     # through), rather than fading in/out per section.
     placement: dict[str, Any] = Field(default_factory=dict)
+    # scroll lifecycle (global scroll 0..1): the mesh fades/scales in at scroll_in and
+    # out at scroll_out, so the world EVOLVES and scenes change as the user scrolls.
+    # Default full range = always present (a persistent set piece).
+    scroll_in: float = 0.0
+    scroll_out: float = 1.0
     # enriched downstream
     reference_images: list[str] = Field(default_factory=list)
     model_url: str | None = None

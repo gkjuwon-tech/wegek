@@ -120,30 +120,116 @@ CORPUS: list[dict] = [
 ]
 
 
+# How award-winning sites CHOREOGRAPH scroll — temporal grammar: what animates, how
+# the camera travels, and how one scene TRANSITIONS into the next as you scroll.
+CHOREO: list[dict] = [
+    {
+        "id": "assemble_on_scroll",
+        "title": "Assemble / explode on scroll",
+        "tags": "assemble explode parts components build mechanism reveal engineering watch product disassemble",
+        "structure": (
+            "Open with the hero's parts SCATTERED and drifting apart in space; as the user scrolls they fly "
+            "inward and lock together into the finished product by mid-page, then the camera orbits the whole. "
+            "Per-object keyframes move each piece from an exploded position (t=0) to its assembled slot (t≈0.5); "
+            "stagger each part's timing slightly. Reverse near the end for a breathing loop."
+        ),
+    },
+    {
+        "id": "fly_through_portal",
+        "title": "Fly-through transition (camera dives through an object into the next scene)",
+        "tags": "transition portal gateway fly through dive zoom warp scene change chapter travel tunnel door",
+        "structure": (
+            "Each chapter ends by the camera ACCELERATING toward a portal/arch/aperture in the current scene; as "
+            "it passes through, the previous set's objects scroll_out (fade+recede) and the next chapter's objects "
+            "scroll_in on the far side — a seamless scene CHANGE with no hard cut. Drive object scroll_in/scroll_out "
+            "windows so each beat owns a slice of the scroll, and the camera z accelerates at the hand-off."
+        ),
+    },
+    {
+        "id": "scene_morph_chapters",
+        "title": "Distinct scene per chapter (the world changes as you scroll)",
+        "tags": "chapters scenes change worlds morph swap sections distinct environments narrative journey sequence",
+        "structure": (
+            "The page is several DIFFERENT little worlds, not one static set. Each section owns a scroll range; its "
+            "meshes scroll_in at the start of the range and scroll_out at the end, while the camera relocates to a "
+            "fresh vantage. Beat 1: product hero shrine. Beat 2: macro detail (camera tight, different props). "
+            "Beat 3: lifestyle/context world. The hero may persist while everything AROUND it is replaced — that "
+            "continuity + changing context is the signature of premium scrollytelling."
+        ),
+    },
+    {
+        "id": "pin_and_animate",
+        "title": "Pinned beat with scrubbed internal animation",
+        "tags": "pin sticky scrub timeline hold rotate spin internal animation detail dwell focus product turntable",
+        "structure": (
+            "Hold the camera still on the hero for a stretch of scroll while an internal animation is SCRUBBED by "
+            "scroll position — the product slowly rotates 360°, a cutaway opens, labels draw on, a shader morphs. "
+            "Maps scroll progress directly to one object's keyframe t so the user 'drives' the animation. Use for a "
+            "single deliberate detail moment between travel beats."
+        ),
+    },
+    {
+        "id": "focus_handoff",
+        "title": "Focus hand-off (one object passes the spotlight to the next)",
+        "tags": "handoff sequence relay focus pass baton multiple products lineup gallery one by one parade",
+        "structure": (
+            "For multi-product stories: object A is centred and lit; on scroll it drifts off and recedes while "
+            "object B rises from the back into the focal centre, inheriting the key light — a relay. Stagger each "
+            "object's scroll_in/scroll_out so exactly one owns the centre at a time, with brief overlaps for grace."
+        ),
+    },
+    {
+        "id": "parallax_depth_drift",
+        "title": "Multi-layer parallax drift",
+        "tags": "parallax layers depth foreground background drift float subtle continuous ambient motion calm",
+        "structure": (
+            "Foreground, midground and background mesh layers scroll at different rates (foreground fastest) so the "
+            "set has continuous depth even in calm sections. Combine with slow idle rotation/bob on each object and "
+            "a gentle camera truck. The connective tissue between bigger set-pieces — never let the scene sit dead."
+        ),
+    },
+]
+
+
 def _tok(s: str) -> list[str]:
     return [t for t in re.split(r"[^a-z0-9]+", s.lower()) if len(t) > 2]
 
 
-def retrieve(query: str, k: int = 3) -> list[dict]:
-    """Return the top-k composition patterns most relevant to a query."""
+def _retrieve(corpus: list[dict], query: str, k: int) -> list[dict]:
     q = set(_tok(query))
     scored: list[tuple[float, dict]] = []
-    for e in CORPUS:
+    for e in corpus:
         hay = _tok(e["tags"] + " " + e["title"] + " " + e["structure"])
         score = sum(hay.count(t) for t in q) + 2 * len(q & set(_tok(e["tags"])))
         scored.append((score, e))
     scored.sort(key=lambda x: x[0], reverse=True)
-    return [e for s, e in scored[:k] if s > 0] or [CORPUS[0]]
+    return [e for s, e in scored[:k] if s > 0] or [corpus[0]]
 
 
-def format_block(patterns: list[dict]) -> str:
-    lines = ["REFERENCE COMPOSITIONS (study these proven structures from award-winning sites and ADAPT "
-             "one or blend a few to the brief — do not copy literally, but match this level of deliberate "
-             "spatial design):"]
+def retrieve(query: str, k: int = 3) -> list[dict]:
+    """Top-k spatial COMPOSITION patterns for a query."""
+    return _retrieve(CORPUS, query, k)
+
+
+def retrieve_choreo(query: str, k: int = 2) -> list[dict]:
+    """Top-k scroll CHOREOGRAPHY / scene-transition patterns for a query."""
+    return _retrieve(CHOREO, query, k)
+
+
+def format_block(patterns: list[dict], choreo: list[dict] | None = None) -> str:
+    lines = ["REFERENCE COMPOSITIONS (study these proven spatial structures from award-winning sites and "
+             "ADAPT/blend them — match this level of deliberate design, don't copy literally):"]
     for p in patterns:
-        lines.append(f"\n• {p['title']}  [refs: {p['refs']}]\n  {p['structure']}")
+        lines.append(f"\n• {p['title']}  [refs: {p.get('refs', '')}]\n  {p['structure']}")
+    if choreo:
+        lines.append("\nREFERENCE SCROLL CHOREOGRAPHY (how the scene ANIMATES and CHANGES across scroll — "
+                     "design a sequence like this, not one static frame):")
+        for c in choreo:
+            lines.append(f"\n• {c['title']}\n  {c['structure']}")
     return "\n".join(lines)
 
 
 def titles() -> str:
-    return "\n".join(f"- {e['id']}: {e['title']}" for e in CORPUS)
+    comp = "\n".join(f"- {e['id']}: {e['title']}" for e in CORPUS)
+    cho = "\n".join(f"- {e['id']}: {e['title']}" for e in CHOREO)
+    return f"COMPOSITIONS:\n{comp}\n\nSCROLL CHOREOGRAPHY:\n{cho}"

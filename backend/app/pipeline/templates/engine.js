@@ -36,6 +36,7 @@ const num = (v, d) => (typeof v === "number" ? v : d);
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
 const damp = (cur, target, lambda, dt) => lerp(cur, target, 1 - Math.exp(-lambda * dt));
+const smoothstep = (a, b, x) => { const t = clamp01((x - a) / ((b - a) || 1e-6)); return t * t * (3 - 2 * t); };
 const hexToRGB = (hex) => {
   const c = new THREE.Color(hex);
   return [c.r, c.g, c.b];
@@ -452,9 +453,12 @@ function frame() {
 
   const sec = PLAN.sections.find((s) => s.id === activeSectionId) || PLAN.sections[0];
   const localT = clamp01(scrollState.get(sec.id) ?? 0);
-  // global scroll progress across the whole page drives the world choreography
-  const docH = document.documentElement.scrollHeight - window.innerHeight;
-  const globalT = clamp01(docH > 0 ? window.scrollY / docH : 0);
+  // global scroll progress across the whole page drives the world choreography.
+  // Derived from the active section index + its progress (robust with Lenis smooth
+  // scroll, unlike raw window.scrollY).
+  const secIdx = Math.max(0, PLAN.sections.findIndex((s) => s.id === activeSectionId));
+  const nSec = PLAN.sections.length || 1;
+  const globalT = clamp01(nSec > 1 ? (secIdx + localT) / nSec : localT);
 
   // drive each object: world meshes stay placed and animate on global scroll;
   // legacy meshes show/hide per active section.
@@ -463,11 +467,21 @@ function frame() {
     const world = node.userData.world;
     const base = world ? node.userData.base : sectionPose(sec, oid);
     const kfT = world ? globalT : localT;
-    const visible = world ? true : (sec.objects || []).includes(oid);
     const par = world ? 0.15 : 1.0; // world set parallaxes less so it feels solid
     const kf = sampleTrack(spec.keyframes, kfT) || { position: [0, 0, 0], rotation: [0, 0, 0], scale: 1, explode: 0 };
     const ex = 1 + (kf.explode || 0);
     const idle = now * 0.00008; // subtle perpetual life
+    // scroll lifecycle: world meshes fade/scale in at scroll_in and out at scroll_out
+    // so the scene EVOLVES; legacy meshes show/hide with their section.
+    let scaleMul;
+    if (world) {
+      const si = spec.scroll_in ?? 0, so = spec.scroll_out ?? 1;
+      let win = 1;
+      if (si > 0.001 || so < 0.999) win = smoothstep(si - 0.06, si + 0.06, globalT) * (1 - smoothstep(so - 0.06, so + 0.06, globalT));
+      scaleMul = base.scale * kf.scale * win;
+    } else {
+      scaleMul = (sec.objects || []).includes(oid) ? base.scale * kf.scale : 0.001;
+    }
     const tgt = {
       px: base.pos[0] + kf.position[0] * ex + mouse.x * 0.4 * par,
       py: base.pos[1] + kf.position[1] - mouse.y * 0.3 * par,
@@ -475,7 +489,7 @@ function frame() {
       rx: base.rot[0] + kf.rotation[0] + mouse.y * 0.15 * par,
       ry: base.rot[1] + kf.rotation[1] + idle + mouse.x * 0.25 * par,
       rz: base.rot[2] + kf.rotation[2],
-      sc: visible ? base.scale * kf.scale : 0.001,
+      sc: scaleMul,
     };
     const c = node.userData.cur;
     const k = 5.5;
