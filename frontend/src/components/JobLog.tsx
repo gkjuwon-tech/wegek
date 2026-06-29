@@ -8,14 +8,20 @@ export function JobLog({ logs }: { logs: LogEntry[] }) {
   }, [logs.length]);
 
   return (
-    <div className="joblog" ref={ref}>
-      {logs.length === 0 && <div className="log-empty">로그 대기 중…</div>}
-      {logs.map((l, i) => (
-        <div key={i} className={`log-line log-${l.level}`}>
-          <span className="log-stage">{l.stage ?? "·"}</span>
-          <span className="log-msg">{l.message}</span>
-        </div>
-      ))}
+    <div className="panel">
+      <div className="panel-head">
+        <span className="panel-eyebrow">Live log</span>
+        <span className="panel-count">{logs.length}</span>
+      </div>
+      <div className="joblog" ref={ref}>
+        {logs.length === 0 && <div className="log-empty">Waiting for logs…</div>}
+        {logs.map((l, i) => (
+          <div key={i} className={`log-line log-${l.level}`}>
+            <span className="log-stage">{l.stage ?? "·"}</span>
+            <span className="log-msg">{l.message}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
