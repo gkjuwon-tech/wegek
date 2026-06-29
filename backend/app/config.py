@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     data_dir: Path = Field(default=BACKEND_ROOT / "_data")
 
     # --- Stage 0: Planner LLM ---
-    # Provider auto-detected from available keys. "auto" picks anthropic > openai > heuristic.
+    # Provider auto-detected from available keys. "auto" picks anthropic > openai > gemini > heuristic.
     planner_provider: str = "auto"
     anthropic_api_key: str | None = None
     anthropic_model: str = "claude-sonnet-4-20250514"
@@ -41,7 +41,18 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4o"
     openai_base_url: str = "https://api.openai.com/v1"
 
-    # --- Stage 1: Image generation (Black Forest Labs FLUX.2) ---
+    # --- Google Gemini (optional stand-in for the planner LLM + image gen) ---
+    # Uses the Gemini API: OpenAI-compatible chat for planning/shaders and the
+    # native generateContent endpoint for image generation. Entirely opt-in —
+    # absent key leaves anthropic/openai/FLUX behaviour untouched.
+    gemini_api_key: str | None = None
+    gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta"
+    gemini_model: str = "gemini-2.5-flash"
+    gemini_image_model: str = "gemini-2.5-flash-image"
+
+    # --- Stage 1: Image generation ---
+    # IMAGE_PROVIDER: auto | bfl | gemini   (auto = bfl > gemini > procedural)
+    image_provider: str = "auto"
     bfl_api_key: str | None = None
     bfl_base_url: str = "https://api.bfl.ai/v1"
     bfl_model: str = "flux-pro-1.1"
@@ -60,6 +71,11 @@ class Settings(BaseSettings):
     review_pass_score: float = 0.78
 
     # --- Pipeline behaviour ---
+    # When true, Stage 6 downloads remote GLB models into the site folder and
+    # rewrites them to relative paths so the generated site stays self-contained
+    # even after upstream (e.g. Tripo) URLs expire. Falls back to the remote URL
+    # if a download fails.
+    localize_assets: bool = True
     max_objects_per_site: int = 8
     request_timeout: float = 120.0
     poll_interval: float = 2.0
@@ -74,11 +90,15 @@ class Settings(BaseSettings):
         return self.data_dir / "sites"
 
     @property
+    def refimg_dir(self) -> Path:
+        return self.data_dir / "refimg"
+
+    @property
     def db_path(self) -> Path:
         return self.data_dir / "wegek.db"
 
     def ensure_dirs(self) -> None:
-        for d in (self.data_dir, self.jobs_dir, self.sites_dir):
+        for d in (self.data_dir, self.jobs_dir, self.sites_dir, self.refimg_dir):
             d.mkdir(parents=True, exist_ok=True)
 
 

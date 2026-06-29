@@ -29,11 +29,15 @@ class LLMClient:
             return "anthropic"
         if choice == "openai" and self.s.openai_api_key:
             return "openai"
+        if choice == "gemini" and self.s.gemini_api_key:
+            return "gemini"
         if choice == "auto":
             if self.s.anthropic_api_key:
                 return "anthropic"
             if self.s.openai_api_key:
                 return "openai"
+            if self.s.gemini_api_key:
+                return "gemini"
         return "none"
 
     @property
@@ -46,6 +50,8 @@ class LLMClient:
             return f"anthropic:{self.s.anthropic_model}"
         if self.provider == "openai":
             return f"openai:{self.s.openai_model}"
+        if self.provider == "gemini":
+            return f"gemini:{self.s.gemini_model}"
         return "none"
 
     async def complete_text(self, system: str, user: str, max_tokens: int = 4000) -> str:
@@ -54,6 +60,8 @@ class LLMClient:
         async with httpx.AsyncClient(timeout=self.s.request_timeout) as client:
             if self.provider == "anthropic":
                 return await self._anthropic(client, system, user, max_tokens)
+            if self.provider == "gemini":
+                return await self._gemini(client, system, user, max_tokens)
             return await self._openai(client, system, user, max_tokens)
 
     async def complete_json(self, system: str, user: str, max_tokens: int = 4000) -> dict:
@@ -99,6 +107,25 @@ class LLMClient:
         resp.raise_for_status()
         data = resp.json()
         return data["choices"][0]["message"]["content"]
+
+    async def _gemini(self, client: httpx.AsyncClient, system: str, user: str, max_tokens: int) -> str:
+        # Gemini ships an OpenAI-compatible surface; reuse the chat-completions shape.
+        resp = await client.post(
+            f"{self.s.gemini_base_url}/openai/chat/completions",
+            headers={"Authorization": f"Bearer {self.s.gemini_api_key}"},
+            json={
+                "model": self.s.gemini_model,
+                "max_tokens": max_tokens,
+                "reasoning_effort": "low",
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+            },
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        return data["choices"][0]["message"]["content"] or ""
 
 
 def _extract_json(text: str) -> dict:

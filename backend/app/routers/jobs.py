@@ -6,11 +6,11 @@ import uuid
 
 from fastapi import APIRouter, HTTPException
 
-from ..clients.bfl import BFLClient
 from ..clients.llm import LLMClient
 from ..clients.tripo import TripoClient
 from ..config import get_settings
 from ..pipeline.orchestrator import run_pipeline
+from ..pipeline.stage1_images import select_image_client
 from ..presets.cameras import CAMERA_PRESETS
 from ..presets.lighting import LIGHTING_PRESETS
 from ..presets.shaders import SHADERS
@@ -23,11 +23,12 @@ router = APIRouter(prefix="/api", tags=["jobs"])
 @router.get("/health")
 async def health() -> dict:
     s = get_settings()
+    image_client = select_image_client(s)
     return {
         "status": "ok",
         "integrations": {
             "planner_llm": LLMClient(s).label,
-            "image_gen": BFLClient(s).label,
+            "image_gen": image_client.label if image_client else "none",
             "model_gen": TripoClient(s).label,
             "renderer": bool(s.renderer_url),
         },

@@ -19,8 +19,8 @@ AI assets (Claude/GPT planning, FLUX images, Tripo 3D models). They enhance; the
 
 | Stage | What it does | With keys | Without keys (fallback) |
 |------:|--------------|-----------|--------------------------|
-| 0 · Plan    | Brief → structured `SitePlan` | Anthropic / OpenAI | Heuristic category-aware planner |
-| 1 · Images  | Multi-view reference images   | FLUX (BFL)         | Skipped → procedural geometry |
+| 0 · Plan    | Brief → structured `SitePlan` | Anthropic / OpenAI / Gemini | Heuristic category-aware planner |
+| 1 · Images  | Reference images   | FLUX (BFL) / Gemini         | Skipped → procedural geometry |
 | 2 · Models  | Image → 3D GLB                | Tripo              | Parametric primitives |
 | 3 · Animate | Keyframe tracks               | — (deterministic)  | Deterministic keyframes |
 | 4 · Shaders | GLSL background               | LLM-authored       | Curated shader library |
@@ -116,9 +116,10 @@ docker-compose.yml
 
 See [`.env.example`](.env.example). Highlights:
 
-- `PLANNER_PROVIDER` — `auto` | `anthropic` | `openai`
-- `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` — Stage 0 + Stage 4
-- `BFL_API_KEY` — Stage 1 images
-- `TRIPO_API_KEY` — Stage 2/3 models + rig
+- `PLANNER_PROVIDER` — `auto` | `anthropic` | `openai` | `gemini`
+- `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` — Stage 0 + Stage 4
+- `IMAGE_PROVIDER` — `auto` | `bfl` | `gemini`
+- `BFL_API_KEY` — Stage 1 images (FLUX); `GEMINI_API_KEY` — Stage 1 images (Gemini)
+- `TRIPO_API_KEY` — Stage 2/3 models + rig (accepts FLUX URLs or local Gemini images)
 - `RENDERER_URL` — point Stage 7 at the renderer service for screenshots
 - `SHADER_USE_LLM` — let the LLM author bespoke GLSL when a key is present

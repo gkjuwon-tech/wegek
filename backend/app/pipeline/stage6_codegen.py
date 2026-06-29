@@ -11,6 +11,8 @@ import json
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 
+import httpx
+
 from ..config import Settings
 from ..presets.cameras import CAMERA_PRESETS
 from ..presets.lighting import LIGHTING_PRESETS
@@ -67,12 +69,40 @@ def _section_html(plan: SitePlan) -> str:
 def _build_bundle(plan: SitePlan) -> dict:
     used_lighting = {s.lighting_preset for s in plan.sections}
     used_cameras = {s.camera_preset for s in plan.sections}
+    plan_data = plan.model_dump()
+    # reference_images are an intermediate Stage-1 artifact (often local paths);
+    # the client only needs model_url, so drop them from the embedded bundle.
+    for obj in plan_data.get("objects", []):
+        obj.pop("reference_images", None)
     return {
-        "plan": plan.model_dump(),
+        "plan": plan_data,
         "lighting": {k: LIGHTING_PRESETS[k] for k in used_lighting if k in LIGHTING_PRESETS},
         "cameras": {k: CAMERA_PRESETS[k] for k in used_cameras if k in CAMERA_PRESETS},
         "shader": plan.background_shader_glsl or get_shader(plan.global_style.background_shader),
     }
+
+
+async def _localize_models(plan: SitePlan, site_dir: Path, settings: Settings, log: Logger) -> int:
+    """Download remote GLB models into the site folder, rewriting to relative
+    paths so the bundle stays self-contained after upstream URLs expire. On any
+    failure the remote URL is kept (graceful degradation)."""
+    models_dir = site_dir / "models"
+    localized = 0
+    async with httpx.AsyncClient(timeout=settings.request_timeout, follow_redirects=True) as client:
+        for obj in plan.objects:
+            url = obj.model_url
+            if obj.model_format != "glb" or not url or not url.startswith("http"):
+                continue
+            try:
+                resp = await client.get(url)
+                resp.raise_for_status()
+                models_dir.mkdir(parents=True, exist_ok=True)
+                (models_dir / f"{obj.id}.glb").write_bytes(resp.content)
+                obj.model_url = f"models/{obj.id}.glb"
+                localized += 1
+            except Exception as exc:  # noqa: BLE001
+                await log(f"Could not localize GLB for '{obj.id}' ({exc}); keeping remote URL.")
+    return localized
 
 
 def render_site(plan: SitePlan) -> str:
@@ -108,8 +138,13 @@ def render_site(plan: SitePlan) -> str:
 async def run(plan: SitePlan, settings: Settings, job_id: str, log: Logger) -> tuple[str, dict]:
     site_dir = settings.sites_dir / job_id
     site_dir.mkdir(parents=True, exist_ok=True)
+    localized = 0
+    if settings.localize_assets:
+        localized = await _localize_models(plan, site_dir, settings, log)
+        if localized:
+            await log(f"Localized {localized} GLB model(s) into the site folder.")
     html_str = render_site(plan)
     (site_dir / "index.html").write_text(html_str, encoding="utf-8")
     (site_dir / "plan.json").write_text(plan.model_dump_json(indent=2), encoding="utf-8")
     await log(f"Generated standalone site ({len(html_str) // 1024} KB) at sites/{job_id}/index.html.")
-    return "codegen", {"bytes": len(html_str), "path": str(site_dir / "index.html")}
+    return "codegen", {"bytes": len(html_str), "path": str(site_dir / "index.html"), "localized_models": localized}
