@@ -20,7 +20,7 @@ export function SitePreview({ siteUrl, score }: Props) {
             </span>
           )}
           <a className="ghost-btn" href={siteUrl} target="_blank" rel="noreferrer">
-            새 탭 <ArrowUpRight size={13} />
+            Open <ArrowUpRight size={13} />
           </a>
           <a className="ghost-btn" href={siteUrl} download>
             HTML <Download size={13} />

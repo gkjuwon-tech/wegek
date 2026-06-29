@@ -85,7 +85,7 @@ export function App() {
             <SitePreview siteUrl={job.site_url} score={job.review_score} />
           )}
           {job?.status === "failed" && (
-            <div className="error-box">파이프라인 실패: {job.error}</div>
+            <div className="error-box">Pipeline failed: {job.error}</div>
           )}
         </section>
       </main>

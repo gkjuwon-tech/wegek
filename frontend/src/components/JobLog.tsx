@@ -14,7 +14,7 @@ export function JobLog({ logs }: { logs: LogEntry[] }) {
         <span className="panel-count">{logs.length}</span>
       </div>
       <div className="joblog" ref={ref}>
-        {logs.length === 0 && <div className="log-empty">로그 대기 중…</div>}
+        {logs.length === 0 && <div className="log-empty">Waiting for logs…</div>}
         {logs.map((l, i) => (
           <div key={i} className={`log-line log-${l.level}`}>
             <span className="log-stage">{l.stage ?? "·"}</span>
