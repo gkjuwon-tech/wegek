@@ -68,6 +68,10 @@ class Object3D(BaseModel):
     mesh_query: str = ""
     animation: str = "slow_rotation_y"
     needs_parts_separation: bool = False
+    # absolute placement in the world set (position/scale/rotation). When present the
+    # mesh lives permanently in the scene (a built environment the camera travels
+    # through), rather than fading in/out per section.
+    placement: dict[str, Any] = Field(default_factory=dict)
     # enriched downstream
     reference_images: list[str] = Field(default_factory=list)
     model_url: str | None = None

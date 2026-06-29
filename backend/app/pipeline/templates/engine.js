@@ -191,6 +191,23 @@ function buildParticles() {
 }
 const particles = buildParticles();
 
+// Ground plane — anchors the set so it reads as a designed PLACE, not objects in
+// a void. Glossy + IBL gives a reflective-floor feel (AI-tunable, default on).
+function buildGround() {
+  const g = EFF.ground || {};
+  if (g.enabled === false) return null;
+  const mat = new THREE.MeshStandardMaterial({
+    color: g.color || palette[0] || "#06080d",
+    metalness: num(g.metalness, 0.92), roughness: num(g.roughness, 0.22), envMapIntensity: 1.0,
+  });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), mat);
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = num(g.y, -2.4);
+  scene.add(floor);
+  return floor;
+}
+const ground = buildGround();
+
 // --------------------------------------------------------------------------
 // Object factory (procedural primitives + GLB), built once and persistent.
 // --------------------------------------------------------------------------
@@ -238,8 +255,14 @@ function buildObjectNode(objSpec) {
             const mats = Array.isArray(c.material) ? c.material : [c.material];
             for (const m of mats) {
               m.transparent = false; m.depthWrite = true;
-              if ("envMapIntensity" in m) m.envMapIntensity = 1.1;
-              if ("metalness" in m && m.metalness < 0.2) m.metalness = 0.6;
+              if ("envMapIntensity" in m) m.envMapIntensity = 0.55;
+              if (m.emissive) m.emissive.setRGB(0, 0, 0); // kill self-glow that blooms to white
+              if ("metalness" in m && m.metalness < 0.2) m.metalness = 0.5;
+              // tame near-white base colours so bloom doesn't blow them out
+              if (m.color) {
+                const l = (m.color.r + m.color.g + m.color.b) / 3;
+                if (l > 0.8) m.color.multiplyScalar(0.7 / l);
+              }
             }
           }
         });
@@ -261,8 +284,17 @@ function buildObjects() {
   for (const spec of PLAN.objects) {
     const node = buildObjectNode(spec);
     node.userData.spec = spec;
-    node.userData.cur = { px: 0, py: 0, pz: 0, rx: 0, ry: 0, rz: 0, sc: 0.001 };
-    node.scale.setScalar(0.001);
+    const pl = spec.placement || {};
+    // A mesh with an absolute placement is a permanent part of the world set;
+    // otherwise it falls back to legacy per-section show/hide.
+    node.userData.world = Array.isArray(pl.position);
+    node.userData.base = node.userData.world
+      ? { pos: pl.position, rot: pl.rotation || [0, 0, 0], scale: pl.scale ?? 1 }
+      : null;
+    const startScale = node.userData.world ? (pl.scale ?? 1) : 0.001;
+    node.userData.cur = { px: 0, py: 0, pz: 0, rx: 0, ry: 0, rz: 0, sc: startScale };
+    if (node.userData.world) node.position.set(pl.position[0], pl.position[1], pl.position[2]);
+    node.scale.setScalar(startScale);
     scene.add(node);
     objectNodes.set(spec.id, node);
   }
@@ -420,23 +452,30 @@ function frame() {
 
   const sec = PLAN.sections.find((s) => s.id === activeSectionId) || PLAN.sections[0];
   const localT = clamp01(scrollState.get(sec.id) ?? 0);
+  // global scroll progress across the whole page drives the world choreography
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const globalT = clamp01(docH > 0 ? window.scrollY / docH : 0);
 
-  // drive each persistent object toward its pose for the active section
+  // drive each object: world meshes stay placed and animate on global scroll;
+  // legacy meshes show/hide per active section.
   for (const [oid, node] of objectNodes) {
-    const inSec = (sec.objects || []).includes(oid);
     const spec = node.userData.spec;
-    const base = sectionPose(sec, oid);
-    const kf = sampleTrack(spec.keyframes, localT) || { position: [0, 0, 0], rotation: [0, 0, 0], scale: 1, explode: 0 };
+    const world = node.userData.world;
+    const base = world ? node.userData.base : sectionPose(sec, oid);
+    const kfT = world ? globalT : localT;
+    const visible = world ? true : (sec.objects || []).includes(oid);
+    const par = world ? 0.15 : 1.0; // world set parallaxes less so it feels solid
+    const kf = sampleTrack(spec.keyframes, kfT) || { position: [0, 0, 0], rotation: [0, 0, 0], scale: 1, explode: 0 };
     const ex = 1 + (kf.explode || 0);
     const idle = now * 0.00008; // subtle perpetual life
     const tgt = {
-      px: base.pos[0] + kf.position[0] * ex + mouse.x * 0.4,
-      py: base.pos[1] + kf.position[1] - mouse.y * 0.3,
+      px: base.pos[0] + kf.position[0] * ex + mouse.x * 0.4 * par,
+      py: base.pos[1] + kf.position[1] - mouse.y * 0.3 * par,
       pz: base.pos[2] + kf.position[2] * ex,
-      rx: base.rot[0] + kf.rotation[0] + mouse.y * 0.15,
-      ry: base.rot[1] + kf.rotation[1] + idle + mouse.x * 0.25,
+      rx: base.rot[0] + kf.rotation[0] + mouse.y * 0.15 * par,
+      ry: base.rot[1] + kf.rotation[1] + idle + mouse.x * 0.25 * par,
       rz: base.rot[2] + kf.rotation[2],
-      sc: inSec ? base.scale * kf.scale : 0.001,
+      sc: visible ? base.scale * kf.scale : 0.001,
     };
     const c = node.userData.cur;
     const k = 5.5;

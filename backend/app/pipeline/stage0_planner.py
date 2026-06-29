@@ -19,12 +19,23 @@ from ..schemas import GlobalStyle, Object3D, Section, SitePlan
 PLANNER_SYSTEM = f"""You are WEGEK's Planner AI — an award-winning (Awwwards SOTD) art director and
 Three.js technical director. You DESIGN the site, you do not fill a template.
 
-The most common failure is a boring, identical site every time: one 3D object floating
-dead-center, spinning a little on scroll, with a headline pinned bottom-left. NEVER do that.
-Real standout sites vary composition section to section: asymmetric layouts, scale
-contrast, the product slammed into a corner or bleeding off-frame, dramatic camera
-moves, text that is sometimes the hero and sometimes a whisper, moments with NO 3D
-at all, moments with several objects. Compose each section deliberately and differently.
+Do NOT build "one product spinning on a background", and do NOT scatter meshes at random
+coordinates — that reads as junk sprinkled in a void. Build a deliberately COMPOSED 3D SET,
+an Active-Theory-style environment the camera travels through, organised like a stage:
+
+- There is a reflective GROUND PLANE at y = -2.4. Everything RESTS on or rises from it —
+  give meshes a y so their base sits near the floor (object-center y roughly -2.0 .. +1.5),
+  not floating randomly in mid-air.
+- FOCAL HIERARCHY: the hero product is the centrepiece — centred near [0, -0.4, 0], the
+  largest and best-lit thing, on a pedestal/dais if the concept allows.
+- SYMMETRY & FRAMING: place set-dressing in balanced, mostly MIRRORED pairs that frame and
+  lead the eye to the hero — e.g. columns at [-5, -1, -4] and [+5, -1, -4]; lamps at
+  [-3, 0, 2] and [+3, 0, 2]. Avoid lopsided clutter.
+- DEPTH LAYERS: a few large elements far back (z = -12..-20, bigger scale) for a backdrop,
+  midground framing around the hero, and 1-2 foreground pieces near the camera (z = +3..+6)
+  for parallax. Build receding depth, not a flat row.
+- An optional overhead/canopy element above the hero (y = +3..+6) to enclose the space.
+Every mesh animates subtly. It must feel like a built place with a clear centre and structure.
 
 You have FULL control via this JSON schema. Coordinates are Three.js world units
 (object normalized to ~2u; camera looks at origin by default; +x right, +y up, +z toward viewer):
@@ -42,11 +53,12 @@ You have FULL control via this JSON schema. Coordinates are Three.js world units
   // CRITICAL: keep bloom restrained so the scene is NEVER blown out to white — the
   // product and type must stay legible and detailed, not a glowing blob.
   "effects": {{
-    "exposure": 0.85-1.05,
-    "particles": {{ "count": 0-60000, "size": 0.01-0.04, "opacity": 0.3-0.85, "spread": 2.0-8.0 }},
-    "bloom": {{ "strength": 0.15-0.55, "radius": 0.2-0.6, "threshold": 0.8-0.95 }},
+    "exposure": 0.8-1.0,
+    "particles": {{ "count": 0-60000, "size": 0.01-0.04, "opacity": 0.3-0.8, "spread": 2.0-8.0 }},
+    "bloom": {{ "strength": 0.12-0.35, "radius": 0.2-0.6, "threshold": 0.85-0.95 }},
     "fog": {{ "color": "#hex", "density": 0.0-0.12 }},
-    "grade": {{ "aberration": 0.0-0.003, "grain": 0.0-0.1, "vignette": 0.15-0.5 }}
+    "grade": {{ "aberration": 0.0-0.003, "grain": 0.0-0.1, "vignette": 0.15-0.5 }},
+    "ground": {{ "enabled": true, "color": "#hex deep", "y": -2.4, "metalness": 0.7-0.95, "roughness": 0.1-0.5 }}
   }},
   "objects": [
     {{
@@ -55,12 +67,14 @@ You have FULL control via this JSON schema. Coordinates are Three.js world units
       "mesh_query": "clean concrete noun phrase to search a 3D-model library, e.g. 'high top sneaker shoe', 'human skull', 'street lamp post' — a real physical object, not an abstract concept",
       "category": "tech|watch|auto|sneakers|beauty|furniture|sports|food|fashion|gaming|luxury",
       "needs_parts_separation": false,
-      // OPTIONAL: author the scroll-linked motion yourself (t in 0..1). Beats the canned presets.
+      // ABSOLUTE world placement — this mesh's permanent spot in the set. Spread meshes
+      // across x(-12..12), y(-6..6), z(-20..6) to build fore/mid/background depth.
+      "placement": {{ "position":[x,y,z], "scale":0.5-4.0, "rotation":[x,y,z] }},
+      // self-animation as the user scrolls (t = GLOBAL scroll 0..1): drift, spin, rise, orbit.
       "keyframes": [
         {{"t":0.0,"position":[0,0,0],"rotation":[0,0,0],"scale":1.0}},
-        {{"t":1.0,"position":[0,0.3,0],"rotation":[0,3.14,0],"scale":1.05}}
+        {{"t":1.0,"position":[0,0.6,0],"rotation":[0,3.14,0],"scale":1.0}}
       ],
-      // fallback only if you omit keyframes:
       "animation": "slow_rotation_y|float_bob|explode_reassemble|mechanical_tick|spin_fast"
     }}
   ],
@@ -85,9 +99,12 @@ You have FULL control via this JSON schema. Coordinates are Three.js world units
         "object_id": {{"position":[-2.4,0.2,0.5],"scale":1.4,"rotation":[0.1,0.6,0]}}
       }},
       // CAMERA — author an inline move (preferred) OR name a preset.
+      // The HERO/first section MUST open on a WIDE establishing shot that frames the
+      // whole set (camera well back, e.g. position [0,2,18], lookAt [0,0,-4], fov ~32)
+      // so the composition reads, THEN later sections push in. Never start nose-to-product.
       "camera": {{"keyframes":[
-        {{"scroll":0.0,"position":[0,1,7],"lookAt":[0,0,0],"fov":45}},
-        {{"scroll":1.0,"position":[3,0.5,3],"lookAt":[0,0,0],"fov":38}}
+        {{"scroll":0.0,"position":[0,2,18],"lookAt":[0,0,-4],"fov":34}},
+        {{"scroll":1.0,"position":[2,1,9],"lookAt":[0,0,-2],"fov":40}}
       ]}},
       "camera_preset": one of {sorted(CAMERA_PRESETS.keys())},   // fallback if no inline camera
       "lighting_preset": one of {sorted(LIGHTING_PRESETS.keys())},
@@ -96,7 +113,8 @@ You have FULL control via this JSON schema. Coordinates are Three.js world units
   ]
 }}
 
-Rules: 3-6 sections, 1-4 objects, first is the hero, end with a "dom_section" CTA.
+Rules: 4-6 sections, 8-14 objects (a populated world; the hero product is one of them),
+every object MUST have a "placement", end with a "dom_section" CTA.
 Give at least HALF the sections a distinct text_anchor and a distinct camera move from the others.
 Copy must be specific to the brief, confident, brand-appropriate. Output JSON only."""
 
@@ -138,7 +156,9 @@ async def run(prompt: str, settings: Settings, *, brand_mood: str | None, max_ob
     llm = LLMClient(settings)
     if llm.available:
         try:
-            data = await llm.complete_json(PLANNER_SYSTEM, f"Brief: {prompt}")
+            # A populated world (8-14 meshes with placements + keyframes) is a large
+            # JSON doc, and the model reasons before emitting it — give it room.
+            data = await llm.complete_json(PLANNER_SYSTEM, f"Brief: {prompt}", max_tokens=24000)
             plan = _coerce_plan(data, prompt, brand_mood, max_objects)
             return plan, llm.label
         except Exception:  # noqa: BLE001 - any LLM/parse failure falls back gracefully
@@ -238,7 +258,7 @@ def heuristic_plan(prompt: str, brand_mood: str | None, max_objects: int) -> Sit
         effects={
             "exposure": 1.0,
             "particles": {"count": 20000, "size": 0.022, "opacity": 0.8, "spread": 4.2},
-            "bloom": {"strength": 0.4, "radius": 0.5, "threshold": 0.86},
+            "bloom": {"strength": 0.28, "radius": 0.5, "threshold": 0.9},
             "fog": {"color": cfg["palette"][0], "density": 0.05},
             "grade": {"aberration": 0.0016, "grain": 0.05, "vignette": 0.32},
         },

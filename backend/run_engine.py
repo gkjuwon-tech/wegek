@@ -18,8 +18,10 @@ from app.factory import render as frender  # noqa: E402
 from app.pipeline import stage0_planner, stage2_assets, stage4_shaders, stage5_scene, stage6_codegen  # noqa: E402
 
 PROMPT = ("CYPHER SHADOW X — a limited-edition hypebeast sneaker drop. Futuristic chrome high-top. "
-          "Immersive neon-noir scrollytelling shrine: the sneaker as a relic, particle storms, "
-          "glass and iridescent materials, cinematic camera, kinetic mono typography.")
+          "Build an immersive Active-Theory-style 3D WORLD the camera flies through: the sneaker "
+          "enshrined in a neon-noir ruined cathedral / data-temple — pillars, rocks, statues, "
+          "floating debris, monitors, lamps arranged in deep space. Many animated meshes, particle "
+          "storms, cinematic camera travel, kinetic mono typography. A place, not a product shot.")
 
 
 async def log(msg, level="info"):
@@ -29,7 +31,7 @@ async def log(msg, level="info"):
 async def build(job: str):
     s = get_settings()
     site_dir = s.sites_dir / job
-    plan, prov = await stage0_planner.run(PROMPT, s, brand_mood=None, max_objects=6)
+    plan, prov = await stage0_planner.run(PROMPT, s, brand_mood=None, max_objects=14)
     print(f"PLAN provider={prov} project={plan.project_name} objs={[o.id for o in plan.objects]}", flush=True)
     print(f"  effects={plan.effects}", flush=True)
     _, meta = await stage2_assets.run(plan, site_dir, log)

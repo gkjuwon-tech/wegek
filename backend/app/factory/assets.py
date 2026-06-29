@@ -65,10 +65,20 @@ def _tokens(s: str) -> set[str]:
     return {_stem(t) for t in re.split(r"[^a-z0-9]+", s.lower()) if len(t) > 2 and t not in _STOP}
 
 
+# expand common queries toward words that actually appear in LVIS category names
+_SYN = {"sneaker": "shoe", "trainer": "shoe", "footwear": "shoe", "column": "pillar",
+        "lamppost": "lamp", "streetlamp": "lamp"}
+
+
 def _best_category(query: str, lvis: dict) -> str | None:
     qt = _tokens(query)
+    qt |= {_SYN[t] for t in list(qt) if t in _SYN}
     if not qt:
         return None
+    # an exact LVIS category named in the query wins outright
+    for t in qt:
+        if t in lvis:
+            return t
     best, best_score = None, 0.0
     for cat in lvis:
         ct = _tokens(cat.replace("_", " "))
