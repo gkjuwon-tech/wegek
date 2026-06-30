@@ -66,7 +66,7 @@ async def run(exp: Experience, settings: Settings, job_id: str, quality: str, lo
 
     cmd = [settings.blender_python, str(BUILD_SCRIPT), str(exp_path), str(out_dir), str(fpa)]
     await log(f"Blender {quality} render: {' '.join(cmd[:2])} … (fpa={fpa})")
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=settings.poll_timeout)
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=settings.blender_timeout)
     ok = "WEGEK_BLENDER_DONE" in proc.stdout
     export = {}
     exp_json = out_dir / "export.json"

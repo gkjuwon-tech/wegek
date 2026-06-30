@@ -51,6 +51,7 @@ class Settings(BaseSettings):
     request_timeout: float = 120.0
     poll_interval: float = 3.0
     poll_timeout: float = 600.0
+    blender_timeout: float = 2400.0   # headless Cycles can be slow on CPU
 
     @property
     def jobs_dir(self) -> Path:

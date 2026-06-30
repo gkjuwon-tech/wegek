@@ -121,8 +121,8 @@ bpy.ops.mesh.primitive_plane_add(size=400, location=(0, -ACT_SPACING, -1.6))
 fl = bpy.context.active_object
 fm = bpy.data.materials.new("floor"); fm.use_nodes = True
 fb = fm.node_tree.nodes["Principled BSDF"]
-fb.inputs["Metallic"].default_value = 0.85
-fb.inputs["Roughness"].default_value = 0.22
+fb.inputs["Metallic"].default_value = 0.6
+fb.inputs["Roughness"].default_value = 0.4   # glossier floors are far cheaper to path-trace
 fl.data.materials.append(fm)
 world_hdri(scenes[0].get("palette", ["#06080d", "#00e5ff", "#a06bff", "#eef6ff"]) if scenes else ["#06080d"])
 
