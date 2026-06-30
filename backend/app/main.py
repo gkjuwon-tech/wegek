@@ -1,71 +1,65 @@
-"""WEGEK backend — FastAPI application entrypoint.
-
-Serves the orchestration API, the live job WebSocket, generated sites as static
-files, and (in production) the built studio frontend.
-"""
+"""WEGEK v2 backend API."""
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
+import uuid
 
-from fastapi import FastAPI
+from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from fastapi.staticfiles import StaticFiles
 
 from .config import get_settings
-from .routers import jobs, ws
+from .pipeline import orchestrator
+from .schemas import CreateJobRequest, Job, JobStatus
 from .store import get_store
 
+app = FastAPI(title="WEGEK v2 — AI 3D Render Studio")
 settings = get_settings()
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    settings.ensure_dirs()
-    get_store()  # init DB
-    yield
-
-
-app = FastAPI(
-    title="WEGEK — AI 3D Website Factory",
-    description="Natural language → production-quality 3D scrollytelling website.",
-    version="1.0.0",
-    lifespan=lifespan,
-)
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in settings.cors_origins.split(",")] if settings.cors_origins != "*" else ["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=[o.strip() for o in settings.cors_origins.split(",")],
+    allow_methods=["*"], allow_headers=["*"],
 )
 
-app.include_router(jobs.router)
-app.include_router(ws.router)
 
-# Generated sites served statically (each job under /sites/{id}/index.html)
-app.mount("/sites", StaticFiles(directory=str(settings.sites_dir), html=True), name="sites")
-
-
-@app.get("/api")
-async def api_root() -> JSONResponse:
-    return JSONResponse({"name": "WEGEK", "docs": "/docs", "health": "/api/health"})
+@app.get("/healthz")
+async def healthz() -> dict:
+    return {"ok": True, "version": app.version, "service": "wegek-v2"}
 
 
-# Serve built frontend if present (production single-container deployment)
-_frontend_dist = settings.data_dir.parent.parent / "frontend" / "dist"
-if _frontend_dist.is_dir():
-    app.mount("/", StaticFiles(directory=str(_frontend_dist), html=True), name="studio")
-else:
+async def _run(job_id: str) -> None:
+    store = get_store()
+    job = await store.get(job_id)
+    if job:
+        await orchestrator.run_job(job, settings, store.save)
 
-    @app.get("/")
-    async def root() -> JSONResponse:
-        return JSONResponse(
-            {
-                "name": "WEGEK — AI 3D Website Factory",
-                "studio": "run the frontend dev server (npm run dev in /frontend)",
-                "api_health": "/api/health",
-                "docs": "/docs",
-            }
-        )
+
+@app.post("/jobs")
+async def create_job(req: CreateJobRequest, bg: BackgroundTasks) -> dict:
+    store = get_store()
+    job = Job(id=uuid.uuid4().hex[:12], prompt=req.prompt)
+    await store.save(job)
+    bg.add_task(_run, job.id)
+    return {"id": job.id, "status": job.status}
+
+
+@app.get("/jobs/{job_id}")
+async def get_job(job_id: str) -> Job:
+    job = await get_store().get(job_id)
+    if not job:
+        raise HTTPException(404, "job not found")
+    return job
+
+
+@app.get("/jobs")
+async def list_jobs() -> list[dict]:
+    return [{"id": j.id, "status": j.status, "prompt": j.prompt[:80], "created_at": j.created_at}
+            for j in get_store().list()]
+
+
+@app.get("/jobs/{job_id}/spec")
+async def get_spec(job_id: str) -> dict:
+    job = await get_store().get(job_id)
+    if not job:
+        raise HTTPException(404, "job not found")
+    if job.status != JobStatus.SUCCEEDED or not job.baked_spec:
+        raise HTTPException(409, f"spec not ready (status={job.status})")
+    return job.baked_spec

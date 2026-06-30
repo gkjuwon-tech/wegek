@@ -1,9 +1,4 @@
-"""Tripo image-to-3D + auto-rig client (Stages 2 & 3).
-
-Implements the Tripo task/poll protocol: create task -> poll -> read GLB url.
-Supports single-image and multi-view inputs. When no key is configured
-`available` is False and the pipeline emits procedural geometry instead.
-"""
+"""Tripo client — mesh outsourcing (reference image -> 3D GLB)."""
 from __future__ import annotations
 
 import asyncio
@@ -16,7 +11,7 @@ from ..config import Settings
 
 
 def _is_url(ref: str) -> bool:
-    return ref.startswith("http://") or ref.startswith("https://")
+    return ref.startswith(("http://", "https://"))
 
 
 class TripoClient:
@@ -27,52 +22,27 @@ class TripoClient:
     def available(self) -> bool:
         return bool(self.s.tripo_api_key)
 
-    @property
-    def label(self) -> str:
-        return f"tripo:{self.s.tripo_model_version}" if self.available else "none"
-
     def _headers(self) -> dict:
-        return {
-            "Authorization": f"Bearer {self.s.tripo_api_key}",
-            "Content-Type": "application/json",
-        }
+        return {"Authorization": f"Bearer {self.s.tripo_api_key}", "Content-Type": "application/json"}
 
     def _auth(self) -> dict:
         return {"Authorization": f"Bearer {self.s.tripo_api_key}"}
 
-    async def image_to_model(self, image_refs: list[str], generate_parts: bool = False) -> str:
-        """Run image(s) -> 3D and return a downloadable GLB url.
-
-        Each reference is either a public image URL (e.g. FLUX output) or a local
-        file path (e.g. a Gemini-generated image), which is uploaded first to
-        obtain a Tripo file token.
-        """
+    async def image_to_model(self, image_ref: str) -> str:
+        """Reference image (local path or URL) -> downloadable GLB url."""
         if not self.available:
             raise RuntimeError("no Tripo API key configured")
         async with httpx.AsyncClient(timeout=self.s.request_timeout) as client:
-            files = [await self._file_descriptor(client, ref) for ref in image_refs[:4]]
-            quality = {
+            file_desc = await self._file_descriptor(client, image_ref)
+            payload = {
+                "type": "image_to_model",
+                "file": file_desc,
                 "model_version": self.s.tripo_model_version,
                 "texture": True,
-                "pbr": self.s.tripo_pbr,
+                "pbr": True,
                 "texture_quality": self.s.tripo_texture_quality,
                 "auto_size": True,
             }
-            if self.s.tripo_face_limit > 0:
-                quality["face_limit"] = self.s.tripo_face_limit
-            if len(files) >= 2:
-                payload = {
-                    "type": "multiview_to_model",
-                    "files": files,
-                    "generate_parts": generate_parts,
-                    **quality,
-                }
-            else:
-                payload = {
-                    "type": "image_to_model",
-                    "file": files[0],
-                    **quality,
-                }
             task_id = await self._create_task(client, payload)
             result = await self._poll(client, task_id)
             return self._extract_model_url(result)
@@ -80,12 +50,7 @@ class TripoClient:
     async def _file_descriptor(self, client: httpx.AsyncClient, ref: str) -> dict:
         if _is_url(ref):
             return {"type": "png", "url": ref}
-        token, img_type = await self.upload_image(client, ref)
-        return {"type": img_type, "file_token": token}
-
-    async def upload_image(self, client: httpx.AsyncClient, path: str) -> tuple[str, str]:
-        """Upload a local image and return (file_token, image_type)."""
-        p = Path(path)
+        p = Path(ref)
         mime = mimetypes.guess_type(p.name)[0] or "image/png"
         img_type = "jpg" if "jpeg" in mime or "jpg" in mime else "png"
         resp = await client.post(
@@ -94,17 +59,7 @@ class TripoClient:
             files={"file": (p.name, p.read_bytes(), mime)},
         )
         resp.raise_for_status()
-        return resp.json()["data"]["image_token"], img_type
-
-    async def auto_rig(self, model_task_id: str) -> str:
-        if not self.available:
-            raise RuntimeError("no Tripo API key configured")
-        async with httpx.AsyncClient(timeout=self.s.request_timeout) as client:
-            task_id = await self._create_task(
-                client, {"type": "animate_rig", "original_model_task_id": model_task_id, "out_format": "glb"}
-            )
-            result = await self._poll(client, task_id)
-            return self._extract_model_url(result)
+        return {"type": img_type, "file_token": resp.json()["data"]["image_token"]}
 
     async def _create_task(self, client: httpx.AsyncClient, payload: dict) -> str:
         resp = await client.post(f"{self.s.tripo_base_url}/task", headers=self._headers(), json=payload)
@@ -128,11 +83,13 @@ class TripoClient:
     @staticmethod
     def _extract_model_url(data: dict) -> str:
         output = data.get("output", {})
-        for key in ("pbr_model", "model", "rigged_model", "base_model"):
+        for key in ("pbr_model", "model", "base_model", "rigged_model"):
             if output.get(key):
                 return output[key]
-        result = data.get("result", {})
-        for key in ("pbr_model", "model"):
-            if isinstance(result.get(key), dict) and result[key].get("url"):
-                return result[key]["url"]
         raise RuntimeError("Tripo response had no model url")
+
+    async def balance(self) -> int:
+        async with httpx.AsyncClient(timeout=30) as client:
+            r = await client.get(f"{self.s.tripo_base_url}/user/balance", headers=self._headers())
+            r.raise_for_status()
+            return int(r.json()["data"]["balance"])

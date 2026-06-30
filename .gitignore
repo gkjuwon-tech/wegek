@@ -8,14 +8,8 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
-# Node
-node_modules/
-dist/
-.vite/
-
-# WEGEK runtime data (generated jobs, sites, db)
+# WEGEK runtime data (jobs, assets, renders, hdri)
 backend/_data/
-renderer/_shots/
 
 # Env / secrets
 .env

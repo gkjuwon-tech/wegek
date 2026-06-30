@@ -1,144 +1,106 @@
-"""LLM client for the planner (Stage 0) and shader generation (Stage 4).
+"""Gemini client — planner (chat) + reference-image generation for Tripo.
 
-Supports Anthropic and OpenAI-compatible APIs. Selection is automatic based on
-which key is configured. When no key is present `available` is False and callers
-fall back to deterministic generation.
+Uses Gemini's OpenAI-compatible chat surface for planning and the native
+generateContent endpoint for images. Absent key -> not available (heuristic plan).
 """
 from __future__ import annotations
 
+import base64
 import json
 import re
+import uuid
+from pathlib import Path
 
 import httpx
 
 from ..config import Settings
 
 
-class LLMUnavailable(RuntimeError):
-    pass
-
-
 class LLMClient:
     def __init__(self, settings: Settings) -> None:
         self.s = settings
-        self.provider = self._resolve_provider()
-
-    def _resolve_provider(self) -> str:
-        choice = self.s.planner_provider.lower()
-        if choice == "anthropic" and self.s.anthropic_api_key:
-            return "anthropic"
-        if choice == "openai" and self.s.openai_api_key:
-            return "openai"
-        if choice == "gemini" and self.s.gemini_api_key:
-            return "gemini"
-        if choice == "auto":
-            if self.s.anthropic_api_key:
-                return "anthropic"
-            if self.s.openai_api_key:
-                return "openai"
-            if self.s.gemini_api_key:
-                return "gemini"
-        return "none"
 
     @property
     def available(self) -> bool:
-        return self.provider != "none"
+        return bool(self.s.gemini_api_key)
 
     @property
     def label(self) -> str:
-        if self.provider == "anthropic":
-            return f"anthropic:{self.s.anthropic_model}"
-        if self.provider == "openai":
-            return f"openai:{self.s.openai_model}"
-        if self.provider == "gemini":
-            return f"gemini:{self.s.gemini_model}"
-        return "none"
+        return f"gemini:{self.s.gemini_model}" if self.available else "none"
 
-    async def complete_text(self, system: str, user: str, max_tokens: int = 4000) -> str:
-        if not self.available:
-            raise LLMUnavailable("no LLM API key configured")
-        async with httpx.AsyncClient(timeout=self.s.request_timeout) as client:
-            if self.provider == "anthropic":
-                return await self._anthropic(client, system, user, max_tokens)
-            if self.provider == "gemini":
-                return await self._gemini(client, system, user, max_tokens)
-            return await self._openai(client, system, user, max_tokens)
+    async def complete_text(self, system: str, user: str, max_tokens: int = 8000) -> str:
+        async with httpx.AsyncClient(timeout=self.s.request_timeout) as c:
+            r = await c.post(
+                f"{self.s.gemini_base_url}/openai/chat/completions",
+                headers={"Authorization": f"Bearer {self.s.gemini_api_key}"},
+                json={
+                    "model": self.s.gemini_model,
+                    "max_tokens": max_tokens,
+                    "messages": [
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": user},
+                    ],
+                },
+            )
+            r.raise_for_status()
+            return r.json()["choices"][0]["message"]["content"] or ""
 
-    async def complete_json(self, system: str, user: str, max_tokens: int = 4000) -> dict:
+    async def complete_json(self, system: str, user: str, max_tokens: int = 16000) -> dict:
         text = await self.complete_text(
-            system + "\n\nRespond ONLY with a single valid JSON object, no prose, no markdown fences.",
-            user,
-            max_tokens,
+            system + "\n\nReturn ONLY one valid JSON object, no prose, no markdown fences.",
+            user, max_tokens,
         )
         return _extract_json(text)
 
-    async def _anthropic(self, client: httpx.AsyncClient, system: str, user: str, max_tokens: int) -> str:
-        resp = await client.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={
-                "x-api-key": self.s.anthropic_api_key or "",
-                "anthropic-version": "2023-06-01",
-                "content-type": "application/json",
-            },
-            json={
-                "model": self.s.anthropic_model,
-                "max_tokens": max_tokens,
-                "system": system,
-                "messages": [{"role": "user", "content": user}],
-            },
-        )
-        resp.raise_for_status()
-        data = resp.json()
-        return "".join(block.get("text", "") for block in data.get("content", []))
+    async def critique_images(self, system: str, user: str, image_paths: list[str], max_tokens: int = 2500) -> dict:
+        """Multimodal critique: judge preview frames, return JSON."""
+        content: list[dict] = [{"type": "text", "text": user}]
+        for p in image_paths:
+            b64 = base64.b64encode(Path(p).read_bytes()).decode()
+            content.append({"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}})
+        async with httpx.AsyncClient(timeout=self.s.request_timeout) as c:
+            r = await c.post(
+                f"{self.s.gemini_base_url}/openai/chat/completions",
+                headers={"Authorization": f"Bearer {self.s.gemini_api_key}"},
+                json={"model": self.s.gemini_model, "max_tokens": max_tokens,
+                      "messages": [{"role": "system", "content": system}, {"role": "user", "content": content}]},
+            )
+            r.raise_for_status()
+            return _extract_json(r.json()["choices"][0]["message"]["content"] or "{}")
 
-    async def _openai(self, client: httpx.AsyncClient, system: str, user: str, max_tokens: int) -> str:
-        resp = await client.post(
-            f"{self.s.openai_base_url}/chat/completions",
-            headers={"Authorization": f"Bearer {self.s.openai_api_key}"},
-            json={
-                "model": self.s.openai_model,
-                "max_tokens": max_tokens,
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-            },
-        )
-        resp.raise_for_status()
-        data = resp.json()
-        return data["choices"][0]["message"]["content"]
-
-    async def _gemini(self, client: httpx.AsyncClient, system: str, user: str, max_tokens: int) -> str:
-        # Gemini ships an OpenAI-compatible surface; reuse the chat-completions shape.
-        resp = await client.post(
-            f"{self.s.gemini_base_url}/openai/chat/completions",
-            headers={"Authorization": f"Bearer {self.s.gemini_api_key}"},
-            json={
-                "model": self.s.gemini_model,
-                "max_tokens": max_tokens,
-                "reasoning_effort": "low",
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-            },
-        )
-        resp.raise_for_status()
-        data = resp.json()
-        return data["choices"][0]["message"]["content"] or ""
+    async def generate_image(self, prompt: str, dest_dir: Path) -> str:
+        """Generate a reference image and return its local path (for Tripo)."""
+        suffix = (", single hero product, three-quarter 45° angle, centered, isolated on a "
+                  "pure white seamless background, studio product photography, soft shadows, "
+                  "high detail, photorealistic, no text")
+        async with httpx.AsyncClient(timeout=self.s.request_timeout) as c:
+            r = await c.post(
+                f"{self.s.gemini_base_url}/models/{self.s.gemini_image_model}:generateContent",
+                headers={"x-goog-api-key": self.s.gemini_api_key or "", "Content-Type": "application/json"},
+                json={"contents": [{"parts": [{"text": prompt + suffix}]}]},
+            )
+            r.raise_for_status()
+            for cand in r.json().get("candidates", []):
+                for part in cand.get("content", {}).get("parts", []):
+                    inline = part.get("inlineData") or part.get("inline_data")
+                    if inline and inline.get("data"):
+                        dest_dir.mkdir(parents=True, exist_ok=True)
+                        ext = "png" if "png" in inline.get("mimeType", "png") else "jpg"
+                        p = dest_dir / f"{uuid.uuid4().hex}.{ext}"
+                        p.write_bytes(base64.b64decode(inline["data"]))
+                        return str(p)
+        raise RuntimeError("Gemini returned no image data")
 
 
 def _extract_json(text: str) -> dict:
     text = text.strip()
-    # strip markdown fences if present
-    fence = re.search(r"```(?:json)?\s*(.*?)```", text, re.DOTALL)
-    if fence:
-        text = fence.group(1).strip()
+    m = re.search(r"```(?:json)?\s*(.*?)```", text, re.DOTALL)
+    if m:
+        text = m.group(1).strip()
     try:
         return json.loads(text)
     except json.JSONDecodeError:
-        start = text.find("{")
-        end = text.rfind("}")
-        if start != -1 and end != -1 and end > start:
-            return json.loads(text[start : end + 1])
+        a, b = text.find("{"), text.rfind("}")
+        if a != -1 and b != -1:
+            return json.loads(text[a:b + 1])
         raise

@@ -1,7 +1,9 @@
-"""Pydantic schemas: the contract that flows through the WEGEK pipeline.
+"""WEGEK v2 schemas — the contract the AI art-directs and Blender realizes.
 
-The `SitePlan` is the structured artifact emitted by Stage 0 and progressively
-enriched by every downstream stage until Stage 6 turns it into a website.
+An Experience is exactly three Scenes that hand off on scroll (Active-Theory grammar).
+Every Scene declares its meshes (sourced from Tripo), their keyframed animation, a
+camera move, lighting (incl. rim lights) and an HDRI. The same structure is later
+re-populated with the *exact* coordinates Blender exports (see pipeline/bake.py).
 """
 from __future__ import annotations
 
@@ -11,42 +13,84 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+Vec3 = list[float]
+
 
 # --------------------------------------------------------------------------- #
-# Pipeline stages & job lifecycle
+# Scene description (Stage: plan)
+# --------------------------------------------------------------------------- #
+class Keyframe(BaseModel):
+    """A pose at scene-local scroll t in [0,1]."""
+    t: float = 0.0
+    position: Vec3 = Field(default_factory=lambda: [0.0, 0.0, 0.0])
+    rotation: Vec3 = Field(default_factory=lambda: [0.0, 0.0, 0.0])  # euler radians
+    scale: float = 1.0
+
+
+class SceneObject(BaseModel):
+    id: str
+    description: str = ""
+    # what Tripo should make (clean noun phrase) and how the reference image looks
+    mesh_query: str = ""
+    is_hero: bool = False
+    # static placement in the scene + keyframed motion across the scene's scroll
+    position: Vec3 = Field(default_factory=lambda: [0.0, 0.0, 0.0])
+    rotation: Vec3 = Field(default_factory=lambda: [0.0, 0.0, 0.0])
+    scale: float = 1.0
+    keyframes: list[Keyframe] = Field(default_factory=list)
+    material: str = "chrome"  # chrome|glass|matte|emissive (Blender material preset)
+    # enriched by the meshes stage
+    model_url: str | None = None
+    model_local: str | None = None
+
+
+class CameraKey(BaseModel):
+    t: float = 0.0
+    position: Vec3 = Field(default_factory=lambda: [0.0, -7.0, 2.0])
+    look_at: Vec3 = Field(default_factory=lambda: [0.0, 0.0, 0.0])
+    fov: float = 45.0
+
+
+class Light(BaseModel):
+    type: str = "area"  # area|sun|point|spot
+    position: Vec3 = Field(default_factory=lambda: [4.0, -4.0, 5.0])
+    energy: float = 1000.0
+    color: str = "#ffffff"
+    size: float = 5.0
+    is_rim: bool = False
+
+
+class Scene(BaseModel):
+    id: str
+    title: str = ""
+    narrative: str = ""
+    objects: list[SceneObject] = Field(default_factory=list)
+    camera: list[CameraKey] = Field(default_factory=list)
+    lights: list[Light] = Field(default_factory=list)
+    hdri: str = "studio"          # named HDRI/world preset
+    palette: list[str] = Field(default_factory=lambda: ["#06080d", "#00e5ff", "#a06bff", "#eef6ff"])
+    # how this scene leaves toward the next (Active-Theory hand-off)
+    transition_out: str = "camera_fly"  # camera_fly|dissolve|push_through|morph
+
+
+class Experience(BaseModel):
+    project_name: str
+    tagline: str = ""
+    mood: str = "premium neon-noir"
+    scenes: list[Scene] = Field(default_factory=list)  # exactly 3
+
+    def all_objects(self) -> list[SceneObject]:
+        return [o for s in self.scenes for o in s.objects]
+
+
+# --------------------------------------------------------------------------- #
+# Job lifecycle
 # --------------------------------------------------------------------------- #
 class Stage(StrEnum):
-    PLAN = "plan"            # Stage 0
-    IMAGES = "images"        # Stage 1
-    MODELS = "models"        # Stage 2
-    ANIMATE = "animate"      # Stage 3
-    SHADERS = "shaders"      # Stage 4
-    SCENE = "scene"          # Stage 5
-    CODEGEN = "codegen"      # Stage 6
-    REVIEW = "review"        # Stage 7
-
-
-STAGE_ORDER: list[Stage] = [
-    Stage.PLAN,
-    Stage.IMAGES,
-    Stage.MODELS,
-    Stage.ANIMATE,
-    Stage.SHADERS,
-    Stage.SCENE,
-    Stage.CODEGEN,
-    Stage.REVIEW,
-]
-
-STAGE_LABELS: dict[Stage, str] = {
-    Stage.PLAN: "Stage 0 · Planner AI",
-    Stage.IMAGES: "Stage 1 · Reference Images",
-    Stage.MODELS: "Stage 2 · Image → 3D",
-    Stage.ANIMATE: "Stage 3 · Rig & Animate",
-    Stage.SHADERS: "Stage 4 · GLSL Background",
-    Stage.SCENE: "Stage 5 · Scene Assembly",
-    Stage.CODEGEN: "Stage 6 · DOM & Frontend",
-    Stage.REVIEW: "Stage 7 · Render Review",
-}
+    PLAN = "plan"            # design the 3-scene experience
+    MESHES = "meshes"        # outsource meshes to Tripo
+    BLENDER = "blender"      # build + render + export the scenes in Blender
+    BAKE = "bake"            # bake exact Blender coords into the site spec
 
 
 class JobStatus(StrEnum):
@@ -56,109 +100,16 @@ class JobStatus(StrEnum):
     FAILED = "failed"
 
 
-# --------------------------------------------------------------------------- #
-# Site plan (Stage 0 output)
-# --------------------------------------------------------------------------- #
-class Object3D(BaseModel):
-    id: str
-    description: str
-    category: str = "tech"
-    # clean searchable noun phrase for an external 3D-model library (e.g.
-    # "high top sneaker shoe"); used to source a real GLB when 3D-gen is offline.
-    mesh_query: str = ""
-    animation: str = "slow_rotation_y"
-    needs_parts_separation: bool = False
-    # absolute placement in the world set (position/scale/rotation). When present the
-    # mesh lives permanently in the scene (a built environment the camera travels
-    # through), rather than fading in/out per section.
-    placement: dict[str, Any] = Field(default_factory=dict)
-    # scroll lifecycle (global scroll 0..1): the mesh fades/scales in at scroll_in and
-    # out at scroll_out, so the world EVOLVES and scenes change as the user scrolls.
-    # Default full range = always present (a persistent set piece).
-    scroll_in: float = 0.0
-    scroll_out: float = 1.0
-    # enriched downstream
-    reference_images: list[str] = Field(default_factory=list)
-    model_url: str | None = None
-    model_format: str = "procedural"  # "procedural" | "glb"
-    primitive: str | None = None       # procedural geometry hint
-    color: str | None = None
-    keyframes: list[dict[str, Any]] = Field(default_factory=list)
-
-
-class Section(BaseModel):
-    id: str
-    type: str = "3d_product_showcase"
-    headline: str = ""
-    subcopy: str = ""
-    body: str = ""
-    objects: list[str] = Field(default_factory=list)
-    camera_preset: str = "orbit_showcase"
-    lighting_preset: str = "studio_dramatic"
-    scroll_behavior: str = "zoom_in_with_rotation"
-    dom_overlay: bool = True
-    # --- AI art-direction (all optional; engine falls back to presets/center) ---
-    # Free composition controls authored by the planner so every section can look
-    # different instead of collapsing into one templated layout.
-    layout: dict[str, Any] = Field(default_factory=dict)
-    # object_id -> {"position":[x,y,z], "scale":float, "rotation":[x,y,z]}
-    object_layout: dict[str, dict[str, Any]] = Field(default_factory=dict)
-    # inline camera: {"position":[x,y,z],"lookAt":[x,y,z],"fov":n} OR {"keyframes":[...]}
-    camera: dict[str, Any] | None = None
-
-
-class GlobalStyle(BaseModel):
-    color_palette: list[str] = Field(
-        default_factory=lambda: ["#0a0a0f", "#e94560", "#0f3460", "#f5f5f7"]
-    )
-    typography: str = "modern_sans"
-    background_shader: str = "gradient_noise_dark"
-    accent: str = "#e94560"
-    scroll_engine: str = "lenis_gsap"
-    engine: str = "three_r3f"
-
-
-class SitePlan(BaseModel):
-    project_name: str
-    tagline: str = ""
-    brand_mood: str = "premium"
-    sections: list[Section] = Field(default_factory=list)
-    objects: list[Object3D] = Field(default_factory=list)
-    global_style: GlobalStyle = Field(default_factory=GlobalStyle)
-    # AI-authored effect parameters consumed by the engine (particles, bloom, fog,
-    # colour grade, exposure). The engine executes; the art direction lives here.
-    effects: dict[str, Any] = Field(default_factory=dict)
-    # enriched at Stage 4
-    background_shader_glsl: str | None = None
-
-    def object_by_id(self, oid: str) -> Object3D | None:
-        return next((o for o in self.objects if o.id == oid), None)
-
-
-# --------------------------------------------------------------------------- #
-# Jobs
-# --------------------------------------------------------------------------- #
 class StageResult(BaseModel):
     stage: Stage
-    status: str = "pending"  # pending | running | done | skipped | failed
+    status: str = "pending"
     detail: str = ""
-    provider: str = ""       # which backend (llm/flux/tripo/procedural) was used
-    started_at: float | None = None
-    finished_at: float | None = None
     meta: dict[str, Any] = Field(default_factory=dict)
 
 
 class CreateJobRequest(BaseModel):
     prompt: str = Field(..., min_length=3, max_length=4000)
-    brand_mood: str | None = None
-    max_objects: int | None = Field(default=None, ge=1, le=12)
-
-
-class LogEntry(BaseModel):
-    ts: float = Field(default_factory=time.time)
-    stage: Stage | None = None
-    level: str = "info"
-    message: str
+    mood: str | None = None
 
 
 class Job(BaseModel):
@@ -167,31 +118,8 @@ class Job(BaseModel):
     status: JobStatus = JobStatus.QUEUED
     created_at: float = Field(default_factory=time.time)
     updated_at: float = Field(default_factory=time.time)
-    current_stage: Stage | None = None
     stages: list[StageResult] = Field(default_factory=list)
-    plan: SitePlan | None = None
-    site_url: str | None = None
-    bundle_path: str | None = None
-    preview_image: str | None = None
-    review_score: float | None = None
+    experience: Experience | None = None
+    baked_spec: dict[str, Any] | None = None
     error: str | None = None
-    logs: list[LogEntry] = Field(default_factory=list)
-
-    def stage_result(self, stage: Stage) -> StageResult:
-        for s in self.stages:
-            if s.stage == stage:
-                return s
-        sr = StageResult(stage=stage)
-        self.stages.append(sr)
-        return sr
-
-
-class JobSummary(BaseModel):
-    id: str
-    prompt: str
-    status: JobStatus
-    created_at: float
-    updated_at: float
-    current_stage: Stage | None = None
-    site_url: str | None = None
-    review_score: float | None = None
+    logs: list[str] = Field(default_factory=list)

@@ -1,6 +1,8 @@
-# Pinned runtime deps (also declared in pyproject.toml).
+# Runtime deps (also in pyproject.toml). bpy (Blender) is installed separately on
+# the render host: pip install bpy
 fastapi>=0.115.0,<1.0.0
 uvicorn[standard]>=0.30.0,<1.0.0
 pydantic>=2.8.0,<3.0.0
 pydantic-settings>=2.4.0,<3.0.0
 httpx>=0.27.0,<1.0.0
+python-dotenv>=1.0.0
