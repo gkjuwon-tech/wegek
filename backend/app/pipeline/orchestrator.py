@@ -12,7 +12,7 @@ from typing import Any
 from ..clients.llm import LLMClient
 from ..config import Settings
 from ..schemas import Experience, Job, JobStatus, Stage, StageResult
-from . import bake, blender_build, meshes, plan
+from . import bake, blender_build, meshes, plan, site
 
 CRITIC_SYSTEM = """You are an Awwwards art director reviewing FAST SOLID preview frames (one per scene/act,
 in scroll order) of a 3-scene Blender experience. Materials/lighting are NOT final — judge only
@@ -87,12 +87,17 @@ async def run_job(job: Job, settings: Settings, save: Saver, *, max_iters: int =
         sr(Stage.BLENDER).status = "done"
         await log(f"Final render: {len(fin['frames'])} frames; video={'yes' if video else 'no'}.")
 
-        # 5) bake exact coords -> site spec
+        # 5) bake exact coords -> site spec -> real frontend
         sr(Stage.BAKE).status = "running"
         await save(job)
         job.baked_spec = bake.bake(exp, fin["export"], fin["frames"], video)
+        site_out = settings.renders_dir / job.id / "site"
+        sinfo = site.build(job.baked_spec, fin["frames"], site_out)
+        job.baked_spec["site_path"] = sinfo["path"]
+        job.baked_spec["video_path"] = video
         sr(Stage.BAKE).status = "done"
-        await log("Baked Blender export into site spec.")
+        sr(Stage.BAKE).meta = {"site": sinfo["path"], "frames": sinfo["frames"]}
+        await log(f"Baked + built site ({sinfo['frames']} frames) at {sinfo['path']}.")
 
         job.status = JobStatus.SUCCEEDED
     except Exception as exc:  # noqa: BLE001

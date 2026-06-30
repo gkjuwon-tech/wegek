@@ -85,6 +85,19 @@ def import_glb(path):
     return meshes, (holder, ctr, 2.0 / size)
 
 
+def make_box():
+    """Placeholder cube as a holder child (used when no real mesh is provided)."""
+    bpy.ops.mesh.primitive_cube_add(size=2.0)
+    cube = bpy.context.active_object
+    holder = bpy.data.objects.new("holder", None)
+    sc.collection.objects.link(holder)
+    cube.parent = holder
+    m = bpy.data.materials.new("box")
+    m.use_nodes = True
+    cube.data.materials.append(m)
+    return [cube], (holder, mathutils.Vector((0, 0, 0)), 1.0)
+
+
 def world_hdri(palette):
     world = bpy.data.worlds.new("W"); sc.world = world; world.use_nodes = True
     nt = world.node_tree
@@ -129,9 +142,10 @@ for ai, scene in enumerate(scenes):
 
     for ob in scene.get("objects", []):
         path = ob.get("model_local")
-        if not path:
-            continue
-        meshes, info = import_glb(path)
+        if path:
+            meshes, info = import_glb(path)
+        else:
+            meshes, info = make_box()   # box mode / unmade mesh -> placeholder cube
         if not info:
             continue
         holder, ctr, autoscale = info

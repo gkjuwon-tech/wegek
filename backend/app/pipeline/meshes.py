@@ -24,6 +24,9 @@ def _key(query: str) -> str:
 
 
 async def run(exp: Experience, settings: Settings, log: Logger) -> tuple[str, dict]:
+    if settings.mesh_mode == "box":
+        await log("Mesh mode = box: all meshes are placeholder cubes (Blender builds them).")
+        return "box", {"made": 0, "cached": 0, "failed": 0, "unique": 0, "box": True}
     tripo = TripoClient(settings)
     llm = LLMClient(settings)
     settings.assets_dir.mkdir(parents=True, exist_ok=True)

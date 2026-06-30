@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-3.5-flash"
     gemini_image_model: str = "gemini-3.1-flash-image"
 
+    # mesh source: "tripo" (real meshes) or "box" (placeholder cubes for fast
+    # iteration on composition / scroll / animation regardless of mesh quality)
+    mesh_mode: str = "tripo"
+
     # Tripo (mesh outsourcing: image -> 3D)
     tripo_api_key: str | None = None
     tripo_base_url: str = "https://api.tripo3d.ai/v2/openapi"
