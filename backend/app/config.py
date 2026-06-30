@@ -1,9 +1,4 @@
-"""Application configuration loaded from environment / .env.
-
-All external integrations are optional: when an API key is absent the pipeline
-transparently falls back to deterministic procedural generation so the factory
-always produces a runnable 3D website.
-"""
+"""Configuration for the WEGEK v2 backend."""
 from __future__ import annotations
 
 from functools import lru_cache
@@ -23,87 +18,60 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # --- Server ---
     host: str = "0.0.0.0"
     port: int = 8000
     cors_origins: str = "*"
-    log_level: str = "INFO"
 
-    # --- Storage ---
     data_dir: Path = Field(default=BACKEND_ROOT / "_data")
 
-    # --- Stage 0: Planner LLM ---
-    # Provider auto-detected from available keys. "auto" picks anthropic > openai > gemini > heuristic.
-    planner_provider: str = "auto"
-    anthropic_api_key: str | None = None
-    anthropic_model: str = "claude-sonnet-4-20250514"
-    openai_api_key: str | None = None
-    openai_model: str = "gpt-4o"
-    openai_base_url: str = "https://api.openai.com/v1"
-
-    # --- Google Gemini (optional stand-in for the planner LLM + image gen) ---
-    # Uses the Gemini API: OpenAI-compatible chat for planning/shaders and the
-    # native generateContent endpoint for image generation. Entirely opt-in —
-    # absent key leaves anthropic/openai/FLUX behaviour untouched.
+    # Planner LLM (Gemini OpenAI-compatible surface; absent key -> heuristic plan)
     gemini_api_key: str | None = None
     gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta"
-    gemini_model: str = "gemini-2.5-flash"
-    gemini_image_model: str = "gemini-2.5-flash-image"
+    gemini_model: str = "gemini-3.5-flash"
+    gemini_image_model: str = "gemini-3.1-flash-image"
 
-    # --- Stage 1: Image generation ---
-    # IMAGE_PROVIDER: auto | bfl | gemini   (auto = bfl > gemini > procedural)
-    image_provider: str = "auto"
-    bfl_api_key: str | None = None
-    bfl_base_url: str = "https://api.bfl.ai/v1"
-    bfl_model: str = "flux-pro-1.1"
+    # mesh source: "tripo" (real meshes) or "box" (placeholder cubes for fast
+    # iteration on composition / scroll / animation regardless of mesh quality)
+    mesh_mode: str = "tripo"
 
-    # --- Stage 2/3: 3D model generation + rigging (Tripo) ---
+    # Tripo (mesh outsourcing: image -> 3D)
     tripo_api_key: str | None = None
     tripo_base_url: str = "https://api.tripo3d.ai/v2/openapi"
     tripo_model_version: str = "v2.5-20250123"
+    tripo_texture_quality: str = "detailed"
 
-    # --- Stage 4: Shader generation (reuses planner LLM) ---
-    shader_use_llm: bool = True
+    # Blender render host
+    blender_python: str = "python"   # interpreter that has the `bpy` module
+    render_samples: int = 24
+    render_width: int = 1280
+    render_height: int = 720
+    frames_per_scene: int = 48
+    hdri_dir: Path = Field(default=BACKEND_ROOT / "_data" / "hdri")
 
-    # --- Stage 7: Render review loop ---
-    renderer_url: str | None = None  # e.g. http://localhost:8200
-    review_max_iterations: int = 3
-    review_pass_score: float = 0.78
-
-    # --- Pipeline behaviour ---
-    # When true, Stage 6 downloads remote GLB models into the site folder and
-    # rewrites them to relative paths so the generated site stays self-contained
-    # even after upstream (e.g. Tripo) URLs expire. Falls back to the remote URL
-    # if a download fails.
-    localize_assets: bool = True
-    max_objects_per_site: int = 8
     request_timeout: float = 120.0
-    poll_interval: float = 2.0
-    poll_timeout: float = 300.0
+    poll_interval: float = 3.0
+    poll_timeout: float = 600.0
+    blender_timeout: float = 2400.0   # headless Cycles can be slow on CPU
 
     @property
     def jobs_dir(self) -> Path:
         return self.data_dir / "jobs"
 
     @property
-    def sites_dir(self) -> Path:
-        return self.data_dir / "sites"
+    def assets_dir(self) -> Path:
+        return self.data_dir / "assets"
 
     @property
-    def refimg_dir(self) -> Path:
-        return self.data_dir / "refimg"
-
-    @property
-    def db_path(self) -> Path:
-        return self.data_dir / "wegek.db"
+    def renders_dir(self) -> Path:
+        return self.data_dir / "renders"
 
     def ensure_dirs(self) -> None:
-        for d in (self.data_dir, self.jobs_dir, self.sites_dir, self.refimg_dir):
+        for d in (self.data_dir, self.jobs_dir, self.assets_dir, self.renders_dir, self.hdri_dir):
             d.mkdir(parents=True, exist_ok=True)
 
 
 @lru_cache
 def get_settings() -> Settings:
-    settings = Settings()
-    settings.ensure_dirs()
-    return settings
+    s = Settings()
+    s.ensure_dirs()
+    return s

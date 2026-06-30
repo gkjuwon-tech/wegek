@@ -1,144 +1,113 @@
-"""Pipeline orchestrator — runs Stage 0..7 for a job, streaming live updates.
+"""Orchestrator — runs a job end to end with the SOLID-preview feedback loop.
 
-Each stage mutates the shared `SitePlan`, records a `StageResult`, and appends
-log entries that fan out to subscribed WebSocket clients via the store.
+plan -> meshes (Tripo) -> [ build SOLID preview -> critique -> revise ]xN -> final
+Cycles render -> bake exact coords. The loop re-renders a fast solid preview after
+every revision so the state is visible at each step (no blind code-guessing).
 """
 from __future__ import annotations
 
-import time
+from collections.abc import Awaitable, Callable
+from typing import Any
 
-from ..config import get_settings
-from ..schemas import Job, JobStatus, Stage, StageResult
-from ..store import get_store
-from . import (
-    stage0_planner,
-    stage1_images,
-    stage2_models,
-    stage3_animate,
-    stage4_shaders,
-    stage5_scene,
-    stage6_codegen,
-    stage7_review,
-)
+from ..clients.llm import LLMClient
+from ..config import Settings
+from ..schemas import Experience, Job, JobStatus, Stage, StageResult
+from . import bake, blender_build, meshes, plan, site
+
+CRITIC_SYSTEM = """You are an Awwwards art director reviewing FAST SOLID preview frames (one per scene/act,
+in scroll order) of a 3-scene Blender experience. Materials/lighting are NOT final — judge only
+composition, object placement & scale, depth/staging, camera framing per act, and whether the
+three acts read as distinct, deliberately-composed sets that would hand off well on scroll.
+Return ONLY JSON: {"score":0.0-1.0,"verdict":"PASS|REVISE","issues":[{"severity":"...","observation":"...","fix":"..."}],"next_actions":["..."]}
+Be harsh; PASS only >= 0.82. Empty/sparse/scattered or flat staging scores below 0.5."""
+
+Saver = Callable[[Job], Awaitable[None]]
 
 
-async def run_pipeline(
-    job_id: str,
-    *,
-    brand_mood: str | None = None,
-    max_objects: int | None = None,
-) -> None:
-    settings = get_settings()
-    store = get_store()
-    job = await store.get(job_id)
-    if job is None:
-        return
-
+async def run_job(job: Job, settings: Settings, save: Saver, *, max_iters: int = 3, pass_score: float = 0.82) -> None:
     job.status = JobStatus.RUNNING
     job.stages = [StageResult(stage=s) for s in Stage]
-    await _touch(store, job)
 
-    async def make_logger(stage: Stage):
-        async def log(message: str, level: str = "info") -> None:
-            from ..schemas import LogEntry
+    async def log(msg: str) -> None:
+        job.logs.append(msg)
+        await save(job)
 
-            job.logs.append(LogEntry(stage=stage, level=level, message=message))
-            await _touch(store, job)
-
-        return log
-
-    max_obj = max_objects or settings.max_objects_per_site
+    def sr(stage: Stage) -> StageResult:
+        return next(s for s in job.stages if s.stage == stage)
 
     try:
-        # Stage 0 — Plan
-        sr = await _begin(store, job, Stage.PLAN)
-        plan, provider = await stage0_planner.run(
-            job.prompt, settings, brand_mood=brand_mood, max_objects=max_obj
-        )
-        job.plan = plan
-        await _end(store, job, sr, provider, f"Planned '{plan.project_name}' · {len(plan.sections)} sections · {len(plan.objects)} objects")
+        # 1) plan
+        sr(Stage.PLAN).status = "running"
+        await save(job)
+        exp, prov = await plan.run(job.prompt, settings, mood=None)
+        job.experience = exp
+        sr(Stage.PLAN).status = "done"
+        sr(Stage.PLAN).detail = f"{prov} · 3 scenes"
+        await log(f"Planned '{exp.project_name}' ({prov}).")
 
-        # Stage 1 — Images
-        sr = await _begin(store, job, Stage.IMAGES)
-        provider, meta = await stage1_images.run(plan, settings, await make_logger(Stage.IMAGES))
-        await _end(store, job, sr, provider, f"{meta.get('generated', 0)} reference image(s)", meta)
+        # 2) meshes (Tripo)
+        sr(Stage.MESHES).status = "running"
+        await save(job)
+        _, meta = await meshes.run(exp, settings, log)
+        sr(Stage.MESHES).status = "done"
+        sr(Stage.MESHES).meta = meta
+        await log(f"Meshes: {meta}")
 
-        # Stage 2 — 3D models
-        sr = await _begin(store, job, Stage.MODELS)
-        provider, meta = await stage2_models.run(plan, settings, await make_logger(Stage.MODELS))
-        await _end(store, job, sr, provider, f"{meta.get('models', 0)} GLB model(s); rest procedural", meta)
-
-        # Stage 3 — Animate
-        sr = await _begin(store, job, Stage.ANIMATE)
-        provider, meta = await stage3_animate.run(plan, settings, await make_logger(Stage.ANIMATE))
-        await _end(store, job, sr, provider, f"{meta.get('tracks', 0)} keyframe track(s)", meta)
-
-        # Stage 4 — Shaders
-        sr = await _begin(store, job, Stage.SHADERS)
-        provider, meta = await stage4_shaders.run(plan, settings, await make_logger(Stage.SHADERS))
-        await _end(store, job, sr, provider, f"background shader ready ({meta.get('source')})", meta)
-
-        # Stage 5 — Scene
-        sr = await _begin(store, job, Stage.SCENE)
-        provider, meta = await stage5_scene.run(plan, settings, await make_logger(Stage.SCENE))
-        await _end(store, job, sr, provider, f"assembled {meta.get('sections', 0)} section(s)", meta)
-
-        # Stage 6 — Codegen
-        sr = await _begin(store, job, Stage.CODEGEN)
-        provider, meta = await stage6_codegen.run(plan, settings, job_id, await make_logger(Stage.CODEGEN))
-        job.bundle_path = meta.get("path")
-        job.site_url = f"/sites/{job_id}/index.html"
-        await _end(store, job, sr, provider, "standalone site generated", meta)
-
-        # Stage 7 — Review (with bounded improvement loop)
-        sr = await _begin(store, job, Stage.REVIEW)
-        score = 0.0
-        meta = {}
-        for _attempt in range(1, settings.review_max_iterations + 1):
-            provider, meta = await stage7_review.run(
-                plan, settings, job.site_url, await make_logger(Stage.REVIEW)
-            )
-            score = float(meta.get("score", 0.0))
-            if meta.get("preview_image"):
-                job.preview_image = meta["preview_image"]
-            if score >= settings.review_pass_score:
+        # 3) Blender feedback loop (SOLID previews)
+        sr(Stage.BLENDER).status = "running"
+        await save(job)
+        llm = LLMClient(settings)
+        for it in range(1, max_iters + 1):
+            pre = await blender_build.run(exp, settings, job.id, "preview", log)
+            critique: dict[str, Any] = {"score": 0.0, "verdict": "REVISE"}
+            if llm.available and pre["frames"]:
+                try:
+                    critique = await llm.critique_images(
+                        CRITIC_SYSTEM,
+                        f"Project: {exp.project_name}. Mood: {exp.mood}. Frames are act1→act3.",
+                        pre["frames"])
+                except Exception as exc:  # noqa: BLE001
+                    await log(f"critique failed ({exc})")
+            score = float(critique.get("score", 0.0))
+            if not pre["ok"]:
+                score = min(score, 0.3)
+            sr(Stage.BLENDER).meta = {"iter": it, "score": score, "verdict": critique.get("verdict")}
+            await log(f"[preview {it}] score={score:.2f} verdict={critique.get('verdict')}")
+            for iss in (critique.get("issues") or [])[:3]:
+                await log(f"   - {iss.get('observation')}")
+            if score >= pass_score or it == max_iters:
                 break
-        job.review_score = score
-        await _end(store, job, sr, provider, f"verdict {meta.get('verdict')} · score {score:.2f}", meta)
+            exp = await plan.revise(exp, critique, settings)
+            job.experience = exp
+            await log(f"[preview {it}] revised plan from critique.")
+
+        # 4) final Cycles render + video
+        fin = await blender_build.run(exp, settings, job.id, "final", log)
+        video = blender_build.encode_video(fin["out_dir"], f"{fin['out_dir']}/scroll.mp4")
+        sr(Stage.BLENDER).status = "done"
+        await log(f"Final render: {len(fin['frames'])} frames; video={'yes' if video else 'no'}.")
+
+        # 5) bake exact coords -> site spec -> real frontend
+        sr(Stage.BAKE).status = "running"
+        await save(job)
+        job.baked_spec = bake.bake(exp, fin["export"], fin["frames"], video)
+        site_out = settings.renders_dir / job.id / "site"
+        sinfo = site.build(job.baked_spec, fin["frames"], site_out)
+        job.baked_spec["site_path"] = sinfo["path"]
+        job.baked_spec["video_path"] = video
+        sr(Stage.BAKE).status = "done"
+        sr(Stage.BAKE).meta = {"site": sinfo["path"], "frames": sinfo["frames"]}
+        await log(f"Baked + built site ({sinfo['frames']} frames) at {sinfo['path']}.")
 
         job.status = JobStatus.SUCCEEDED
-        job.current_stage = None
-        await _touch(store, job)
     except Exception as exc:  # noqa: BLE001
         job.status = JobStatus.FAILED
         job.error = f"{type(exc).__name__}: {exc}"
-        if job.current_stage:
-            cur = job.stage_result(job.current_stage)
-            cur.status = "failed"
-            cur.detail = job.error
-            cur.finished_at = time.time()
-        await _touch(store, job)
+        await log(f"FAILED: {job.error}")
+    await save(job)
 
 
-async def _begin(store, job: Job, stage: Stage) -> StageResult:
-    job.current_stage = stage
-    sr = job.stage_result(stage)
-    sr.status = "running"
-    sr.started_at = time.time()
-    await _touch(store, job)
-    return sr
-
-
-async def _end(store, job: Job, sr: StageResult, provider: str, detail: str, meta: dict | None = None) -> None:
-    sr.status = "done"
-    sr.provider = provider
-    sr.detail = detail
-    sr.finished_at = time.time()
-    if meta:
-        sr.meta = {k: v for k, v in meta.items() if k != "preview_image"}
-    await _touch(store, job)
-
-
-async def _touch(store, job: Job) -> None:
-    job.updated_at = time.time()
-    await store.save(job)
+# convenience for a synchronous driver / tests
+async def plan_only(prompt: str, settings: Settings) -> Experience:
+    exp, _ = await plan.run(prompt, settings, mood=None)
+    return exp
