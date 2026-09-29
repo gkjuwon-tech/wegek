@@ -27,3 +27,6 @@ renderer/_shots/
 .idea/
 .vscode/
 *.log
+
+# Research: regenerable caches (reference meshes etc.)
+research/jev_subgrid/.cache/
