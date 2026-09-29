@@ -193,8 +193,10 @@ def build_reference(
             ref.problems.append(f"{cached_si} self-intersecting face pairs")
     if cache_file is not None and not cache_file.exists():
         cache_file.parent.mkdir(parents=True, exist_ok=True)
-        extra = {} if cached_si is None else {"si_pairs": np.int64(cached_si)}
-        np.savez_compressed(cache_file, vertices=raw.vertices, faces=raw.faces, **extra)
+        arrays: dict[str, npt.NDArray[np.generic]] = {"vertices": raw.vertices, "faces": raw.faces}
+        if cached_si is not None:
+            arrays["si_pairs"] = np.asarray(cached_si, dtype=np.int64)
+        np.savez_compressed(cache_file, **arrays)  # type: ignore[arg-type]
     w = winding_number(solid.mesh, probes)
     clearance = SurfaceDistance(solid.mesh)(probes)
     need = 0.25 * ref.min_feature_grid

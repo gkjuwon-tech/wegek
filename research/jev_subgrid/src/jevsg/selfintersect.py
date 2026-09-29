@@ -255,13 +255,13 @@ def self_intersections(mesh: TriMesh, max_examples: int = 20) -> SelfIntersectio
         res = np.zeros(s0.size, dtype=bool)
         for x, y in ((i[s0], j[s0]), (j[s0], i[s0])):
             tx, ty = tri[x], tri[y]
-            for u, v in ((0, 1), (1, 2), (2, 0)):
+            for ka, kb in ((0, 1), (1, 2), (2, 0)):
                 todo = ~res
                 if not np.any(todo):
                     break
                 sel = np.nonzero(todo)[0]
                 res[sel] |= segment_triangle_closed(
-                    tx[sel, u], tx[sel, v], ty[sel, 0], ty[sel, 1], ty[sel, 2]
+                    tx[sel, ka], tx[sel, kb], ty[sel, 0], ty[sel, 1], ty[sel, 2]
                 )
         hit[s0] = res
         kinds["disjoint"] = int(res.sum())
