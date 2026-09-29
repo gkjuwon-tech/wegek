@@ -130,6 +130,7 @@ def _finish(
         params = {**params, "pose": "canonical"}
     return ShapeSpec(
         shape_id=shape_id,
+        split=split_of_variant(variant),
         family=family,
         variant=variant,
         sdf=sdf,
@@ -527,6 +528,20 @@ _BUILDERS: dict[str, Callable[[int], ShapeSpec]] = {
     "multi_part": make_multi_part,
     "helmet": make_helmet,
 }
+
+
+#: Variants 0-7 are the G1 round-trip set; 100-103 are the G2 selection set.  The seeds
+#: (family seed + variant) never overlap, so no G2 object is a G1 object (proposal §5.1).
+G2_VARIANTS = (100, 101, 102, 103)
+SPLIT_G2 = "g2_selection"
+
+
+def split_of_variant(variant: int) -> str:
+    return SPLIT if variant < 100 else SPLIT_G2
+
+
+def g2_shape_ids() -> list[str]:
+    return [f"{fam}_{v}" for fam in FAMILIES for v in G2_VARIANTS]
 
 
 def build_shape(shape_id: str) -> ShapeSpec:

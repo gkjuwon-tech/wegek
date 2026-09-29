@@ -46,6 +46,10 @@ ignore = ["RUF001", "RUF002", "RUF003"]  # Korean / math glyphs in docs are inte
 [tool.ruff.lint.per-file-ignores]
 # The G1 report writer is mostly Korean prose templates; wrapping them hurts readability.
 "src/jevsg/experiments/g1.py" = ["E501"]
+# Natural-language prompts and the Korean G2 report are prose; wrapping them hurts review.
+"src/jevsg/g2/report.py" = ["E501"]
+"src/jevsg/g2/conditions.py" = ["E501"]
+"src/jevsg/g2/describe.py" = ["E501"]
 
 [tool.mypy]
 strict = true
