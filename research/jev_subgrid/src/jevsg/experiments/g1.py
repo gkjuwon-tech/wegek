@@ -27,6 +27,7 @@ import csv
 import datetime as dt
 import gzip
 import importlib.metadata
+import io
 import json
 import math
 import multiprocessing as mp
@@ -760,7 +761,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         "failure_code",
     ]
     fields = lead + [f for f in fields if f not in lead]
-    with gzip.open(cfg.out / "rows.csv.gz", "wt", newline="", encoding="utf-8") as fh:
+    # mtime=0 keeps the archive byte-identical for identical rows (reproducible diffs).
+    with (
+        gzip.GzipFile(cfg.out / "rows.csv.gz", "wb", mtime=0) as gz,
+        io.TextIOWrapper(gz, encoding="utf-8", newline="") as fh,
+    ):
         wr = csv.DictWriter(fh, fieldnames=fields)
         wr.writeheader()
         for r in sorted(
