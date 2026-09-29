@@ -87,3 +87,23 @@ def test_g1_smoke_run(tmp_path: Path) -> None:
     assert "G1" in report and "왕복 오류 지도" in report
     summary = json.loads((out / "summary.json").read_text())
     assert summary["references_valid"] == 2
+
+
+def test_empty_reconstruction_preserves_nothing() -> None:
+    from jevsg.evaluate import finalize_row
+
+    row = {
+        "out_faces": 0,
+        "valid_manifold": False,
+        "topology_match": False,
+        "probes_ok": True,  # air probes pass vacuously on an empty mesh ...
+        "core_success": False,
+        "struct_cavity": True,
+    }
+    out = finalize_row(row)
+    assert out["failure_code"] == "E"
+    assert out["probes_ok"] is False and out["struct_cavity"] is False  # ... but count as lost
+    ok = finalize_row(
+        {"out_faces": 10, "valid_manifold": True, "topology_match": False, "probes_ok": True}
+    )
+    assert ok["failure_code"] == "T"

@@ -129,7 +129,7 @@
 ```bash
 cd research/jev_subgrid
 pip install -e ".[dev]"
-pytest -q                                  # 100개 테스트
+pytest -q                                  # 101개 테스트
 python -m jevsg.experiments.g1 --workers 4 # 전체 G1 (기준 메쉬는 .cache/g1 에 캐시)
 python -m jevsg.experiments.g1 --report-only  # 기존 결과로 보고서만 다시 생성
 ```

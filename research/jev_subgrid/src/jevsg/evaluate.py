@@ -10,6 +10,7 @@ low Chamfer distance does not prove a handle is still a handle.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Any
 
 import numpy as np
@@ -89,12 +90,39 @@ def evaluate_reconstruction(
     for structure, oks in by_structure.items():
         out[f"struct_{structure}"] = all(oks)
     out["core_success"] = bool(out["valid_manifold"] and out["topology_match"] and out["probes_ok"])
+    return finalize_row(out)
+
+
+def finalize_row(row: dict[str, Any]) -> dict[str, Any]:
+    """Rules applied to every evaluated row (also to rows loaded from older runs).
+
+    An empty reconstruction preserves *no* structure: its air probes would pass
+    vacuously (winding number 0 everywhere), so they are marked failed here.
+    """
+    if row.get("out_faces", 1) == 0:
+        row["probes_ok"] = False
+        row["core_success"] = False
+        for key in list(row):
+            if key.startswith("struct_"):
+                row[key] = False
+    row["failure_code"] = failure_code(row)
+    return row
+
+
+def failure_code(row: Mapping[str, Any]) -> str:
+    """Compact reason for a failed round trip (empty string = success).
+
+    ``E`` the reconstruction is empty (the whole shape vanished), ``V`` not a closed
+    orientable 2-manifold, ``T`` wrong component count or genus, ``P`` a probe failed.
+    Computed from stored row fields only, so older result rows can be relabelled.
+    """
+    if row.get("out_faces", 1) == 0:
+        return "E"
     reasons = []
-    if not out["valid_manifold"]:
+    if not row["valid_manifold"]:
         reasons.append("V")
-    if not out["topology_match"]:
+    if not row["topology_match"]:
         reasons.append("T")
-    if not out["probes_ok"]:
+    if not row["probes_ok"]:
         reasons.append("P")
-    out["failure_code"] = "".join(reasons)
-    return out
+    return "".join(reasons)

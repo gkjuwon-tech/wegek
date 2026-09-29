@@ -14,7 +14,7 @@ For every validated reference shape and every grid resolution this runs
 * the evaluation of :mod:`jevsg.evaluate` (topology, probes, validity, geometry, size).
 
 Results are appended per shape to ``rows/<shape>.jsonl`` (resumable), then aggregated
-into ``rows.csv``, ``references.json``, ``summary.json`` and the Korean report
+into ``rows.csv.gz``, ``references.json``, ``summary.json`` and the Korean report
 ``report.md``.  The pass criterion and target (core-structure success >= 90 % at the
 selected budget) were fixed in the proposal before this code ran.
 """
@@ -25,6 +25,7 @@ import argparse
 import contextlib
 import csv
 import datetime as dt
+import gzip
 import importlib.metadata
 import json
 import math
@@ -52,7 +53,7 @@ from jevsg.decode import (
     reference_pipeline,
 )
 from jevsg.encode import encode_mesh
-from jevsg.evaluate import evaluate_reconstruction
+from jevsg.evaluate import evaluate_reconstruction, finalize_row
 from jevsg.grid import GRID_SCHEME_NAME, TetGrid
 from jevsg.metrics import SurfaceDistance, sample_surface
 from jevsg.representation import (
@@ -248,7 +249,7 @@ def _load_rows(out: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                 if rec.get("_type") == "reference":
                     refs.append(rec["data"])
                 else:
-                    rows.append(rec)
+                    rows.append(finalize_row(rec))  # same rules as at evaluation time
     return rows, refs
 
 
@@ -420,10 +421,18 @@ def write_report(
                 for r in mism[:12]
             )
         )
+        odd_theirs = sum(1 for r in mism if r["xcheck_their_non_even_tets"] > 0)
         w(
-            "  - 불일치는 저자 파이프라인의 부동소수 광선 질의가 퇴화에 가까운 교차를 다르게 센 경우입니다. "
-            "우리 A는 정확 술어로 계산되므로 아래의 `A 홀수 면 = 0` 이 항상 성립합니다."
+            f"  - 불일치 {len(mism)}건 중 **{odd_theirs}건**에서 저자 파이프라인 출력이 짝수합 조건을 어겼습니다 "
+            "(non-even tets > 0). 닫힌 입력에서 짝수합 위반은 교차를 잘못 센 증거이므로, 이 경우들은 저자 쪽 "
+            "float32 광선 질의의 오차입니다. 우리 A는 정확 술어로 계산되므로 아래의 `A 홀수 면 = 0`이 항상 성립합니다."
         )
+    agree_even = [
+        r["xcheck_same_connectivity"] for r in f64 if r["xcheck_their_non_even_tets"] == 0
+    ]
+    w(
+        f"- 저자 파이프라인이 짝수합을 만족한 경우만 보면 연결구조 일치: **{sum(agree_even)}/{len(agree_even)}**."
+    )
     w(
         f"- A의 짝수합 조건 위반 면(odd faces) 합계: **{sum(r['odd_faces_A'] for r in f64)}**, "
         f"복원기가 보고한 non-even tets 합계: **{sum(r['non_even_tets'] for r in f64)}** "
@@ -534,9 +543,9 @@ def write_report(
     w("## 6. 교차 수 상한 K (잘린 교차와 사라진 구조를 함께 보고)")
     w("")
     w(
-        "| 설정 | n | 핵심 구조 성공 | 상한 초과 모서리 비율 | 제거된 교차 비율 | 실패한 구조(프로브) 상위 |"
+        "| 설정 | n | 핵심 구조 성공 | 상한 초과 모서리 비율 | 제거된 교차 비율 | 빈 출력(형상 소실) | 실패한 구조(프로브) 상위 |"
     )
-    w("|---|---:|---:|---:|---:|---|")
+    w("|---|---:|---:|---:|---:|---:|---|")
     for c in [
         c for c in sorted({r["config"] for r in rows}, key=_config_order) if c.startswith("K")
     ]:
@@ -560,8 +569,9 @@ def write_report(
                 ", ".join(f"{k}×{v}" for k, v in sorted(lost.items(), key=lambda kv: -kv[1])[:4])
                 or "없음"
             )
+            empty = sum(1 for r in rs if r["failure_code"] == "E")
             w(
-                f"| `{c}` | {n} | {_pct(_rate([r['core_success'] for r in rs]))} | {_pct(over)} | {_pct(drop)} | {top} |"
+                f"| `{c}` | {n} | {_pct(_rate([r['core_success'] for r in rs]))} | {_pct(over)} | {_pct(drop)} | {empty} | {top} |"
             )
     w("")
 
@@ -595,7 +605,7 @@ def write_report(
     w("## 8. 왕복 오류 지도 (float64)")
     w("")
     w(
-        "✅ = 핵심 구조 보존. 실패 코드: V = 닫힌 다양체 아님, T = 성분 수/genus 불일치, P = 프로브 실패. 괄호는 Chamfer-L1(대각선 비, ×10⁻³)."
+        "✅ = 핵심 구조 보존. 실패 코드: E = 복원 결과가 비어 있음(형상 전체 소실), V = 닫힌 다양체 아님, T = 성분 수/genus 불일치, P = 프로브 실패. 괄호는 Chamfer-L1(대각선 비, ×10⁻³)."
     )
     w("")
     w("| 형상 | 특징(격자) | " + " | ".join(f"n={n}" for n in res) + " |")
@@ -628,7 +638,9 @@ def write_report(
         w("없음.")
     for r in sorted(fails, key=lambda r: (r["resolution"], r["shape_id"])):
         why = []
-        if not r["valid_manifold"]:
+        if r["failure_code"] == "E":
+            why.append("복원 결과가 비어 있음 (형상 전체 소실)")
+        elif not r["valid_manifold"]:
             why.append(
                 f"다양체 아님(경계 모서리 {r['out_boundary_edges']}, 비다양체 모서리 {r['out_nonmanifold_edges']}, 비다양체 정점 {r['out_nonmanifold_vertices']})"
             )
@@ -748,7 +760,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "failure_code",
     ]
     fields = lead + [f for f in fields if f not in lead]
-    with (cfg.out / "rows.csv").open("w", newline="", encoding="utf-8") as fh:
+    with gzip.open(cfg.out / "rows.csv.gz", "wt", newline="", encoding="utf-8") as fh:
         wr = csv.DictWriter(fh, fieldnames=fields)
         wr.writeheader()
         for r in sorted(
