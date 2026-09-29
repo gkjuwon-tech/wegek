@@ -6,8 +6,8 @@
 
 | 항목 | 값 |
 |---|---|
-| 생성 시각 (UTC) | `2026-09-29T09:41:04+00:00` |
-| git commit | `1b5e5d6` |
+| 생성 시각 (UTC) | `2026-09-29T09:42:37+00:00` |
+| git commit | `e012c30` |
 | 복원기 | `subgrid-marching==1.0.0 (고정: 1.0.0), primal, combinatorial merge, scoop_bulge=1e-3` |
 | 격자 | `subgrid-marching-1.0.0/5-tet-alternating` |
 | 해상도 | `[8, 16, 32, 64]` |
