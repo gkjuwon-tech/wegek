@@ -1,0 +1,5654 @@
+[
+ {
+  "shape_id": "cup_0",
+  "family": "cup",
+  "variant": 0,
+  "valid": true,
+  "problems": [],
+  "faces": 227112,
+  "voxel_object": 0.012,
+  "scale": 1.1603446496750491,
+  "min_feature_object": 0.03666900893845824,
+  "min_feature_grid": 0.04254868833062657,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.41336479318306557,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 113556,
+   "faces": 227112,
+   "edges": 340668,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.5782078606962594,
+   "height": 1.5415367388025318,
+   "wall": 0.03666900893845824,
+   "bottom": 0.06,
+   "handle": 1,
+   "handle_major": 0.3328759025620053,
+   "handle_tube": 0.05008119856361697,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "coffee_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.30908073017704757,
+     1.5401225007591846e-08,
+     0.03481031590015168
+    ],
+    "winding": 9.718361526694079e-17,
+    "clearance": 0.6282958805385512,
+    "ok": true
+   },
+   {
+    "name": "coffee_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.30908073017704757,
+     1.5401225007591846e-08,
+     -0.5668723139581369
+    ],
+    "winding": -3.1805546814635167e-16,
+    "clearance": 0.2578639830839564,
+    "ok": true
+   },
+   {
+    "name": "wall",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.30908073017704757,
+     -0.6496460379924225,
+     0.17887136712460436
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.02124616910645325,
+    "ok": true
+   },
+   {
+    "name": "wall_back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.958726783570695,
+     1.5401225007591846e-08,
+     -0.178871414304804
+    ],
+    "winding": 1.0,
+    "clearance": 0.021261978258562107,
+    "ok": true
+   },
+   {
+    "name": "bottom",
+    "expect": "material",
+    "structure": "bottom",
+    "point": [
+     -0.30908073017704757,
+     1.5401225007591846e-08,
+     -0.8595466376733691
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.0348103383492272,
+    "ok": true
+   },
+   {
+    "name": "handle_passage",
+    "expect": "air",
+    "structure": "handle_hole",
+    "point": [
+     0.6128157520747024,
+     1.5401225007591846e-08,
+     -2.3590099822267434e-08
+    ],
+    "winding": -1.7669748230352872e-16,
+    "clearance": 0.25092994659577234,
+    "ok": true
+   },
+   {
+    "name": "handle_tube",
+    "expect": "material",
+    "structure": "handle",
+    "point": [
+     0.9219032875700981,
+     1.5401225007591846e-08,
+     -2.3590099822267434e-08
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.057365680818848616,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "cup_1",
+  "family": "cup",
+  "variant": 1,
+  "valid": true,
+  "problems": [],
+  "faces": 199372,
+  "voxel_object": 0.012,
+  "scale": 1.1743800701375666,
+  "min_feature_object": 0.05128757365085178,
+  "min_feature_grid": 0.06023110434127293,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.5277642736737191,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 99686,
+   "faces": 199372,
+   "edges": 299058,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.5918892392854926,
+   "height": 1.3062801871281327,
+   "wall": 0.05128757365085178,
+   "bottom": 0.07693136047627766,
+   "handle": 1,
+   "handle_major": 0.2876198634267815,
+   "handle_tube": 0.06815836622051005,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "coffee_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.2848974878988106,
+     -1.4947978046882796e-08,
+     0.04517331002041156
+    ],
+    "winding": -2.208718528794109e-17,
+    "clearance": 0.6347968677283705,
+    "ok": true
+   },
+   {
+    "name": "coffee_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.2848974878988106,
+     -1.4947978046882796e-08,
+     -0.46012965642301773
+    ],
+    "winding": 5.212575727954097e-16,
+    "clearance": 0.21655841106716311,
+    "ok": true
+   },
+   {
+    "name": "wall",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.2848974878988106,
+     -0.6649873891231094,
+     0.15340692354234178
+    ],
+    "winding": 0.9999999999999996,
+    "clearance": 0.030080330653494153,
+    "ok": true
+   },
+   {
+    "name": "wall_back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.949884862073942,
+     -1.4947978046882796e-08,
+     -0.1534069600134282
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.030107212577355165,
+    "ok": true
+   },
+   {
+    "name": "bottom",
+    "expect": "material",
+    "structure": "bottom",
+    "point": [
+     -0.2848974878988106,
+     -1.4947978046882796e-08,
+     -0.7218613988690136
+    ],
+    "winding": 1.0000000000000007,
+    "clearance": 0.045173327101128535,
+    "ok": true
+   },
+   {
+    "name": "handle_passage",
+    "expect": "air",
+    "structure": "handle_hole",
+    "point": [
+     0.6150704256491781,
+     -1.4947978046882796e-08,
+     -1.8235543209448522e-08
+    ],
+    "winding": -1.1043592643970544e-16,
+    "clearance": 0.20477684301559992,
+    "ok": true
+   },
+   {
+    "name": "handle_tube",
+    "expect": "material",
+    "structure": "handle",
+    "point": [
+     0.8999792397539037,
+     -1.4947978046882796e-08,
+     -1.8235543209448522e-08
+    ],
+    "winding": 1.0,
+    "clearance": 0.07955583133278915,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "cup_2",
+  "family": "cup",
+  "variant": 2,
+  "valid": true,
+  "problems": [],
+  "faces": 200004,
+  "voxel_object": 0.012,
+  "scale": 1.1742786146293378,
+  "min_feature_object": 0.09183281170500478,
+  "min_feature_grid": 0.10783730690646985,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.9059191237525336,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 100002,
+   "faces": 200004,
+   "edges": 300006,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.5571231739224674,
+   "height": 1.4428757350683787,
+   "wall": 0.09183281170500478,
+   "bottom": 0.13774921755750716,
+   "handle": 1,
+   "handle_major": 0.31371311867995366,
+   "handle_tube": 0.1,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "coffee_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.3257858052886858,
+     2.50844091579082e-08,
+     0.08087799625730327
+    ],
+    "winding": -2.422256745933383e-17,
+    "clearance": 0.546291239783002,
+    "ok": true
+   },
+   {
+    "name": "coffee_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.3257858052886858,
+     2.50844091579082e-08,
+     -0.45552575935723416
+    ],
+    "winding": 6.305821298777312e-16,
+    "clearance": 0.22988732665517753,
+    "ok": true
+   },
+   {
+    "name": "wall",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.3257858052886858,
+     -0.6002991503139307,
+     0.16943382800328932
+    ],
+    "winding": 1.0000000000000007,
+    "clearance": 0.05388388599367133,
+    "ok": true
+   },
+   {
+    "name": "wall_back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.9260849806870255,
+     2.50844091579082e-08,
+     -0.16943379584838736
+    ],
+    "winding": 0.9999999999999993,
+    "clearance": 0.05389728989648787,
+    "ok": true
+   },
+   {
+    "name": "bottom",
+    "expect": "material",
+    "structure": "bottom",
+    "point": [
+     -0.3257858052886858,
+     2.50844091579082e-08,
+     -0.7662910633718882
+    ],
+    "winding": 1.0000000000000007,
+    "clearance": 0.08087797735947655,
+    "ok": true
+   },
+   {
+    "name": "handle_passage",
+    "expect": "air",
+    "structure": "handle_hole",
+    "point": [
+     0.5367983824674671,
+     2.50844091579082e-08,
+     1.6077450968959482e-08
+    ],
+    "winding": -1.9493235187620976e-16,
+    "clearance": 0.2083145958751824,
+    "ok": true
+   },
+   {
+    "name": "handle_tube",
+    "expect": "material",
+    "structure": "handle",
+    "point": [
+     0.8625926028349793,
+     2.50844091579082e-08,
+     1.6077450968959482e-08
+    ],
+    "winding": 1.0,
+    "clearance": 0.1170520044554866,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "cup_3",
+  "family": "cup",
+  "variant": 3,
+  "valid": true,
+  "problems": [],
+  "faces": 159528,
+  "voxel_object": 0.012,
+  "scale": 1.397322813501951,
+  "min_feature_object": 0.12958902437669292,
+  "min_feature_grid": 0.1810777001410135,
+  "expected_components": 1,
+  "expected_genus": [
+   0
+  ],
+  "volume_grid": 1.7079891679757968,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 79766,
+   "faces": 159528,
+   "edges": 239292,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.528163605240295,
+   "height": 1.4026823240875288,
+   "wall": 0.12958902437669292,
+   "bottom": 0.19438353656503937,
+   "handle": 0,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "coffee_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     1.4749140970127354e-08,
+     -1.77118261112621e-08,
+     0.13580827950342408
+    ],
+    "winding": -5.300924469105861e-17,
+    "clearance": 0.5568126258643309,
+    "ok": true
+   },
+   {
+    "name": "coffee_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     1.4749140970127354e-08,
+     -1.77118261112621e-08,
+     -0.4551259319627483
+    ],
+    "winding": 6.007714398319976e-16,
+    "clearance": 0.25325751147889786,
+    "ok": true
+   },
+   {
+    "name": "wall",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     1.4749140970127354e-08,
+     -0.6474762225050222,
+     0.19600000555200803
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.09049760004253402,
+    "ok": true
+   },
+   {
+    "name": "wall_back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.6474761900440551,
+     -1.77118261112621e-08,
+     -0.19599999675668023
+    ],
+    "winding": 0.9999999999999996,
+    "clearance": 0.090500994627211,
+    "ok": true
+   },
+   {
+    "name": "bottom",
+    "expect": "material",
+    "structure": "bottom",
+    "point": [
+     1.4749140970127354e-08,
+     -1.77118261112621e-08,
+     -0.8441917262682967
+    ],
+    "winding": 1.000000000000001,
+    "clearance": 0.13580827373170334,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "cup_4",
+  "family": "cup",
+  "variant": 4,
+  "valid": true,
+  "problems": [],
+  "faces": 252592,
+  "voxel_object": 0.011088689028305253,
+  "scale": 1.1667790319965807,
+  "min_feature_object": 0.03326606708491576,
+  "min_feature_grid": 0.038814149551671326,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.30262845558426393,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 126296,
+   "faces": 252592,
+   "edges": 378888,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.5001320679111072,
+   "height": 1.3520605248510527,
+   "wall": 0.03326606708491576,
+   "bottom": 0.06,
+   "handle": 1,
+   "handle_major": 0.34206738048579877,
+   "handle_tube": 0.054516365923680934,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "coffee_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.09237470302214323,
+     -0.013757525510712111,
+     -0.029012619366323544
+    ],
+    "winding": -2.738810975704695e-16,
+    "clearance": 0.5446238984207741,
+    "ok": true
+   },
+   {
+    "name": "coffee_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     0.14523246373578325,
+     0.1893360754491291,
+     0.3960780879658578
+    ],
+    "winding": 2.8713340874323416e-16,
+    "clearance": 0.22613239953046177,
+    "ok": true
+   },
+   {
+    "name": "wall",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.38448010355758633,
+     0.4397369675285065,
+     -0.23476809745758315
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.01936500682041068,
+    "ok": true
+   },
+   {
+    "name": "wall_back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.4501228279914242,
+     -0.08223992624117896,
+     0.4429328077871017
+    ],
+    "winding": 1.0,
+    "clearance": 0.019384642265923787,
+    "ok": true
+   },
+   {
+    "name": "bottom",
+    "expect": "material",
+    "structure": "bottom",
+    "point": [
+     0.2628267804290707,
+     0.2898492609541072,
+     0.6064600050749576
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.03500334069886411,
+    "ok": true
+   },
+   {
+    "name": "handle_passage",
+    "expect": "air",
+    "structure": "handle_hole",
+    "point": [
+     0.5861912890974809,
+     0.21243951912978712,
+     -0.4729227223846025
+    ],
+    "winding": -2.694636605128813e-16,
+    "clearance": 0.2575932140716624,
+    "ok": true
+   },
+   {
+    "name": "handle_tube",
+    "expect": "material",
+    "structure": "handle",
+    "point": [
+     0.8392751780321108,
+     0.2936657427754855,
+     -0.653192652384571
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.06298517622102144,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "cup_5",
+  "family": "cup",
+  "variant": 5,
+  "valid": true,
+  "problems": [],
+  "faces": 257852,
+  "voxel_object": 0.012,
+  "scale": 1.0292084560936499,
+  "min_feature_object": 0.05280597132684552,
+  "min_feature_grid": 0.054348352221828225,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.371975462052145,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 128926,
+   "faces": 257852,
+   "edges": 386778,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.5123328759601841,
+   "height": 1.6722248169554415,
+   "wall": 0.05280597132684552,
+   "bottom": 0.07920895699026828,
+   "handle": 1,
+   "handle_major": 0.36347927245440864,
+   "handle_tube": 0.06438521319715121,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "coffee_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     0.028279247155674297,
+     0.24608954360113747,
+     -0.02979168432878712
+    ],
+    "winding": -1.0601848938211722e-16,
+    "clearance": 0.4728453505059577,
+    "ok": true
+   },
+   {
+    "name": "coffee_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.3796523365483644,
+     0.2701691664671863,
+     0.37307970868862855
+    ],
+    "winding": -1.8994979347629337e-16,
+    "clearance": 0.24593183264788326,
+    "ok": true
+   },
+   {
+    "name": "wall",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.4421114546367019,
+     0.05408889025981628,
+     0.21362866862776375
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.02714383652355796,
+    "ok": true
+   },
+   {
+    "name": "wall_back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.02196641294407582,
+     0.7185999489492436,
+     0.23877868208565747
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.02716866063386449,
+    "ok": true
+   },
+   {
+    "name": "bottom",
+    "expect": "material",
+    "structure": "bottom",
+    "point": [
+     -0.5834564953019797,
+     0.28219943692763655,
+     0.5743557770780315
+    ],
+    "winding": 0.9999999999999996,
+    "clearance": 0.04076124055346006,
+    "ok": true
+   },
+   {
+    "name": "handle_passage",
+    "expect": "air",
+    "structure": "handle_hole",
+    "point": [
+     -0.22262008921509008,
+     -0.46165562567057594,
+     -0.18348104507764393
+    ],
+    "winding": -2.4295903816735195e-16,
+    "clearance": 0.2380844533457105,
+    "ok": true
+   },
+   {
+    "name": "handle_tube",
+    "expect": "material",
+    "structure": "handle",
+    "point": [
+     -0.31086705060411257,
+     -0.7437683462309685,
+     -0.25597453879766396
+    ],
+    "winding": 0.9999999999999997,
+    "clearance": 0.06561082354789101,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "cup_6",
+  "family": "cup",
+  "variant": 6,
+  "valid": true,
+  "problems": [],
+  "faces": 261640,
+  "voxel_object": 0.012,
+  "scale": 1.039397853918605,
+  "min_feature_object": 0.08049605407935516,
+  "min_feature_grid": 0.08366742585899772,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.5750940633605641,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 130820,
+   "faces": 261640,
+   "edges": 392460,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.5505382150359237,
+   "height": 1.540342777519862,
+   "wall": 0.08049605407935516,
+   "bottom": 0.12074408111903273,
+   "handle": 1,
+   "handle_major": 0.35997698561657393,
+   "handle_tube": 0.08200827084940938,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "coffee_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.1597748371324795,
+     0.04678829936564195,
+     0.03626246093557527
+    ],
+    "winding": -1.3252311172764654e-16,
+    "clearance": 0.4884682872507371,
+    "ok": true
+   },
+   {
+    "name": "coffee_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.3266716115178049,
+     -0.337816936012745,
+     -0.26528210272728847
+    ],
+    "winding": 1.4135798584282297e-16,
+    "clearance": 0.22132918578321045,
+    "ok": true
+   },
+   {
+    "name": "wall",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.11843278635531226,
+     -0.21055829175080448,
+     0.5083423230526841
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.04182317074828081,
+    "ok": true
+   },
+   {
+    "name": "wall_back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.7336312257462041,
+     0.009245367088609884,
+     0.02009475246427658
+    ],
+    "winding": 1.0000000000000004,
+    "clearance": 0.041827913207487355,
+    "ok": true
+   },
+   {
+    "name": "bottom",
+    "expect": "material",
+    "structure": "bottom",
+    "point": [
+     -0.41847796989365005,
+     -0.5493800785744689,
+     -0.4311553401213531
+    ],
+    "winding": 0.9999999999999996,
+    "clearance": 0.06275055937994059,
+    "ok": true
+   },
+   {
+    "name": "handle_passage",
+    "expect": "air",
+    "structure": "handle_hole",
+    "point": [
+     0.5776988032190707,
+     -0.1938576327329523,
+     -0.17244586347932633
+    ],
+    "winding": -1.501928599579994e-16,
+    "clearance": 0.22857986290779117,
+    "ok": true
+   },
+   {
+    "name": "handle_tube",
+    "expect": "material",
+    "structure": "handle",
+    "point": [
+     0.8746834533492138,
+     -0.2698578313589786,
+     -0.23988433963784264
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.08468532696549605,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "cup_7",
+  "family": "cup",
+  "variant": 7,
+  "valid": true,
+  "problems": [],
+  "faces": 215608,
+  "voxel_object": 0.012,
+  "scale": 1.044226061104038,
+  "min_feature_object": 0.13534094043190203,
+  "min_feature_grid": 0.1413265371333213,
+  "expected_components": 1,
+  "expected_genus": [
+   0
+  ],
+  "volume_grid": 0.7997511052978244,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 107806,
+   "faces": 215608,
+   "edges": 323412,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.5106837406191329,
+   "height": 1.6263921380711772,
+   "wall": 0.13534094043190203,
+   "bottom": 0.20301141064785305,
+   "handle": 0,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "coffee_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     0.07315213149740829,
+     0.004943670080258502,
+     0.07726325665796792
+    ],
+    "winding": 4.329088316436453e-16,
+    "clearance": 0.3918454278213311,
+    "ok": true
+   },
+   {
+    "name": "coffee_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.2868091604536216,
+     -0.017791596571055914,
+     -0.29761752137635905
+    ],
+    "winding": 1.8553235641870515e-16,
+    "clearance": 0.22294968549903718,
+    "ok": true
+   },
+   {
+    "name": "wall",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.1311788656014211,
+     -0.2863496958050342,
+     0.3797141129988763
+    ],
+    "winding": 1.0,
+    "clearance": 0.0706519241085487,
+    "ok": true
+   },
+   {
+    "name": "wall_back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.3408367820278207,
+     0.3494147841124626,
+     0.07112460021098317
+    ],
+    "winding": 1.0,
+    "clearance": 0.07058952034667923,
+    "ok": true
+   },
+   {
+    "name": "bottom",
+    "expect": "material",
+    "structure": "bottom",
+    "point": [
+     -0.5144210254037761,
+     -0.03216763243479184,
+     -0.534663323050963
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.10599489562164674,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "helmet_0",
+  "family": "helmet",
+  "variant": 0,
+  "valid": true,
+  "problems": [],
+  "faces": 303952,
+  "voxel_object": 0.012,
+  "scale": 1.0978332166890625,
+  "min_feature_object": 0.04142238775239772,
+  "min_feature_grid": 0.04547487318915641,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.3960078413715741,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 151976,
+   "faces": 303952,
+   "edges": 455928,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.8926728626050839,
+   "wall": 0.04142238775239772,
+   "slits": 1,
+   "crest": 0,
+   "skirt": 0.4658072348881749,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "head_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     1.8446197645141538e-08,
+     2.7492808294246082e-08,
+     -0.1368686863219994
+    ],
+    "winding": -2.0541082317785212e-16,
+    "clearance": 0.836487162843697,
+    "ok": true
+   },
+   {
+    "name": "head_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     1.8446197645141538e-08,
+     2.7492808294246082e-08,
+     -0.49055860585963806
+    ],
+    "winding": -2.009933861202639e-16,
+    "clearance": 0.8333316475342932,
+    "ok": true
+   },
+   {
+    "name": "dome",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     1.8446197645141538e-08,
+     2.7492808294246082e-08,
+     0.722399205267718
+    ],
+    "winding": 1.0,
+    "clearance": 0.022721797339291458,
+    "ok": true
+   },
+   {
+    "name": "back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     1.8446197645141538e-08,
+     -0.9145134847899478,
+     0.048022901764395165
+    ],
+    "winding": 1.0000000000000009,
+    "clearance": 0.02271426424717192,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     1.8446197645141538e-08,
+     0.9533583116517029,
+     -0.14843472657659118
+    ],
+    "winding": 1.987846675914698e-17,
+    "clearance": 0.07270312139470879,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "helmet_1",
+  "family": "helmet",
+  "variant": 1,
+  "valid": true,
+  "problems": [],
+  "faces": 326572,
+  "voxel_object": 0.012,
+  "scale": 1.0590618115211956,
+  "min_feature_object": 0.05751687866007895,
+  "min_feature_grid": 0.06091392970678801,
+  "expected_components": 1,
+  "expected_genus": [
+   2
+  ],
+  "volume_grid": 0.5288516282563764,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 163284,
+   "faces": 326572,
+   "edges": 489858,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    2
+   ],
+   "total_genus": 2,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.9253618933724266,
+   "wall": 0.05751687866007895,
+   "slits": 2,
+   "crest": 1,
+   "skirt": 0.48417954991164786,
+   "crest_height": 0.1275045485001851,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "head_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     2.1961902418697832e-08,
+     2.765902021297119e-08,
+     -0.20376292815633923
+    ],
+    "winding": 1.965759490626757e-16,
+    "clearance": 0.8210578779714759,
+    "ok": true
+   },
+   {
+    "name": "head_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     2.1961902418697832e-08,
+     2.765902021297119e-08,
+     -0.5581525080825813
+    ],
+    "winding": 2.7940289389245476e-16,
+    "clearance": 0.8157137670954779,
+    "ok": true
+   },
+   {
+    "name": "dome",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     2.1961902418697832e-08,
+     2.765902021297119e-08,
+     0.6477940057871837
+    ],
+    "winding": 0.9999999999999996,
+    "clearance": 0.030482409436263895,
+    "ok": true
+   },
+   {
+    "name": "back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     2.1961902418697832e-08,
+     -0.9071478351758877,
+     -0.021150754736372512
+    ],
+    "winding": 1.0,
+    "clearance": 0.030420983452275206,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.32396874848505436,
+     0.8875164134618811,
+     -0.2067897161835559
+    ],
+    "winding": -5.521796321985272e-17,
+    "clearance": 0.07750113948125162,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.3239687924088592,
+     0.8875164134618811,
+     -0.2067897161835559
+    ],
+    "winding": 1.6786260818835226e-16,
+    "clearance": 0.07750114341808968,
+    "ok": true
+   },
+   {
+    "name": "crest",
+    "expect": "material",
+    "structure": "crest",
+    "point": [
+     2.1961902418697832e-08,
+     2.765902021297119e-08,
+     0.7457685696964769
+    ],
+    "winding": 0.9999999999999997,
+    "clearance": 0.030456978958571194,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "helmet_2",
+  "family": "helmet",
+  "variant": 2,
+  "valid": true,
+  "problems": [],
+  "faces": 293336,
+  "voxel_object": 0.012,
+  "scale": 1.0913881062015578,
+  "min_feature_object": 0.0767183384313342,
+  "min_feature_grid": 0.08372948209150402,
+  "expected_components": 1,
+  "expected_genus": [
+   2
+  ],
+  "volume_grid": 0.6814907309568549,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 146666,
+   "faces": 293336,
+   "edges": 440004,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    2
+   ],
+   "total_genus": 2,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.8979624425967476,
+   "wall": 0.0767183384313342,
+   "slits": 2,
+   "crest": 0,
+   "skirt": 0.4452252572347077,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "head_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -1.379316903226068e-08,
+     1.5496493011949484e-08,
+     -0.14945931141786473
+    ],
+    "winding": 5.742668174864683e-17,
+    "clearance": 0.7982456446170935,
+    "ok": true
+   },
+   {
+    "name": "head_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -1.379316903226068e-08,
+     1.5496493011949484e-08,
+     -0.49041863954768816
+    ],
+    "winding": 8.834874115176436e-18,
+    "clearance": 0.8049243784728408,
+    "ok": true
+   },
+   {
+    "name": "dome",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -1.379316903226068e-08,
+     1.5496493011949484e-08,
+     0.6906989242355939
+    ],
+    "winding": 1.0000000000000009,
+    "clearance": 0.041821246203593725,
+    "ok": true
+   },
+   {
+    "name": "back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -1.379316903226068e-08,
+     -0.8962592185390833,
+     0.029783605750115072
+    ],
+    "winding": 1.0,
+    "clearance": 0.04182867537699455,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.31858050313115,
+     0.8727551396847533,
+     -0.11726727801282283
+    ],
+    "winding": -8.834874115176436e-18,
+    "clearance": 0.08328223652038184,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.3185804755448119,
+     0.8727551396847533,
+     -0.11726727801282283
+    ],
+    "winding": 9.718361526694079e-17,
+    "clearance": 0.0832822063039562,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "helmet_3",
+  "family": "helmet",
+  "variant": 3,
+  "valid": true,
+  "problems": [],
+  "faces": 253832,
+  "voxel_object": 0.012,
+  "scale": 1.1814113952177183,
+  "min_feature_object": 0.11830673052860616,
+  "min_feature_grid": 0.13976891957744722,
+  "expected_components": 1,
+  "expected_genus": [
+   3
+  ],
+  "volume_grid": 1.1218697864419698,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 126912,
+   "faces": 253832,
+   "edges": 380748,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    3
+   ],
+   "total_genus": 3,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.8295186761652267,
+   "wall": 0.11830673052860616,
+   "slits": 3,
+   "crest": 1,
+   "skirt": 0.45326930194886794,
+   "crest_height": 0.12110193842440452,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "head_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     4.666512819350512e-08,
+     2.4290029828338537e-08,
+     -0.19646844138675118
+    ],
+    "winding": 1.236882376124701e-16,
+    "clearance": 0.7421768276946104,
+    "ok": true
+   },
+   {
+    "name": "head_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     4.666512819350512e-08,
+     2.4290029828338537e-08,
+     -0.5622174822558894
+    ],
+    "winding": 1.2810567467005832e-16,
+    "clearance": 0.7307995027270188,
+    "ok": true
+   },
+   {
+    "name": "dome",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     4.666512819350512e-08,
+     2.4290029828338537e-08,
+     0.6156496337352888
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.06991572722376355,
+    "ok": true
+   },
+   {
+    "name": "back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     4.666512819350512e-08,
+     -0.8694692513637865,
+     -0.02551035816195546
+    ],
+    "winding": 0.9999999999999997,
+    "clearance": 0.06983874794117567,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.30777201860170195,
+     0.8431453393148388,
+     -0.14381097535413437
+    ],
+    "winding": -2.0761954170664623e-16,
+    "clearance": 0.09242468957383583,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.30777211193195836,
+     0.8431453393148388,
+     -0.14381097535413437
+    ],
+    "winding": 2.297067269945873e-16,
+    "clearance": 0.09242462227516744,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_2",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     4.666512819350512e-08,
+     0.8993896189452276,
+     -0.43380206568512203
+    ],
+    "winding": -8.834874115176436e-17,
+    "clearance": 0.09242467374527412,
+    "ok": true
+   },
+   {
+    "name": "crest",
+    "expect": "material",
+    "structure": "crest",
+    "point": [
+     4.666512819350512e-08,
+     2.4290029828338537e-08,
+     0.7570696985427855
+    ],
+    "winding": 0.9999999999999997,
+    "clearance": 0.06988445841734711,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "helmet_4",
+  "family": "helmet",
+  "variant": 4,
+  "valid": true,
+  "problems": [],
+  "faces": 295316,
+  "voxel_object": 0.011307630922548157,
+  "scale": 1.1798500582016123,
+  "min_feature_object": 0.03392289276764447,
+  "min_feature_grid": 0.04002392700627238,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.3470607251554474,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 147658,
+   "faces": 295316,
+   "edges": 442974,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.8306147468946637,
+   "wall": 0.03392289276764447,
+   "slits": 1,
+   "crest": 0,
+   "skirt": 0.42107705533785167,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "head_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.006198637594050004,
+     0.03600799983111905,
+     -0.01143960322216711
+    ],
+    "winding": 1.0933156717530838e-16,
+    "clearance": 0.8419234758967666,
+    "ok": true
+   },
+   {
+    "name": "head_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     0.015711782692226603,
+     -0.09127045466808914,
+     -0.3328674268051964
+    ],
+    "winding": 1.2700131540566126e-17,
+    "clearance": 0.8418497337981738,
+    "ok": true
+   },
+   {
+    "name": "dome",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.060720346834107736,
+     0.3527266568929464,
+     0.7883987435591123
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.019986092792523617,
+    "ok": true
+   },
+   {
+    "name": "back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.9085971208779698,
+     0.2799105694522563,
+     0.030592762699796508
+    ],
+    "winding": 1.0000000000000007,
+    "clearance": 0.0199672510471873,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.9207015638428724,
+     -0.1456886476308962,
+     0.1271083966544585
+    ],
+    "winding": -1.2147951908367598e-16,
+    "clearance": 0.07338323306949204,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "helmet_5",
+  "family": "helmet",
+  "variant": 5,
+  "valid": true,
+  "problems": [],
+  "faces": 324556,
+  "voxel_object": 0.012,
+  "scale": 1.0458348284960892,
+  "min_feature_object": 0.04787148311050308,
+  "min_feature_grid": 0.05006566432872642,
+  "expected_components": 1,
+  "expected_genus": [
+   2
+  ],
+  "volume_grid": 0.41956315035515446,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 162276,
+   "faces": 324556,
+   "edges": 486834,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    2
+   ],
+   "total_genus": 2,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.9022570303244732,
+   "wall": 0.04787148311050308,
+   "slits": 2,
+   "crest": 1,
+   "skirt": 0.5127029674551751,
+   "crest_height": 0.15058698987927402,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "head_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.022577001840103368,
+     -0.01945043326671294,
+     0.010079230161866848
+    ],
+    "winding": -1.3031439319885243e-16,
+    "clearance": 0.7991289452513524,
+    "ok": true
+   },
+   {
+    "name": "head_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     0.06414622401968237,
+     0.2141693238986999,
+     -0.2531316164140829
+    ],
+    "winding": 1.766974823035287e-17,
+    "clearance": 0.7733677298029111,
+    "ok": true
+   },
+   {
+    "name": "dome",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.2197803784382069,
+     -0.5506876479378489,
+     0.6086047945354118
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.025087405044502725,
+    "ok": true
+   },
+   {
+    "name": "back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.049641975838442716,
+     -0.8026960898259788,
+     -0.41743889013305147
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.02498858035231756,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.4393203901291762,
+     0.6403633427915282,
+     0.4819179017809392
+    ],
+    "winding": -5.0800526162264503e-17,
+    "clearance": 0.08031680383487819,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.16230686217601167,
+     0.6048460213336657,
+     0.6486188893796874
+    ],
+    "winding": -8.614002262297024e-17,
+    "clearance": 0.08031677437642815,
+    "ok": true
+   },
+   {
+    "name": "crest",
+    "expect": "material",
+    "structure": "crest",
+    "point": [
+     -0.24461028593699052,
+     -0.6175758073991234,
+     0.6839652404639797
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.02614587569375782,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "helmet_6",
+  "family": "helmet",
+  "variant": 6,
+  "valid": true,
+  "problems": [],
+  "faces": 314204,
+  "voxel_object": 0.012,
+  "scale": 1.0818598373941013,
+  "min_feature_object": 0.08951664756638027,
+  "min_feature_grid": 0.09684446578022923,
+  "expected_components": 1,
+  "expected_genus": [
+   2
+  ],
+  "volume_grid": 0.826406523360691,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 157100,
+   "faces": 314204,
+   "edges": 471306,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    2
+   ],
+   "total_genus": 2,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.9058744377448017,
+   "wall": 0.08951664756638027,
+   "slits": 2,
+   "crest": 0,
+   "skirt": 0.524327823450126,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "head_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     0.010335505808945928,
+     0.0413534683258073,
+     -0.02664586369468694
+    ],
+    "winding": 1.1485336349729365e-16,
+    "clearance": 0.785128231524387,
+    "ok": true
+   },
+   {
+    "name": "head_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.029911407880404587,
+     -0.11967892185793037,
+     0.316993951230579
+    ],
+    "winding": -1.9215851200508747e-16,
+    "clearance": 0.7553413171853303,
+    "ok": true
+   },
+   {
+    "name": "dome",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.0982484235078027,
+     0.3931028564737753,
+     -0.7772718371732212
+    ],
+    "winding": 1.0000000000000004,
+    "clearance": 0.048376146247602746,
+    "ok": true
+   },
+   {
+    "name": "back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.6018943192809815,
+     0.7097245989712434,
+     0.0179481608788382
+    ],
+    "winding": 0.9999999999999997,
+    "clearance": 0.04840273800061244,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.40798079704052315,
+     -0.7102664091842831,
+     -0.3822055262016011
+    ],
+    "winding": -6.007714398319976e-16,
+    "clearance": 0.06732755668987264,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.8482480810057882,
+     -0.3225431656843687,
+     -0.1489514138223083
+    ],
+    "winding": -3.1363803108876345e-16,
+    "clearance": 0.0673275599246532,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "helmet_7",
+  "family": "helmet",
+  "variant": 7,
+  "valid": true,
+  "problems": [],
+  "faces": 333192,
+  "voxel_object": 0.012,
+  "scale": 1.0499498314987041,
+  "min_feature_object": 0.11169606193063464,
+  "min_feature_grid": 0.11727526140313865,
+  "expected_components": 1,
+  "expected_genus": [
+   3
+  ],
+  "volume_grid": 0.9748597502295447,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 166592,
+   "faces": 333192,
+   "edges": 499788,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    3
+   ],
+   "total_genus": 3,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.9333855480743734,
+   "wall": 0.11169606193063464,
+   "slits": 3,
+   "crest": 1,
+   "skirt": 0.5038563193868524,
+   "crest_height": 0.18313402910270069,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "head_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     0.058712186965058054,
+     0.051370302363539094,
+     0.01609330934837616
+    ],
+    "winding": -2.0320210464905801e-16,
+    "clearance": 0.7646691283020606,
+    "ok": true
+   },
+   {
+    "name": "head_space_low",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -0.17734668016414193,
+     -0.21723314901111748,
+     -0.0434371503989971
+    ],
+    "winding": 1.236882376124701e-16,
+    "clearance": 0.7536097427238191,
+    "ok": true
+   },
+   {
+    "name": "dome",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.5948690502538628,
+     0.6614451777917992,
+     0.15130392421090916
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.058689146092935095,
+    "ok": true
+   },
+   {
+    "name": "back",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.30744228162855897,
+     -0.11930265212115986,
+     0.8611753060562267
+    ],
+    "winding": 1.0,
+    "clearance": 0.058602745776233575,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.30939898277731404,
+     0.5239296012934797,
+     -0.6775795683940826
+    ],
+    "winding": -3.6222983872223387e-16,
+    "clearance": 0.07064367778843028,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.15773829872927456,
+     0.1601467952118223,
+     -0.888540146479036
+    ],
+    "winding": -2.297067269945873e-16,
+    "clearance": 0.07064366909557912,
+    "ok": true
+   },
+   {
+    "name": "eye_slit_2",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.2726479337683376,
+     0.13807156111734967,
+     -0.8671574614393831
+    ],
+    "winding": -8.834874115176436e-17,
+    "clearance": 0.07064367108507622,
+    "ok": true
+   },
+   {
+    "name": "crest",
+    "expect": "material",
+    "structure": "crest",
+    "point": [
+     0.6956567230324879,
+     0.7761280833466294,
+     0.1767210439757663
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.05863763543806205,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "holed_plate_0",
+  "family": "holed_plate",
+  "variant": 0,
+  "valid": true,
+  "problems": [],
+  "faces": 54476,
+  "voxel_object": 0.012,
+  "scale": 1.0416772141600108,
+  "min_feature_object": 0.036494005948114895,
+  "min_feature_grid": 0.038014974449571186,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.07402677093476263,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 27238,
+   "faces": 54476,
+   "edges": 81714,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "thickness": 0.036494005948114895,
+   "holes": 1,
+   "hole_radius": 0.27811656425442727,
+   "ligament": 0.22004324588234425,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "hole_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.11343833541974066,
+     -0.04846278449902117,
+     -1.6297977733801955e-09
+    ],
+    "winding": -7.730514850779382e-18,
+    "clearance": 0.2895738353352622,
+    "ok": true
+   },
+   {
+    "name": "ligament_a",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.5662221820981934,
+     0.1513025285214133,
+     -1.6297977733801955e-09
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.019007486200452707,
+    "ok": true
+   },
+   {
+    "name": "ligament_b",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.6533333429545498,
+     0.2458666122385431,
+     -1.6297977733801955e-09
+    ],
+    "winding": 1.0,
+    "clearance": 0.019007486200452707,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "holed_plate_1",
+  "family": "holed_plate",
+  "variant": 1,
+  "valid": true,
+  "problems": [],
+  "faces": 57544,
+  "voxel_object": 0.012,
+  "scale": 1.0816486571055741,
+  "min_feature_object": 0.049497932873114305,
+  "min_feature_grid": 0.05353937262170594,
+  "expected_components": 1,
+  "expected_genus": [
+   2
+  ],
+  "volume_grid": 0.11651104570060444,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 28770,
+   "faces": 57544,
+   "edges": 86316,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    2
+   ],
+   "total_genus": 2,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "thickness": 0.049497932873114305,
+   "holes": 2,
+   "hole_radius": 0.1681535454667036,
+   "ligament": 0.1946566317270992,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "hole_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.5875668605605793,
+     0.02125110859381198,
+     -1.8577400007943587e-09
+    ],
+    "winding": 8.834874115176436e-18,
+    "clearance": 0.18167499406974466,
+    "ok": true
+   },
+   {
+    "name": "hole_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.42124907171758946,
+     -0.09788383202867523,
+     -1.8577400007943587e-09
+    ],
+    "winding": 0.0,
+    "clearance": 0.18167391740163877,
+    "ok": true
+   },
+   {
+    "name": "ligament_a",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.04355553931824701,
+     0.22410330194940198,
+     -1.8577400007943587e-09
+    ],
+    "winding": 1.0,
+    "clearance": 0.02676968524721418,
+    "ok": true
+   },
+   {
+    "name": "ligament_b",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.6751111409657545,
+     0.3055954138864942,
+     -1.8577400007943587e-09
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.02676968524721418,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "holed_plate_2",
+  "family": "holed_plate",
+  "variant": 2,
+  "valid": true,
+  "problems": [],
+  "faces": 62280,
+  "voxel_object": 0.012,
+  "scale": 1.0562995849595402,
+  "min_feature_object": 0.08772811161932774,
+  "min_feature_grid": 0.09266716789278011,
+  "expected_components": 1,
+  "expected_genus": [
+   4
+  ],
+  "volume_grid": 0.18496346106831082,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 31134,
+   "faces": 62280,
+   "edges": 93420,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    4
+   ],
+   "total_genus": 4,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "thickness": 0.08772811161932774,
+   "holes": 4,
+   "hole_radius": 0.10675849473076607,
+   "ligament": 0.1256687764232434,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "hole_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.7139155528001632,
+     -0.3054195825910477,
+     1.1620541466725791e-09
+    ],
+    "winding": 5.5217963219852725e-18,
+    "clearance": 0.11242584088318527,
+    "ok": true
+   },
+   {
+    "name": "hole_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.040131572288614796,
+     -0.24889399948154553,
+     1.1620541466725791e-09
+    ],
+    "winding": -1.766974823035287e-17,
+    "clearance": 0.11244360014410613,
+    "ok": true
+   },
+   {
+    "name": "hole_2",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.6705425898626853,
+     -0.22884457221876575,
+     1.1620541466725791e-09
+    ],
+    "winding": -5.300924469105861e-17,
+    "clearance": 0.11249086798207875,
+    "ok": true
+   },
+   {
+    "name": "hole_3",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.6488461852535543,
+     0.26803242220353873,
+     1.1620541466725791e-09
+    ],
+    "winding": -7.951386703658792e-17,
+    "clearance": 0.11243667345324634,
+    "ok": true
+   },
+   {
+    "name": "ligament_a",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.32666667808343214,
+     0.16527971114896148,
+     1.1620541466725791e-09
+    ],
+    "winding": 1.0,
+    "clearance": 0.04633358058356997,
+    "ok": true
+   },
+   {
+    "name": "ligament_b",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.3484444396864539,
+     -0.05509325001819785,
+     1.1620541466725791e-09
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.04633358058356997,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "holed_plate_3",
+  "family": "holed_plate",
+  "variant": 3,
+  "valid": true,
+  "problems": [],
+  "faces": 62212,
+  "voxel_object": 0.012,
+  "scale": 1.1262237195920153,
+  "min_feature_object": 0.11185979492203464,
+  "min_feature_grid": 0.12597915430989387,
+  "expected_components": 1,
+  "expected_genus": [
+   6
+  ],
+  "volume_grid": 0.25570469347720465,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 31096,
+   "faces": 62212,
+   "edges": 93318,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    6
+   ],
+   "total_genus": 6,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "thickness": 0.11552700882569822,
+   "holes": 6,
+   "hole_radius": 0.12324461158380327,
+   "ligament": 0.11185979492203464,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "hole_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.6461915804965931,
+     -0.3001763570548881,
+     -6.744062105033967e-10
+    ],
+    "winding": 2.6504622345529306e-17,
+    "clearance": 0.13852572922304804,
+    "ok": true
+   },
+   {
+    "name": "hole_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.05638392304263691,
+     -0.3025262803179819,
+     -6.744062105033967e-10
+    ],
+    "winding": -8.834874115176436e-18,
+    "clearance": 0.13851761164748586,
+    "ok": true
+   },
+   {
+    "name": "hole_2",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.7060388813206211,
+     -0.33049751009656236,
+     -6.744062105033967e-10
+    ],
+    "winding": -1.1043592643970545e-18,
+    "clearance": 0.13851602613630826,
+    "ok": true
+   },
+   {
+    "name": "hole_3",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.6339427043904584,
+     0.3028326614170749,
+     -6.744062105033967e-10
+    ],
+    "winding": -2.4295903816735198e-17,
+    "clearance": 0.1384852513640037,
+    "ok": true
+   },
+   {
+    "name": "hole_4",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.021182067983376275,
+     0.2441792148892771,
+     -6.744062105033967e-10
+    ],
+    "winding": -3.533949646070574e-17,
+    "clearance": 0.13849356000003724,
+    "ok": true
+   },
+   {
+    "name": "hole_5",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.7080295081292975,
+     0.2851138658163763,
+     -6.744062105033967e-10
+    ],
+    "winding": 2.6504622345529306e-17,
+    "clearance": 0.13848149831073842,
+    "ok": true
+   },
+   {
+    "name": "ligament_a",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.3920000655810799,
+     -0.019842586422973346,
+     -6.744062105033967e-10
+    ],
+    "winding": 1.0,
+    "clearance": 0.06505462768903705,
+    "ok": true
+   },
+   {
+    "name": "ligament_b",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.3048888574155699,
+     -0.039685175487148026,
+     -6.744062105033967e-10
+    ],
+    "winding": 1.0,
+    "clearance": 0.06505462768903705,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "holed_plate_4",
+  "family": "holed_plate",
+  "variant": 4,
+  "valid": true,
+  "problems": [],
+  "faces": 92368,
+  "voxel_object": 0.012,
+  "scale": 0.9315411929572361,
+  "min_feature_object": 0.04041920349836877,
+  "min_feature_grid": 0.037652153045251734,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.06914450264546049,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 46184,
+   "faces": 92368,
+   "edges": 138552,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "thickness": 0.04041920349836877,
+   "holes": 1,
+   "hole_radius": 0.2463778743551152,
+   "ligament": 0.37603572623357245,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "hole_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.08023168425954161,
+     0.08615279129516083,
+     -0.04892963892623569
+    ],
+    "winding": -8.282694482977908e-17,
+    "clearance": 0.22934255921621177,
+    "ok": true
+   },
+   {
+    "name": "ligament_a",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.1815287409974267,
+     -0.4343772806016237,
+     0.16327601067570735
+    ],
+    "winding": 1.0,
+    "clearance": 0.018826058679405403,
+    "ok": true
+   },
+   {
+    "name": "ligament_b",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.5609852439863053,
+     0.1284930832283316,
+     -0.23925293054773386
+    ],
+    "winding": 1.0,
+    "clearance": 0.018826070055277425,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "holed_plate_5",
+  "family": "holed_plate",
+  "variant": 5,
+  "valid": true,
+  "problems": [],
+  "faces": 80092,
+  "voxel_object": 0.012,
+  "scale": 0.9288399164607046,
+  "min_feature_object": 0.06370246193437337,
+  "min_feature_grid": 0.05916938942146458,
+  "expected_components": 1,
+  "expected_genus": [
+   2
+  ],
+  "volume_grid": 0.0964655366318337,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 40044,
+   "faces": 80092,
+   "edges": 120138,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    2
+   ],
+   "total_genus": 2,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "thickness": 0.06370246193437337,
+   "holes": 2,
+   "hole_radius": 0.22346780636366387,
+   "ligament": 0.2711871525410406,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "hole_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.31353531825266,
+     0.06858887353141203,
+     0.1647497771968492
+    ],
+    "winding": -4.417437057588218e-18,
+    "clearance": 0.20738648076832017,
+    "ok": true
+   },
+   {
+    "name": "hole_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.29246832084159907,
+     -0.07913702389608979,
+     -0.1885528674002564
+    ],
+    "winding": -1.766974823035287e-17,
+    "clearance": 0.20739944519410228,
+    "ok": true
+   },
+   {
+    "name": "ligament_a",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.17249905833046256,
+     0.07935020719994444,
+     0.2522304558508171
+    ],
+    "winding": 1.0,
+    "clearance": 0.02958469174536433,
+    "ok": true
+   },
+   {
+    "name": "ligament_b",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.17339834418232786,
+     -0.08199883063946882,
+     -0.2510183735100519
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.02958469027327677,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "holed_plate_6",
+  "family": "holed_plate",
+  "variant": 6,
+  "valid": true,
+  "problems": [],
+  "faces": 88648,
+  "voxel_object": 0.012,
+  "scale": 0.9446339841757729,
+  "min_feature_object": 0.0842719757820681,
+  "min_feature_grid": 0.07960617223737924,
+  "expected_components": 1,
+  "expected_genus": [
+   4
+  ],
+  "volume_grid": 0.13918635596295306,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 44318,
+   "faces": 88648,
+   "edges": 132972,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    4
+   ],
+   "total_genus": 4,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "thickness": 0.0842719757820681,
+   "holes": 4,
+   "hole_radius": 0.12022334889715941,
+   "ligament": 0.11829031354280445,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "hole_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.5167189570527072,
+     0.14024703642963915,
+     -0.28163190883812284
+    ],
+    "winding": -2.9155084580082237e-16,
+    "clearance": 0.11324250534039612,
+    "ok": true
+   },
+   {
+    "name": "hole_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.2944789439926531,
+     -0.02315369902223591,
+     0.14105166463709212
+    ],
+    "winding": -7.067899292141149e-17,
+    "clearance": 0.11328098480151792,
+    "ok": true
+   },
+   {
+    "name": "hole_2",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.0426174062105451,
+     -0.22224090191354326,
+     0.6395200833754081
+    ],
+    "winding": 5.742668174864683e-17,
+    "clearance": 0.11322466134596106,
+    "ok": true
+   },
+   {
+    "name": "hole_3",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.019523794301687367,
+     0.22178224319699646,
+     -0.6440989608774896
+    ],
+    "winding": 1.3694054878523476e-16,
+    "clearance": 0.11322618520203764,
+    "ok": true
+   },
+   {
+    "name": "ligament_a",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.24481980029631087,
+     -0.07380166571909132,
+     0.15482785089085283
+    ],
+    "winding": 1.0,
+    "clearance": 0.03980306077488324,
+    "ok": true
+   },
+   {
+    "name": "ligament_b",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.11974719143637338,
+     0.10181799823491858,
+     -0.26813369857929104
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.03980308782402812,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "holed_plate_7",
+  "family": "holed_plate",
+  "variant": 7,
+  "valid": true,
+  "problems": [],
+  "faces": 93152,
+  "voxel_object": 0.012,
+  "scale": 0.8504211607610492,
+  "min_feature_object": 0.1274571986163024,
+  "min_feature_grid": 0.10839229879462747,
+  "expected_components": 1,
+  "expected_genus": [
+   6
+  ],
+  "volume_grid": 0.17848963696523706,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 46566,
+   "faces": 93152,
+   "edges": 139728,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    6
+   ],
+   "total_genus": 6,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "thickness": 0.1274571986163024,
+   "holes": 6,
+   "hole_radius": 0.11904448369662197,
+   "ligament": 0.14944809575044177,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "hole_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.02442536594220819,
+     -0.2332278993584327,
+     0.5994708869974129
+    ],
+    "winding": 8.834874115176436e-17,
+    "clearance": 0.10099462992252344,
+    "ok": true
+   },
+   {
+    "name": "hole_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.0029798459993203765,
+     0.19414529661967558,
+     0.22914581507830353
+    ],
+    "winding": 3.533949646070574e-17,
+    "clearance": 0.10098143376929193,
+    "ok": true
+   },
+   {
+    "name": "hole_2",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.01733787059984186,
+     0.6506503255801664,
+     -0.08679078000172469
+    ],
+    "winding": 1.766974823035287e-17,
+    "clearance": 0.10099747484738808,
+    "ok": true
+   },
+   {
+    "name": "hole_3",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.018246143315229224,
+     -0.5848333000953226,
+     0.17158970869074505
+    ],
+    "winding": 8.834874115176436e-18,
+    "clearance": 0.10098872300052648,
+    "ok": true
+   },
+   {
+    "name": "hole_4",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.004803277218385276,
+     -0.15852200116299786,
+     -0.24877394107029568
+    ],
+    "winding": 7.067899292141149e-17,
+    "clearance": 0.10102025697933552,
+    "ok": true
+   },
+   {
+    "name": "hole_5",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.023984255373451623,
+     0.269651626049905,
+     -0.5489225084514809
+    ],
+    "winding": -8.834874115176436e-17,
+    "clearance": 0.1010117816871526,
+    "ok": true
+   },
+   {
+    "name": "ligament_a",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.008990581108431641,
+     -0.19015673022248974,
+     0.1539876146366631
+    ],
+    "winding": 1.0,
+    "clearance": 0.05419613943793132,
+    "ok": true
+   },
+   {
+    "name": "ligament_b",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.011070565122523577,
+     0.25790421169205313,
+     -0.15977202355173484
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.05419615748224474,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "multi_part_0",
+  "family": "multi_part",
+  "variant": 0,
+  "valid": true,
+  "problems": [],
+  "faces": 16132,
+  "voxel_object": 0.010821908942847675,
+  "scale": 3.606771631445209,
+  "min_feature_object": 0.032465726828543026,
+  "min_feature_grid": 0.11709646251943863,
+  "expected_components": 2,
+  "expected_genus": [
+   0,
+   0
+  ],
+  "volume_grid": 1.5718136137916787,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 8070,
+   "faces": 16132,
+   "edges": 24198,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 2,
+   "genus_signature": [
+    0,
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "parts": 2,
+   "gap": 0.032465726828543026,
+   "kinds": "sphere,capsule",
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "part0_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.3168472777228247,
+     -1.297144935570615e-07,
+     3.0933588704422416e-08
+    ],
+    "winding": 1.0,
+    "clearance": 0.6627382387419128,
+    "ok": true
+   },
+   {
+    "name": "part1_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.7221414923385636,
+     -1.297144935570615e-07,
+     3.0933588704422416e-08
+    ],
+    "winding": 1.0,
+    "clearance": 0.2569697435849201,
+    "ok": true
+   },
+   {
+    "name": "gap_0_1",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.4052935931384462,
+     -1.297144935570615e-07,
+     3.0933588704422416e-08
+    ],
+    "winding": 1.4135798584282297e-16,
+    "clearance": 0.05910638620076224,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "multi_part_1",
+  "family": "multi_part",
+  "variant": 1,
+  "valid": true,
+  "problems": [],
+  "faces": 42188,
+  "voxel_object": 0.012,
+  "scale": 1.4981479565594067,
+  "min_feature_object": 0.051950271897825945,
+  "min_feature_grid": 0.07782919368643351,
+  "expected_components": 3,
+  "expected_genus": [
+   0,
+   0,
+   0
+  ],
+  "volume_grid": 0.5171805025940454,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 21100,
+   "faces": 42188,
+   "edges": 63282,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 3,
+   "genus_signature": [
+    0,
+    0,
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "parts": 3,
+   "gap": 0.051950271897825945,
+   "kinds": "sphere,capsule,sphere",
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "part0_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.5922361825520592,
+     -3.339242360709212e-08,
+     -1.5120770055128583e-08
+    ],
+    "winding": 1.0,
+    "clearance": 0.38748098078205084,
+    "ok": true
+   },
+   {
+    "name": "part1_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.04814895804512419,
+     -3.339242360709212e-08,
+     -1.5120770055128583e-08
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.1743457106708964,
+    "ok": true
+   },
+   {
+    "name": "gap_0_1",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     -0.16552987563871838,
+     -3.339242360709212e-08,
+     -1.5120770055128583e-08
+    ],
+    "winding": -1.0601848938211722e-16,
+    "clearance": 0.03896996986235318,
+    "ok": true
+   },
+   {
+    "name": "part2_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.6403871517249092,
+     -3.339242360709212e-08,
+     -1.5120770055128583e-08
+    ],
+    "winding": 1.0,
+    "clearance": 0.3392913819828288,
+    "ok": true
+   },
+   {
+    "name": "gap_1_2",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.26182779172896675,
+     -3.339242360709212e-08,
+     -1.5120770055128583e-08
+    ],
+    "winding": 0.0,
+    "clearance": 0.03897007984239953,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "multi_part_2",
+  "family": "multi_part",
+  "variant": 2,
+  "valid": true,
+  "problems": [],
+  "faces": 50048,
+  "voxel_object": 0.012,
+  "scale": 0.9877905045528703,
+  "min_feature_object": 0.08420433631111617,
+  "min_feature_grid": 0.08317624385029701,
+  "expected_components": 4,
+  "expected_genus": [
+   0,
+   0,
+   0,
+   1
+  ],
+  "volume_grid": 0.1618439614679125,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 25030,
+   "faces": 50048,
+   "edges": 75072,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 4,
+   "genus_signature": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "parts": 4,
+   "gap": 0.08420433631111617,
+   "kinds": "sphere,sphere,box,torus",
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "part0_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.7251855314710546,
+     9.284296053459721e-10,
+     -9.633048876263612e-09
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.25461311795053265,
+    "ok": true
+   },
+   {
+    "name": "part1_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.23926623845596595,
+     9.284296053459721e-10,
+     -9.633048876263612e-09
+    ],
+    "winding": 1.0,
+    "clearance": 0.14756874597002476,
+    "ok": true
+   },
+   {
+    "name": "gap_0_1",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     -0.4287777028940087,
+     9.284296053459721e-10,
+     -9.633048876263612e-09
+    ],
+    "winding": 3.533949646070574e-17,
+    "clearance": 0.04161506759736714,
+    "ok": true
+   },
+   {
+    "name": "part2_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.1345492122643494,
+     9.284296053459721e-10,
+     -9.633048876263612e-09
+    ],
+    "winding": 1.0,
+    "clearance": 0.14271582879374667,
+    "ok": true
+   },
+   {
+    "name": "gap_1_2",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     -0.0497547740179232,
+     9.284296053459721e-10,
+     -9.633048876263612e-09
+    ],
+    "winding": 1.4135798584282297e-16,
+    "clearance": 0.04158812048080565,
+    "ok": true
+   },
+   {
+    "name": "part3_torus_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.6702228181987725,
+     9.284296053459721e-10,
+     -9.633048876263612e-09
+    ],
+    "winding": 2.6504622345529306e-17,
+    "clearance": 0.15262491129801628,
+    "ok": true
+   },
+   {
+    "name": "part3_tube",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.9015343617820387,
+     9.284296053459721e-10,
+     -9.633048876263612e-09
+    ],
+    "winding": 1.0,
+    "clearance": 0.07809306435461344,
+    "ok": true
+   },
+   {
+    "name": "gap_2_3",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.31885319854662203,
+     9.284296053459721e-10,
+     -9.633048876263612e-09
+    ],
+    "winding": -8.834874115176436e-17,
+    "clearance": 0.041588157488525956,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "multi_part_3",
+  "family": "multi_part",
+  "variant": 3,
+  "valid": true,
+  "problems": [],
+  "faces": 47340,
+  "voxel_object": 0.012,
+  "scale": 1.132619364655275,
+  "min_feature_object": 0.12580776009568717,
+  "min_feature_grid": 0.14249230530828044,
+  "expected_components": 5,
+  "expected_genus": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "volume_grid": 0.19484047405960966,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 23680,
+   "faces": 47340,
+   "edges": 71010,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 5,
+   "genus_signature": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "parts": 5,
+   "gap": 0.12580776009568717,
+   "kinds": "sphere,capsule,capsule,capsule,capsule",
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "part0_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.817801877362823,
+     -1.5691741027272753e-08,
+     -2.57908052316611e-10
+    ],
+    "winding": 1.0,
+    "clearance": 0.16188824529989806,
+    "ok": true
+   },
+   {
+    "name": "part1_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.4074813279002412,
+     -1.5691741027272753e-08,
+     -2.57908052316611e-10
+    ],
+    "winding": 1.0,
+    "clearance": 0.10512339255466527,
+    "ok": true
+   },
+   {
+    "name": "gap_0_1",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     -0.5842435658182493,
+     -1.5691741027272753e-08,
+     -2.57908052316611e-10
+    ],
+    "winding": -1.0822720791091133e-16,
+    "clearance": 0.07144236283785074,
+    "ok": true
+   },
+   {
+    "name": "part2_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.02214326448414068,
+     -1.5691741027272753e-08,
+     -2.57908052316611e-10
+    ],
+    "winding": 1.0,
+    "clearance": 0.13700539104220333,
+    "ok": true
+   },
+   {
+    "name": "gap_1_2",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     -0.2307190899822332,
+     -1.5691741027272753e-08,
+     -2.57908052316611e-10
+    ],
+    "winding": 9.718361526694079e-17,
+    "clearance": 0.07139845651394953,
+    "ok": true
+   },
+   {
+    "name": "part3_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.4065529188448899,
+     -1.5691741027272753e-08,
+     -2.57908052316611e-10
+    ],
+    "winding": 1.0,
+    "clearance": 0.14859118327767842,
+    "ok": true
+   },
+   {
+    "name": "gap_2_3",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.18643256101395178,
+     -1.5691741027272753e-08,
+     -2.57908052316611e-10
+    ],
+    "winding": -1.0601848938211722e-16,
+    "clearance": 0.07138708397504538,
+    "ok": true
+   },
+   {
+    "name": "part4_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.8390057448570808,
+     -1.5691741027272753e-08,
+     -2.57908052316611e-10
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.14083576505299766,
+    "ok": true
+   },
+   {
+    "name": "gap_3_4",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.626673276675828,
+     -1.5691741027272753e-08,
+     -2.57908052316611e-10
+    ],
+    "winding": 1.4577542290041119e-16,
+    "clearance": 0.07138720304227249,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "multi_part_4",
+  "family": "multi_part",
+  "variant": 4,
+  "valid": true,
+  "problems": [],
+  "faces": 32820,
+  "voxel_object": 0.010912072885818844,
+  "scale": 2.2300850522431075,
+  "min_feature_object": 0.03273621865745653,
+  "min_feature_grid": 0.07300455189495574,
+  "expected_components": 2,
+  "expected_genus": [
+   0,
+   0
+  ],
+  "volume_grid": 1.045912686561333,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 16414,
+   "faces": 32820,
+   "edges": 49230,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 2,
+   "genus_signature": [
+    0,
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "parts": 2,
+   "gap": 0.03273621865745653,
+   "kinds": "sphere,box",
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "part0_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     1.958874115953052e-08,
+     0.5215319415661326,
+     -0.23843013109265793
+    ],
+    "winding": 1.0,
+    "clearance": 0.4581047182170718,
+    "ok": true
+   },
+   {
+    "name": "part1_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.0069514182898565875,
+     -0.4058074562437914,
+     0.038440311390036924
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.3639065836447686,
+    "ok": true
+   },
+   {
+    "name": "gap_0_1",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.0035560496604388914,
+     0.04714586085506477,
+     -0.09679538076899476
+    ],
+    "winding": 3.533949646070574e-17,
+    "clearance": 0.03650230068564594,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "multi_part_5",
+  "family": "multi_part",
+  "variant": 5,
+  "valid": true,
+  "problems": [],
+  "faces": 47960,
+  "voxel_object": 0.012,
+  "scale": 1.91167524409062,
+  "min_feature_object": 0.0518826109750543,
+  "min_feature_grid": 0.0991827029997956,
+  "expected_components": 3,
+  "expected_genus": [
+   0,
+   0,
+   0
+  ],
+  "volume_grid": 0.9984167211720518,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 23986,
+   "faces": 47960,
+   "edges": 71940,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 3,
+   "genus_signature": [
+    0,
+    0,
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "parts": 3,
+   "gap": 0.0518826109750543,
+   "kinds": "sphere,capsule,box",
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "part0_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.5679664895300512,
+     -0.5576930574293938,
+     -0.2285324881545715
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.41171033051071515,
+    "ok": true
+   },
+   {
+    "name": "part1_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.09585117814467005,
+     -0.03135960980935278,
+     -0.0357020189625686
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.22073294097300547,
+    "ok": true
+   },
+   {
+    "name": "gap_0_1",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     -0.27048889316227287,
+     -0.22605287311398214,
+     -0.10703093313534962
+    ],
+    "winding": -1.9436723053388158e-16,
+    "clearance": 0.04982520376171996,
+    "ok": true
+   },
+   {
+    "name": "part2_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.3318500395078478,
+     0.44545919061837214,
+     0.13898798681570984
+    ],
+    "winding": 1.0,
+    "clearance": 0.3325422109249846,
+    "ok": true
+   },
+   {
+    "name": "gap_1_2",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.07878653687293274,
+     0.16333365349527657,
+     0.03562689521021241
+    ],
+    "winding": 3.533949646070574e-17,
+    "clearance": 0.04959133096305453,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "multi_part_6",
+  "family": "multi_part",
+  "variant": 6,
+  "valid": true,
+  "problems": [],
+  "faces": 62400,
+  "voxel_object": 0.012,
+  "scale": 1.2626650924953442,
+  "min_feature_object": 0.09496972194854227,
+  "min_feature_grid": 0.11991495274841324,
+  "expected_components": 4,
+  "expected_genus": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "volume_grid": 0.4079339039812549,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 31208,
+   "faces": 62400,
+   "edges": 93600,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 4,
+   "genus_signature": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "parts": 4,
+   "gap": 0.09496972194854227,
+   "kinds": "sphere,sphere,box,box",
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "part0_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.29359634332589046,
+     0.5437359416280482,
+     -0.7268178426727345
+    ],
+    "winding": 1.0,
+    "clearance": 0.252859316740635,
+    "ok": true
+   },
+   {
+    "name": "part1_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.10611451659441656,
+     0.18100602684072725,
+     -0.2527721717789275
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.2522006779911641,
+    "ok": true
+   },
+   {
+    "name": "gap_0_1",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     -0.1997567641131204,
+     0.36218009077601543,
+     -0.4895455317515062
+    ],
+    "winding": -4.417437057588218e-17,
+    "clearance": 0.06007802137258367,
+    "ok": true
+   },
+   {
+    "name": "part2_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.07003939635092865,
+     -0.15980723994931473,
+     0.19263099768318692
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.21539546805431717,
+    "ok": true
+   },
+   {
+    "name": "gap_1_2",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     -0.012472269075712746,
+     -0.00016803709456087584,
+     -0.01599881180634887
+    ],
+    "winding": -8.834874115176436e-17,
+    "clearance": 0.059957482586651456,
+    "ok": true
+   },
+   {
+    "name": "part3_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.23814720433019235,
+     -0.4850533287381694,
+     0.6176896820652027
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.21280554728964154,
+    "ok": true
+   },
+   {
+    "name": "gap_2_3",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.15255106177757002,
+     -0.31944644280406853,
+     0.40126080717272267
+    ],
+    "winding": -2.1203697876423444e-16,
+    "clearance": 0.05995747722484867,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "multi_part_7",
+  "family": "multi_part",
+  "variant": 7,
+  "valid": true,
+  "problems": [],
+  "faces": 68824,
+  "voxel_object": 0.012,
+  "scale": 0.9956646878876496,
+  "min_feature_object": 0.14662744175910736,
+  "min_feature_grid": 0.14599176603484615,
+  "expected_components": 5,
+  "expected_genus": [
+   0,
+   0,
+   0,
+   0,
+   1
+  ],
+  "volume_grid": 0.22887585194083584,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 34420,
+   "faces": 68824,
+   "edges": 103236,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 5,
+   "genus_signature": [
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "parts": 5,
+   "gap": 0.14662744175910736,
+   "kinds": "sphere,capsule,sphere,box,torus",
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "part0_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.8605050339630999,
+     0.26932229375532624,
+     -0.4872090871111382
+    ],
+    "winding": 1.0,
+    "clearance": 0.11917211922799383,
+    "ok": true
+   },
+   {
+    "name": "part1_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.53383359310555,
+     0.1880765959597035,
+     -0.31112337483720265
+    ],
+    "winding": 1.0,
+    "clearance": 0.11393348607201047,
+    "ok": true
+   },
+   {
+    "name": "gap_0_1",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.6948765450815612,
+     0.22812921572349693,
+     -0.39793035995641546
+    ],
+    "winding": 5.300924469105861e-17,
+    "clearance": 0.07312723724326121,
+    "ok": true
+   },
+   {
+    "name": "part2_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     0.20333735210133233,
+     0.1058796409741988,
+     -0.1329759804757131
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.1236351675833826,
+    "ok": true
+   },
+   {
+    "name": "gap_1_2",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.37279064112953875,
+     0.14802397619590996,
+     -0.2243163897179898
+    ],
+    "winding": 2.6504622345529306e-17,
+    "clearance": 0.07310454784561075,
+    "ok": true
+   },
+   {
+    "name": "part3_core",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.2279131749899643,
+     -0.0013756792530170842,
+     0.09948099841426176
+    ],
+    "winding": 0.9999999999999997,
+    "clearance": 0.23145627617509598,
+    "ok": true
+   },
+   {
+    "name": "gap_2_3",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     0.03388406307312597,
+     0.06373530575248762,
+     -0.041635571233436384
+    ],
+    "winding": -1.4135798584282297e-16,
+    "clearance": 0.07299588830038932,
+    "ok": true
+   },
+   {
+    "name": "part4_torus_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.757960408780879,
+     -0.13320249968437897,
+     0.3851923677824892
+    ],
+    "winding": -3.533949646070574e-17,
+    "clearance": 0.0987700540309309,
+    "ok": true
+   },
+   {
+    "name": "part4_tube",
+    "expect": "material",
+    "structure": "part",
+    "point": [
+     -0.9033264063095596,
+     -0.16935614040047853,
+     0.46354900388160514
+    ],
+    "winding": 1.0,
+    "clearance": 0.06927800194079367,
+    "ok": true
+   },
+   {
+    "name": "gap_3_4",
+    "expect": "air",
+    "structure": "gap",
+    "point": [
+     -0.48971041305305446,
+     -0.06648666425852176,
+     0.24059756806195984
+    ],
+    "winding": 1.4135798584282297e-16,
+    "clearance": 0.07299588056412766,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "ring_0",
+  "family": "ring",
+  "variant": 0,
+  "valid": true,
+  "problems": [],
+  "faces": 10404,
+  "voxel_object": 0.012,
+  "scale": 1.4365227104681053,
+  "min_feature_object": 0.03780552706533875,
+  "min_feature_grid": 0.054308498210575734,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.012699553777759756,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 5202,
+   "faces": 10404,
+   "edges": 15606,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "major": 0.6641061523232218,
+   "tube": 0.018902763532669373,
+   "links": 1,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "ring_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     2.2277834583683738e-05,
+     3.22459640993765e-05,
+     -2.54415897047801e-09
+    ],
+    "winding": -5.521796321985272e-19,
+    "clearance": 0.9278634776817091,
+    "ok": true
+   },
+   {
+    "name": "ring_hole_off",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.3816237058241433,
+     -0.2861688250280703,
+     -2.54415897047801e-09
+    ],
+    "winding": -1.5875164425707657e-18,
+    "clearance": 0.45095929934428686,
+    "ok": true
+   },
+   {
+    "name": "tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     0.9540258478084827,
+     3.22459640993765e-05,
+     -2.54415897047801e-09
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.025032644467057046,
+    "ok": true
+   },
+   {
+    "name": "tube_2",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     -0.5723798641497557,
+     0.7632351019432185,
+     -2.54415897047801e-09
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.0236895648205497,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "ring_1",
+  "family": "ring",
+  "variant": 1,
+  "valid": true,
+  "problems": [],
+  "faces": 12644,
+  "voxel_object": 0.012,
+  "scale": 1.6944740418212376,
+  "min_feature_object": 0.05495847651747971,
+  "min_feature_grid": 0.09312571183691142,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.03847840454377188,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 6322,
+   "faces": 12644,
+   "edges": 18966,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "major": 0.5509311285697964,
+   "tube": 0.027479238258739856,
+   "links": 1,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "ring_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -1.329387536098793e-06,
+     -7.530645742033006e-07,
+     3.3172697893936347e-10
+    ],
+    "winding": -5.521796321985272e-19,
+    "clearance": 0.8869784483759675,
+    "ok": true
+   },
+   {
+    "name": "ring_hole_off",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.37341406908958347,
+     -0.2800623019224139,
+     3.3172697893936347e-10
+    ],
+    "winding": -6.764200494431958e-18,
+    "clearance": 0.42022996420084824,
+    "ok": true
+   },
+   {
+    "name": "tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     0.9335371668052628,
+     -7.530645742033006e-07,
+     3.3172697893936347e-10
+    ],
+    "winding": 1.0,
+    "clearance": 0.044527380080121595,
+    "ok": true
+   },
+   {
+    "name": "tube_2",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     -0.5601244271032154,
+     0.7468300438896649,
+     3.3172697893936347e-10
+    ],
+    "winding": 1.0,
+    "clearance": 0.044233947136699925,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "ring_2",
+  "family": "ring",
+  "variant": 2,
+  "valid": true,
+  "problems": [],
+  "faces": 28160,
+  "voxel_object": 0.012,
+  "scale": 1.2436775381570004,
+  "min_feature_object": 0.09570955177973327,
+  "min_feature_grid": 0.11903181973552864,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.0635704348300775,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 14080,
+   "faces": 28160,
+   "edges": 42240,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "major": 0.7401778068826439,
+   "tube": 0.047854775889866634,
+   "links": 1,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "ring_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -2.928949707610664e-07,
+     -1.9547088674387148e-07,
+     5.365465744103863e-10
+    ],
+    "winding": -2.0154556575246243e-17,
+    "clearance": 0.8610147601203834,
+    "ok": true
+   },
+   {
+    "name": "ring_hole_off",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.36821671216993096,
+     -0.27616294926956303,
+     5.365465744103863e-10
+    ],
+    "winding": -3.865257425389691e-18,
+    "clearance": 0.40076226297363876,
+    "ok": true
+   },
+   {
+    "name": "tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     0.9205422197672836,
+     -1.9547088674387148e-07,
+     5.365465744103863e-10
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.05884158594862598,
+    "ok": true
+   },
+   {
+    "name": "tube_2",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     -0.5523258004923233,
+     0.7364338146589168,
+     5.365465744103863e-10
+    ],
+    "winding": 1.0,
+    "clearance": 0.058418265584160106,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "ring_3",
+  "family": "ring",
+  "variant": 3,
+  "valid": true,
+  "problems": [],
+  "faces": 71084,
+  "voxel_object": 0.012,
+  "scale": 0.8585005212471046,
+  "min_feature_object": 0.12221287400898831,
+  "min_feature_grid": 0.10491981603982319,
+  "expected_components": 2,
+  "expected_genus": [
+   1,
+   1
+  ],
+  "volume_grid": 0.06667861481438386,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 35542,
+   "faces": 71084,
+   "edges": 106626,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 2,
+   "genus_signature": [
+    1,
+    1
+   ],
+   "total_genus": 2,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "major": 0.7202897305220414,
+   "tube": 0.061106437004494155,
+   "links": 2,
+   "link_gap": 0.5980768565130529,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "link_a_tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     -0.3091735360547671,
+     0.6183690889945826,
+     -3.6655202596114344e-08
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.051952140418703135,
+    "ok": true
+   },
+   {
+    "name": "link_b_tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     0.30919557304734197,
+     -2.0107526428975017e-08,
+     0.6183690724469064
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.05195900885755392,
+    "ok": true
+   },
+   {
+    "name": "link_a_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.6183580906058217,
+     -2.0107526428975017e-08,
+     -3.6655202596114344e-08
+    ],
+    "winding": -1.4908850069360234e-17,
+    "clearance": 0.2567080566265623,
+    "ok": true
+   },
+   {
+    "name": "link_b_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.6183801275983966,
+     -2.0107526428975017e-08,
+     -3.6655202596114344e-08
+    ],
+    "winding": 8.282694482977909e-18,
+    "clearance": 0.25673219200528935,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "ring_4",
+  "family": "ring",
+  "variant": 4,
+  "valid": true,
+  "problems": [],
+  "faces": 8884,
+  "voxel_object": 0.012,
+  "scale": 1.6902597675814128,
+  "min_feature_object": 0.03853305064459827,
+  "min_feature_grid": 0.06513086522674148,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.018641652249055816,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 4442,
+   "faces": 8884,
+   "edges": 13326,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "major": 0.5727265697493173,
+   "tube": 0.019266525322299135,
+   "links": 1,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "ring_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.00013737054176113242,
+     0.00013937443153939894,
+     -7.279369027253454e-06
+    ],
+    "winding": -5.280217732898417e-17,
+    "clearance": 0.9354775921502695,
+    "ok": true
+   },
+   {
+    "name": "ring_hole_off",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.0878343560390845,
+     -0.4427018014507482,
+     0.1744521759380191
+    ],
+    "winding": 2.070673620744477e-17,
+    "clearance": 0.45186981607400584,
+    "ok": true
+   },
+   {
+    "name": "tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     0.4181326164064298,
+     -0.8486304712669201,
+     0.20494016899118728
+    ],
+    "winding": 1.0,
+    "clearance": 0.02956542957377688,
+    "ok": true
+   },
+   {
+    "name": "tube_2",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     0.42979308949419487,
+     0.7849565821250253,
+     -0.36959035095305076
+    ],
+    "winding": 1.0,
+    "clearance": 0.029702457821379098,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "ring_5",
+  "family": "ring",
+  "variant": 5,
+  "valid": true,
+  "problems": [],
+  "faces": 15448,
+  "voxel_object": 0.012,
+  "scale": 1.5942031575634277,
+  "min_feature_object": 0.05990300258748254,
+  "min_feature_grid": 0.09549755587249484,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.043096027006263984,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 7724,
+   "faces": 15448,
+   "edges": 23172,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "major": 0.6209677244511314,
+   "tube": 0.02995150129374127,
+   "links": 1,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "ring_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -1.9558861986497505e-05,
+     -2.5769280285059932e-05,
+     7.573128533134671e-05
+    ],
+    "winding": 6.253434334648321e-17,
+    "clearance": 0.9421882147354708,
+    "ok": true
+   },
+   {
+    "name": "ring_hole_off",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.3299058512134968,
+     -0.26200454704172804,
+     0.25996371634061616
+    ],
+    "winding": -3.823843952974801e-17,
+    "clearance": 0.44783719915721576,
+    "ok": true
+   },
+   {
+    "name": "tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     -0.606631333602344,
+     -0.7808236677333046,
+     -0.04866069387397127
+    ],
+    "winding": 1.0,
+    "clearance": 0.04593312786059482,
+    "ok": true
+   },
+   {
+    "name": "tube_2",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     0.5965917258632075,
+     0.3342119521388203,
+     -0.7157025606031027
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.04573355158580195,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "ring_6",
+  "family": "ring",
+  "variant": 6,
+  "valid": true,
+  "problems": [],
+  "faces": 24924,
+  "voxel_object": 0.012,
+  "scale": 1.4349824438287955,
+  "min_feature_object": 0.09524014984316904,
+  "min_feature_grid": 0.1366679429725714,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 0.08350752714430454,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 12462,
+   "faces": 24924,
+   "edges": 37386,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "major": 0.639767905268596,
+   "tube": 0.04762007492158452,
+   "links": 1,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "ring_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     5.10472429679166e-05,
+     1.7251143464425814e-06,
+     3.2737221526056385e-05
+    ],
+    "winding": 7.178335218580853e-18,
+    "clearance": 0.8496984979222217,
+    "ok": true
+   },
+   {
+    "name": "ring_hole_off",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.07165964809651437,
+     -0.4430945389331972,
+     -0.09611549073947409
+    ],
+    "winding": -1.6565388965955816e-18,
+    "clearance": 0.3908104751286969,
+    "ok": true
+   },
+   {
+    "name": "tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     0.5956342543769114,
+     -0.5801199178256652,
+     -0.3892818058527877
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.06679557566112095,
+    "ok": true
+   },
+   {
+    "name": "tube_2",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     0.08703360829601785,
+     0.9108683292024576,
+     0.07474789168284654
+    ],
+    "winding": 1.0,
+    "clearance": 0.06713853070360232,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "ring_7",
+  "family": "ring",
+  "variant": 7,
+  "valid": true,
+  "problems": [],
+  "faces": 71876,
+  "voxel_object": 0.012,
+  "scale": 1.2618817263307678,
+  "min_feature_object": 0.14005779474929836,
+  "min_feature_grid": 0.17673637182432494,
+  "expected_components": 2,
+  "expected_genus": [
+   1,
+   1
+  ],
+  "volume_grid": 0.2399960486550966,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 35938,
+   "faces": 71876,
+   "edges": 107814,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 2,
+   "genus_signature": [
+    1,
+    1
+   ],
+   "total_genus": 2,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "major": 0.6205736590207277,
+   "tube": 0.07002889737464918,
+   "links": 2,
+   "link_gap": 0.4805158642714291,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "link_a_tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     -0.3515121613056066,
+     0.2284313119689714,
+     -0.6818035894936134
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.08771210009706956,
+    "ok": true
+   },
+   {
+    "name": "link_b_tube",
+    "expect": "material",
+    "structure": "thin_tube",
+    "point": [
+     -0.492008244009803,
+     0.6724923554855083,
+     0.5920736089101922
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.0876900676262573,
+    "ok": true
+   },
+   {
+    "name": "link_a_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.6402102743411304,
+     -0.46460303636162376,
+     -0.23136455551756333
+    ],
+    "winding": -7.951386703658792e-17,
+    "clearance": 0.303357253147939,
+    "ok": true
+   },
+   {
+    "name": "link_b_hole",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.3594806216076256,
+     0.48587729425056114,
+     0.5103419601113107
+    ],
+    "winding": 1.1927080055488187e-16,
+    "clearance": 0.3033487559387863,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "thin_shell_0",
+  "family": "thin_shell",
+  "variant": 0,
+  "valid": true,
+  "problems": [],
+  "faces": 369016,
+  "voxel_object": 0.011722015944699399,
+  "scale": 1.1704287238361404,
+  "min_feature_object": 0.0351660478340982,
+  "min_feature_grid": 0.04115935248882422,
+  "expected_components": 2,
+  "expected_genus": [
+   0,
+   0
+  ],
+  "volume_grid": 0.4761550832785897,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 184512,
+   "faces": 369016,
+   "edges": 553524,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 2,
+   "genus_signature": [
+    0,
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.8373030873840088,
+   "wall": 0.0351660478340982,
+   "kind": "hollow_ball",
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "shell_bottom",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -1.8989095232524516e-08,
+     -2.1016372561940537e-08,
+     -0.9594239230364568
+    ],
+    "winding": 1.0,
+    "clearance": 0.020556825539155964,
+    "ok": true
+   },
+   {
+    "name": "shell_side",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.5756543256828129,
+     -0.7675391472455835,
+     -1.5249943215965783e-08
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.020557372821248265,
+    "ok": true
+   },
+   {
+    "name": "inner_void",
+    "expect": "air",
+    "structure": "void",
+    "point": [
+     -1.8989095232524516e-08,
+     -2.1016372561940537e-08,
+     -1.5249943215965783e-08
+    ],
+    "winding": 2.341241640521755e-16,
+    "clearance": 0.938769092663045,
+    "ok": true
+   },
+   {
+    "name": "inner_void_off",
+    "expect": "air",
+    "structure": "void",
+    "point": [
+     0.29400105622018247,
+     0.1960006957898126,
+     -0.1960007320561284
+    ],
+    "winding": -4.240739575284689e-16,
+    "clearance": 0.534730337092369,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "thin_shell_1",
+  "family": "thin_shell",
+  "variant": 1,
+  "valid": true,
+  "problems": [],
+  "faces": 267540,
+  "voxel_object": 0.012,
+  "scale": 1.0497973025807812,
+  "min_feature_object": 0.06190436669835318,
+  "min_feature_grid": 0.06498703717790272,
+  "expected_components": 1,
+  "expected_genus": [
+   0
+  ],
+  "volume_grid": 0.45684234956248776,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 133772,
+   "faces": 267540,
+   "edges": 401310,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.9335403041136799,
+   "wall": 0.06190436669835318,
+   "kind": "bowl",
+   "cut": 0.2223830034587448,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "shell_bottom",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     4.802174439204841e-08,
+     -2.292007679892131e-08,
+     -0.5742674904353195
+    ],
+    "winding": 0.9999999999999997,
+    "clearance": 0.032453118389787844,
+    "ok": true
+   },
+   {
+    "name": "shell_side",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.5685207927337635,
+     -0.7580276825361024,
+     0.3732670840847125
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.032454370477946415,
+    "ok": true
+   },
+   {
+    "name": "bowl_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     4.802174439204841e-08,
+     -2.292007679892131e-08,
+     -1.8423884377838373e-05
+    ],
+    "winding": -3.1584674961755756e-16,
+    "clearance": 0.5417122314964594,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "thin_shell_2",
+  "family": "thin_shell",
+  "variant": 2,
+  "valid": true,
+  "problems": [],
+  "faces": 282732,
+  "voxel_object": 0.012,
+  "scale": 1.2569427689842023,
+  "min_feature_object": 0.08619393820195136,
+  "min_feature_grid": 0.10834084735321395,
+  "expected_components": 1,
+  "expected_genus": [
+   0
+  ],
+  "volume_grid": 1.14661287537888,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 141368,
+   "faces": 282732,
+   "edges": 424098,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.7796803873711555,
+   "wall": 0.08619393820195136,
+   "kind": "vented_ball",
+   "vent_radius": 0.19819680419768582,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "shell_bottom",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     4.684176475718809e-09,
+     2.2234201498611272e-08,
+     -0.9087192538806922
+    ],
+    "winding": 0.9999999999999996,
+    "clearance": 0.05411947425852327,
+    "ok": true
+   },
+   {
+    "name": "shell_side",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.5555059254931977,
+     -0.7406745388444935,
+     0.017123947467676485
+    ],
+    "winding": 0.9999999999999997,
+    "clearance": 0.05410869123902204,
+    "ok": true
+   },
+   {
+    "name": "vent_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     4.684176475718809e-09,
+     2.2234201498611272e-08,
+     0.9429671488160453
+    ],
+    "winding": 3.533949646070574e-17,
+    "clearance": 0.2489033468571849,
+    "ok": true
+   },
+   {
+    "name": "inner_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     4.684176475718809e-09,
+     2.2234201498611272e-08,
+     0.017123947467676485
+    ],
+    "winding": 4.1082164635570424e-16,
+    "clearance": 0.8715750003976672,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "thin_shell_3",
+  "family": "thin_shell",
+  "variant": 3,
+  "valid": true,
+  "problems": [],
+  "faces": 250188,
+  "voxel_object": 0.012,
+  "scale": 1.285356664371353,
+  "min_feature_object": 0.14534985312990653,
+  "min_feature_grid": 0.1868264023859227,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 1.780590987597902,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 125094,
+   "faces": 250188,
+   "edges": 375282,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.762453720017866,
+   "wall": 0.14534985312990653,
+   "kind": "two_vent_ball",
+   "vent_radius": 0.18988566871728563,
+   "pose": "canonical"
+  },
+  "probes": [
+   {
+    "name": "shell_bottom",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.01661795200757011,
+     4.793136246830368e-08,
+     -0.8697208332243188
+    ],
+    "winding": 1.0000000000000004,
+    "clearance": 0.0933671638539132,
+    "ok": true
+   },
+   {
+    "name": "shell_side",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.5485850134716096,
+     -0.7092893673540236,
+     0.016890935882413593
+    ],
+    "winding": 0.9999999999999997,
+    "clearance": 0.09333569921571688,
+    "ok": true
+   },
+   {
+    "name": "vent_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.01661795200757011,
+     4.793136246830368e-08,
+     0.9035027049891461
+    ],
+    "winding": 1.1485336349729365e-16,
+    "clearance": 0.24386423302183038,
+    "ok": true
+   },
+   {
+    "name": "vent_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.9032297211143026,
+     4.793136246830368e-08,
+     0.016890935882413593
+    ],
+    "winding": -8.834874115176436e-18,
+    "clearance": 0.24383128190355383,
+    "ok": true
+   },
+   {
+    "name": "inner_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     0.01661795200757011,
+     4.793136246830368e-08,
+     0.016890935882413593
+    ],
+    "winding": 9.718361526694079e-17,
+    "clearance": 0.7930862645737264,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "thin_shell_4",
+  "family": "thin_shell",
+  "variant": 4,
+  "valid": true,
+  "problems": [],
+  "faces": 423436,
+  "voxel_object": 0.012,
+  "scale": 1.064898026738051,
+  "min_feature_object": 0.042706738421860825,
+  "min_feature_grid": 0.0454783214738577,
+  "expected_components": 2,
+  "expected_genus": [
+   0,
+   0
+  ],
+  "volume_grid": 0.5237968462740601,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 211722,
+   "faces": 423436,
+   "edges": 635154,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 2,
+   "genus_signature": [
+    0,
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.92029833678748,
+   "wall": 0.042706738421860825,
+   "kind": "hollow_ball",
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "shell_bottom",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.623650739504584,
+     0.6068177781523663,
+     -0.39903131891339844
+    ],
+    "winding": 0.9999999999999996,
+    "clearance": 0.022694728402647562,
+    "ok": true
+   },
+   {
+    "name": "shell_side",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.19084740589265417,
+     0.6444100016307847,
+     0.6816942125148608
+    ],
+    "winding": 1.0000000000000007,
+    "clearance": 0.022703738961388574,
+    "ok": true
+   },
+   {
+    "name": "inner_void",
+    "expect": "air",
+    "structure": "void",
+    "point": [
+     1.3097349821114136e-08,
+     -1.6211160701390704e-08,
+     -2.3027028009522176e-08
+    ],
+    "winding": 3.6222983872223387e-16,
+    "clearance": 0.9344800864446751,
+    "ok": true
+   },
+   {
+    "name": "inner_void_off",
+    "expect": "air",
+    "structure": "void",
+    "point": [
+     -0.13447188962072934,
+     0.27179878038743266,
+     -0.2670555966653394
+    ],
+    "winding": 3.5118624607826333e-16,
+    "clearance": 0.5304271325498068,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "thin_shell_5",
+  "family": "thin_shell",
+  "variant": 5,
+  "valid": true,
+  "problems": [],
+  "faces": 166604,
+  "voxel_object": 0.012,
+  "scale": 1.2824307680846236,
+  "min_feature_object": 0.06431223939246064,
+  "min_feature_grid": 0.08247599456131549,
+  "expected_components": 1,
+  "expected_genus": [
+   0
+  ],
+  "volume_grid": 0.5198811960869538,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 83304,
+   "faces": 166604,
+   "edges": 249906,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.7691680589493398,
+   "wall": 0.06431223939246064,
+   "kind": "bowl",
+   "cut": 0.09097175171403328,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "shell_bottom",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.5267197761024054,
+     0.5664032082567352,
+     -0.24978882785110343
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.041184992298273534,
+    "ok": true
+   },
+   {
+    "name": "shell_side",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.6370898679742116,
+     -0.7148528827281714,
+     0.11474070995108365
+    ],
+    "winding": 1.0000000000000002,
+    "clearance": 0.04117883075844443,
+    "ok": true
+   },
+   {
+    "name": "bowl_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     0.1984233571629758,
+     0.20103370263628834,
+     -0.11147941677649942
+    ],
+    "winding": 1.501928599579994e-16,
+    "clearance": 0.4689891901796612,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "thin_shell_6",
+  "family": "thin_shell",
+  "variant": 6,
+  "valid": true,
+  "problems": [],
+  "faces": 265884,
+  "voxel_object": 0.012,
+  "scale": 1.294991038842222,
+  "min_feature_object": 0.08049495629436981,
+  "min_feature_grid": 0.10424024707320523,
+  "expected_components": 1,
+  "expected_genus": [
+   0
+  ],
+  "volume_grid": 1.1071718952545768,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 132944,
+   "faces": 265884,
+   "edges": 398826,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    0
+   ],
+   "total_genus": 0,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.7567628633766115,
+   "wall": 0.08049495629436981,
+   "kind": "vented_ball",
+   "vent_radius": 0.19650200329028186,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "shell_bottom",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.5366301886692132,
+     0.5781779808090616,
+     0.4885707131734515
+    ],
+    "winding": 1.0,
+    "clearance": 0.05204568072513904,
+    "ok": true
+   },
+   {
+    "name": "shell_side",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     -0.28786265897845875,
+     0.7097669666148101,
+     -0.5237643077999011
+    ],
+    "winding": 0.9999999999999999,
+    "clearance": 0.05205319553637558,
+    "ok": true
+   },
+   {
+    "name": "vent_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.536630259903872,
+     -0.5781780640461632,
+     -0.4885706944277323
+    ],
+    "winding": -3.7989958695258673e-16,
+    "clearance": 0.25418850258126213,
+    "ok": true
+   },
+   {
+    "name": "inner_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     -3.56173294691565e-08,
+     -4.161855087730146e-08,
+     9.372859576596158e-09
+    ],
+    "winding": 3.4456009049188096e-16,
+    "clearance": 0.8756575446066412,
+    "ok": true
+   }
+  ]
+ },
+ {
+  "shape_id": "thin_shell_7",
+  "family": "thin_shell",
+  "variant": 7,
+  "valid": true,
+  "problems": [],
+  "faces": 301824,
+  "voxel_object": 0.012,
+  "scale": 1.1677516527704823,
+  "min_feature_object": 0.14803488457332084,
+  "min_feature_grid": 0.172867981128183,
+  "expected_components": 1,
+  "expected_genus": [
+   1
+  ],
+  "volume_grid": 1.6486578013140674,
+  "self_intersecting_pairs": 0,
+  "topology": {
+   "vertices": 150912,
+   "faces": 301824,
+   "edges": 452736,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "nonmanifold_vertices": 0,
+   "collapsed_faces": 0,
+   "duplicate_faces": 0,
+   "components": 1,
+   "genus_signature": [
+    1
+   ],
+   "total_genus": 1,
+   "orientable": true,
+   "consistently_oriented": true,
+   "boundary_loops": 0,
+   "watertight_manifold": true
+  },
+  "params": {
+   "radius": 0.8392212485874742,
+   "wall": 0.14803488457332084,
+   "kind": "two_vent_ball",
+   "vent_radius": 0.24454582582855253,
+   "pose": "rotated"
+  },
+  "probes": [
+   {
+    "name": "shell_bottom",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.32611811440790817,
+     -0.6204300588292883,
+     -0.5542357313454851
+    ],
+    "winding": 1.0000000000000004,
+    "clearance": 0.08637325903158853,
+    "ok": true
+   },
+   {
+    "name": "shell_side",
+    "expect": "material",
+    "structure": "thin_wall",
+    "point": [
+     0.8130305165243362,
+     0.3638581965658223,
+     0.0710806031686742
+    ],
+    "winding": 0.9999999999999996,
+    "clearance": 0.08637744984368034,
+    "ok": true
+   },
+   {
+    "name": "vent_0",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     -0.32611805471236677,
+     0.6204301077016875,
+     0.5542358187249514
+    ],
+    "winding": 2.1203697876423444e-16,
+    "clearance": 0.2853667268239979,
+    "ok": true
+   },
+   {
+    "name": "vent_1",
+    "expect": "air",
+    "structure": "hole",
+    "point": [
+     0.34675445482223755,
+     0.6424941577424521,
+     -0.5151954969106844
+    ],
+    "winding": 1.1485336349729365e-16,
+    "clearance": 0.2853553511929239,
+    "ok": true
+   },
+   {
+    "name": "inner_space",
+    "expect": "air",
+    "structure": "cavity",
+    "point": [
+     2.9847770691323387e-08,
+     2.443619961483374e-08,
+     4.3689733140131596e-08
+    ],
+    "winding": 1.6786260818835226e-16,
+    "clearance": 0.8070428815296576,
+    "ok": true
+   }
+  ]
+ }
+]

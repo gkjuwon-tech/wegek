@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jevsg"
+version = "0.1.0"
+description = "Jev x Subgrid edge coordinates — research code (stage G1: 3D -> A -> 3D round trip)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "scikit-image>=0.21",
+    # The reconstructor is pinned on purpose: the proposal (§5.5) requires the
+    # decoder version to be fixed for every reported number.
+    "subgrid-marching==1.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "ruff>=0.4", "mypy>=1.8"]
+
+[project.scripts]
+jevsg-g1 = "jevsg.experiments.g1:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+jevsg = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "NPY", "RUF", "SIM"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # Korean / math glyphs in docs are intentional
+
+[tool.ruff.lint.per-file-ignores]
+# The G1 report writer is mostly Korean prose templates; wrapping them hurts readability.
+"src/jevsg/experiments/g1.py" = ["E501"]
+# Natural-language prompts and the Korean G2 report are prose; wrapping them hurts review.
+"src/jevsg/g2/report.py" = ["E501"]
+"src/jevsg/g2/conditions.py" = ["E501"]
+"src/jevsg/g2/describe.py" = ["E501"]
+
+[tool.mypy]
+strict = true
+warn_unreachable = true
+files = ["src/jevsg"]
+mypy_path = "src"
+explicit_package_bases = true
+
+[[tool.mypy.overrides]]
+module = ["subgrid_marching", "subgrid_marching.*", "skimage", "skimage.*", "scipy", "scipy.*"]
+ignore_missing_imports = true

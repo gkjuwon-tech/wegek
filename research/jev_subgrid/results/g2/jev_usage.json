@@ -1,0 +1,9 @@
+{
+ "requests": 600,
+ "cache_hits": 120,
+ "input_tokens": 2165410,
+ "output_tokens": 185832,
+ "seconds": 219.13146866500014,
+ "retries": 0,
+ "usd": 0.09094722000000001
+}
